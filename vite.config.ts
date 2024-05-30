@@ -1,10 +1,9 @@
 import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths';
 import mkcert from 'vite-plugin-mkcert'
+import { resolve } from 'path'
 
-// https://vitejs.dev/config/
 
-// Library build
 export default defineConfig({
   plugins: [
     tsconfigPaths(),
@@ -21,17 +20,15 @@ export default defineConfig({
     port: 8080,
   },
   build: {
+    manifest: true,
+    outDir: 'build',
     lib: {
-      entry: 'src/my-element.ts',
+      entry: resolve(__dirname, 'src/my-element.ts'),
       formats: ['es']
     },
     minify: false,
     rollupOptions: {
-      external: /^lit/
     },
     sourcemap: true,
   }
 });
-
-// Application build
-// export default defineConfig({});

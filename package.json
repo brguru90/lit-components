@@ -1,20 +1,30 @@
 {
-  "name": "my-component2",
+  "name": "vg",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "build-module": "tsc --build tsconfig-module.json  && vite build --config vite-module.config.ts",
+    "preview": "vite preview",
+    "pack":"touch vg.tgz && tar -czf vg.tgz  --exclude='vg.tgz' ./"
   },
+  "types": "dist/index.d.ts",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "types"
+  ],
   "dependencies": {
     "lit": "^3.1.2"
   },
   "devDependencies": {
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "sass": "^1.77.3",
     "typescript": "^5.2.2",
     "vite": "^5.2.0",
+    "vite-plugin-dts": "^3.9.1",
     "vite-plugin-mkcert": "^1.17.5",
     "vite-tsconfig-paths": "^4.3.2"
   }
