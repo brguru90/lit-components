@@ -3,7 +3,7 @@ import { customElement } from 'lit/decorators.js'
 
 import styles from '@/my-element.scss?inline';
 
-import "./components/index"
+import "./index"
 
 @customElement('my-element')
 export class MyElement extends LitElement {

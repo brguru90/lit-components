@@ -18,12 +18,17 @@ export default defineConfig({
       }
     }
   },
+  resolve: {
+    alias: {
+      "@/": resolve(__dirname, "./src"),
+    },
+  },
   build: {
     manifest: true,
     reportCompressedSize: true,
     lib: {
       name: "vg",
-      entry: 'src/components/index.ts',
+      entry: 'src/index.ts',
       // entry: resolve(__dirname, 'src/components/index.ts'),
       formats: ['es', 'cjs'],
       fileName: 'index',
