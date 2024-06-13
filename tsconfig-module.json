@@ -30,23 +30,22 @@
     "esModuleInterop": true,    
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,  
+    // "noEmit": true,
+    "allowJs": true,
+    "checkJs": false,
     "baseUrl": ".",
-    "typeRoots": [
-      "node_modules/@types",
-      "node_modules/vg",
-      "node_modules/vg/types/vg"
-    ],
     "paths": {
       "@/*": [
         "./src/*"
       ],
     },
+    "outDir": "dist",
   },
   "include": [
     "src",
     "src/**/*", 
   ],
   "exclude": [
-    "node_modules", "dist",  "build", "public", "types"
-  ]
+    "node_modules", "dist",  "build", "public", "types","demo"
+  ],
 }

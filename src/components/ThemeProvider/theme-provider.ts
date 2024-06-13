@@ -3,7 +3,7 @@ import { customElement, property } from "lit/decorators.js"
 import theme from "./theme.scss?inline"
 
 @customElement("vg-theme-provider")
-class ThemeProvider extends LitElement {
+export class ThemeProvider extends LitElement {
     static styles = unsafeCSS(theme)
 
     @property({ type: String })

@@ -30,6 +30,7 @@ export default defineConfig({
     global: 'window'
   },
   optimizeDeps: {
+    exclude: ['dist'],
     esbuildOptions: {
       define: {
         global: 'window'
@@ -48,14 +49,17 @@ export default defineConfig({
       name: "vg",
       entry: 'src/index.ts',
       // entry: resolve(__dirname, 'src/components/index.ts'),
-      formats: ['es', 'cjs'],
+      formats: ['es'],
       fileName: 'index',
     },
     minify: false,
     sourcemap: true,
     outDir: 'dist',
     rollupOptions: {
-      context: 'window'
+      context: 'window',
+      external: (id) => {
+        return id.startsWith('demo') || id.startsWith('dist') || id.startsWith('types');
+      }
       //   // make sure to externalize deps that shouldn't be bundled
       //   // into your library
       //   external: ['lit'],

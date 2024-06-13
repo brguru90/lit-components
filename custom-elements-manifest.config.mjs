@@ -15,12 +15,11 @@ export default {
   plugins: [
     customElementReactWrapperPlugin({
       outdir: "dist/react",
-      modulePath: (className, tagName) => `../index.ts`,
+      modulePath: (className, tagName) => `../index.js`,
       attributeMapping: {
         for: "_for",
       },
       ssrSafe: false,
-      typesSrc:"types",
       reactProps:true,
     }),
     // reactify({

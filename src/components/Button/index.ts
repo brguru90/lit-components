@@ -24,6 +24,10 @@ const ButtonSizeValues = {
     lg: "22px"
 }
 
+/**
+ * @event {CustomEvent} tick - some description for typed-event
+ * @slot "Test button" - You can put some elements here
+ */
 
 @customElement("vg-button")
 export class VgButton extends LitElement {
@@ -44,16 +48,25 @@ export class VgButton extends LitElement {
             this.fontSize = ButtonSizeValues[this.size]
         }
     }
-
     private _onClick(e: MouseEvent) {
-        this.dispatchEvent(e)
+        let event = new CustomEvent('tick', {
+            bubbles: true,
+            cancelable: true,
+            detail: {
+                test:'This is awesome.',
+                originalEvent:e,
+            }
+        });
+        this.dispatchEvent(event);
+
+        // this.dispatchEvent(new Event("click",e))
     }
 
     render() {
         return html`
     <button @click=${this._onClick} style='font-size:${this.fontSize}'>
         <slot name="prefixIcon"></slot>
-        <slot></slot>
+        <slot>default value</slot>
         <slot name="postIcon"></slot>
    </button>
     `;
@@ -63,7 +76,7 @@ export class VgButton extends LitElement {
 }
 
 declare global {
-    
+
     interface HTMLElementTagNameMap {
         'vg-button': VgButton
     }

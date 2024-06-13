@@ -14,9 +14,11 @@
     "release": "npm-run-all --serial build-module lsp_support pack"
   },
   "types": "dist/index.d.ts",
+  "module": "dist/index.js",
   "main": "dist/index.js",
   "files": [
-    "dist"
+    "dist",
+    "types"
   ],
   "dependencies": {
     "lit": "^3.1.2"
