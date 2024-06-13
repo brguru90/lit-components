@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+vg.tgz
+build
+types
+package copy.json
+package-lock.json

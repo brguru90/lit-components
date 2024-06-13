@@ -11,32 +11,41 @@
     ],
     "skipLibCheck": true,
     /* Bundler mode */
-    "moduleResolution": "Bundler",
+    "moduleResolution":"Bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    // "noEmit": true,
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
-    "declaration": true,
+    "declaration": true,                            
     "declarationMap": true,
-    "esModuleInterop": true,
+    "declarationDir": "types",
+    "emitDeclarationOnly":true,
+    // "allowJs": true,
+    "esModuleInterop": true,    
     "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
+    "forceConsistentCasingInFileNames": true,  
+    // "noEmit": true,
+    "allowJs": true,
+    "checkJs": false,
     "baseUrl": ".",
-    "composite": true,
     "paths": {
       "@/*": [
         "./src/*"
       ],
     },
+    "outDir": "dist",
   },
   "include": [
     "src",
     "src/**/*", 
-  ]
+  ],
+  "exclude": [
+    "node_modules", "dist",  "build", "public", "types","demo"
+  ],
 }

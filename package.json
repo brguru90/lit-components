@@ -1,21 +1,43 @@
 {
-  "name": "my-component2",
+  "name": "vg",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "build-module": "tsc --build tsconfig-module.json  && vite build --config vite-module.config.ts --mode development",
+    "preview": "vite preview",
+    "lsp_support": "custom-elements-manifest analyze --config custom-elements-manifest.config.mjs",
+    "lsp_support_old": "custom-elements-manifest analyze --litelement --globs 'src/**/*.ts' --exclude 'node_modules' 'dist' 'public' 'types' --outdir dist --packagejson",
+    "pack": "touch vg.tgz && tar -czf vg.tgz  --exclude='vg.tgz' --exclude='node_modules' ./",
+    "release": "npm-run-all --serial build-module lsp_support pack"
   },
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "types"
+  ],
   "dependencies": {
     "lit": "^3.1.2"
   },
   "devDependencies": {
+    "@custom-elements-manifest/analyzer": "^0.10.2",
+    "@web/dev-server-legacy": "^2.1.1",
+    "cem-plugin-reactify": "^0.0.2",
+    "cem-plugin-vs-code-custom-data-generator": "^1.4.2",
+    "custom-element-react-wrappers": "^1.6.0",
+    "i": "^0.3.7",
+    "npm": "^10.8.1",
+    "npm-run-all": "^4.1.5",
     "sass": "^1.77.3",
     "typescript": "^5.2.2",
     "vite": "^5.2.0",
+    "vite-plugin-dts": "^3.9.1",
     "vite-plugin-mkcert": "^1.17.5",
     "vite-tsconfig-paths": "^4.3.2"
-  }
+  },
+  "customElements": "dist/custom-elements.json"
 }
