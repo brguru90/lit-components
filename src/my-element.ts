@@ -13,7 +13,7 @@ export class MyElement extends LitElement {
   render() {
     return html`
     svds
-      <vg-button size='lg'>
+      <vg-button size='sm'>
         Test
       </vg-button>
       

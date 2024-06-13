@@ -1,0 +1,5 @@
+{
+    "html.customData": [
+      "./node_modules/vg/dist/custom-elements.json",
+    ]
+  }

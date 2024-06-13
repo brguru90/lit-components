@@ -1,0 +1,188 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "src/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./components/ThemeProvider/theme-provider.ts\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./components/Button/index.ts\""
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/my-element.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "MyElement",
+          "members": [],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "my-element",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "MyElement",
+          "declaration": {
+            "name": "MyElement",
+            "module": "src/my-element.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "my-element",
+          "declaration": {
+            "name": "MyElement",
+            "module": "src/my-element.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/Button/index.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "VgButton",
+          "members": [
+            {
+              "kind": "field",
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "attribute": "disabled"
+            },
+            {
+              "kind": "field",
+              "name": "size",
+              "attribute": "size"
+            },
+            {
+              "kind": "field",
+              "name": "fontSize",
+              "default": "ButtonSizeValues[this.size]"
+            },
+            {
+              "kind": "method",
+              "name": "_onClick",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "MouseEvent"
+                  }
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "fieldName": "disabled"
+            },
+            {
+              "name": "size",
+              "fieldName": "size"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "vg-button",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "vg-button",
+          "declaration": {
+            "name": "VgButton",
+            "module": "src/components/Button/index.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/ThemeProvider/theme-provider.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "ThemeProvider",
+          "members": [
+            {
+              "kind": "field",
+              "name": "varient",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"light\"",
+              "attribute": "varient"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "varient",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"light\"",
+              "fieldName": "varient"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "vg-theme-provider",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "vg-theme-provider",
+          "declaration": {
+            "name": "ThemeProvider",
+            "module": "src/components/ThemeProvider/theme-provider.ts"
+          }
+        }
+      ]
+    }
+  ]
+}

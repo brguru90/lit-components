@@ -1,12 +1,30 @@
 import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths';
+import { legacyPlugin } from '@web/dev-server-legacy';
 import { resolve } from 'path'
+
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
   plugins: [
     tsconfigPaths(),
     dts({ insertTypesEntry: true }),
+
+    // legacyPlugin({
+    //   polyfills: {
+    //     webcomponents: true,
+    //     // Inject lit's polyfill-support module into test files, which is required
+    //     // for interfacing with the webcomponents polyfills
+    //     custom: [
+    //       {
+    //         name: 'lit-polyfill-support',
+    //         path: 'node_modules/lit/polyfill-support.js',
+    //         test: "!('attachShadow' in Element.prototype)",
+    //         module: faltruese,
+    //       },
+    //     ],
+    //   },
+    // }),
   ],
   define: {
     global: 'window'
@@ -33,7 +51,7 @@ export default defineConfig({
       formats: ['es', 'cjs'],
       fileName: 'index',
     },
-    minify: true,
+    minify: false,
     sourcemap: true,
     outDir: 'dist',
     rollupOptions: {
