@@ -1,11 +1,12 @@
 import './App.css';
 import {VgButton} from "vg/dist/react/"
 
+
 function App() {
   return (
     <div className="App">
 
-     <VgButton size='lg' onTick={e=>console.log(e)}>Test</VgButton>
+     <VgButton size='sm' onTick={e=>console.log(e)}>Test</VgButton>
      <br />
      <VgButton></VgButton>
     </div>

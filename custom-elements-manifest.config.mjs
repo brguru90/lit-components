@@ -1,5 +1,7 @@
 import { generateCustomData } from "cem-plugin-vs-code-custom-data-generator";
+import { customElementVsCodePlugin } from "custom-element-vs-code-integration";
 import { customElementReactWrapperPlugin } from "custom-element-react-wrappers";
+import { getTsProgram, expandTypesPlugin } from "cem-plugin-expanded-types";
 import reactify from "cem-plugin-reactify";
 
 export default {
@@ -28,16 +30,29 @@ export default {
     //     for: "_for",
     //   },
     // }),
-    generateCustomData({
+    // generateCustomData({
+    //   outdir: "dist",
+    //   htmlFileName: "vg.html-custom-data.json",
+    //   cssFileName: "vg.css-custom-data.json",
+    //   descriptionSrc: "description",
+    //   slotDocs: true,
+    //   eventDocs: true,
+    //   cssPropertiesDocs: true,
+    //   cssPartsDocs: true,
+    //   methodDocs: true,
+    // }),
+    customElementVsCodePlugin({
       outdir: "dist",
       htmlFileName: "vg.html-custom-data.json",
       cssFileName: "vg.css-custom-data.json",
       descriptionSrc: "description",
-      slotDocs: true,
-      eventDocs: true,
-      cssPropertiesDocs: true,
-      cssPartsDocs: true,
-      methodDocs: true,
     }),
+    expandTypesPlugin({ propertyName: "type" }),
   ],
+  overrideModuleCreation: ({ts, globs}) => {
+    const program = getTsProgram(ts, globs, "tsconfig-module.json");
+    return program
+      .getSourceFiles()
+      .filter((sf) => globs.find((glob) => sf.fileName.includes(glob)));
+  },
 };

@@ -2,14 +2,16 @@ import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { legacyPlugin } from '@web/dev-server-legacy';
 import { resolve } from 'path'
-
+import VitePluginCustomElementsManifest from 'vite-plugin-cem';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
   plugins: [
     tsconfigPaths(),
     dts({ insertTypesEntry: true }),
-
+    // VitePluginCustomElementsManifest({
+    //   config: "custom-elements-manifest.config.mjs",
+    // }),
     // legacyPlugin({
     //   polyfills: {
     //     webcomponents: true,
