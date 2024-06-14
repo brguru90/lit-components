@@ -2,7 +2,19 @@ import { generateCustomData } from "cem-plugin-vs-code-custom-data-generator";
 import { customElementVsCodePlugin } from "custom-element-vs-code-integration";
 import { customElementReactWrapperPlugin } from "custom-element-react-wrappers";
 import { getTsProgram, expandTypesPlugin } from "cem-plugin-expanded-types";
+import { customElementVuejsPlugin } from "custom-element-vuejs-integration";
 import reactify from "cem-plugin-reactify";
+import fs from "fs"
+
+
+function myPlugin() {
+  return {
+    name: 'my-plugin',
+    packageLinkPhase({customElementsManifest,context}) {
+      fs.writeFileSync("dist/vue/index.js", "import \"../index\"");
+    }
+  }
+}
 
 export default {
   globs: ["src/**/*.{js,ts}"],
@@ -17,12 +29,13 @@ export default {
   plugins: [
     customElementReactWrapperPlugin({
       outdir: "dist/react",
+
       modulePath: (className, tagName) => `../index.js`,
       attributeMapping: {
         for: "_for",
       },
       ssrSafe: false,
-      reactProps:true,
+      reactProps: true,
     }),
     // reactify({
     //   outdir: "dist/react2",
@@ -48,8 +61,14 @@ export default {
       descriptionSrc: "description",
     }),
     expandTypesPlugin({ propertyName: "type" }),
+    customElementVuejsPlugin({
+      outdir: "./dist/vue",
+      fileName: "index.d.ts",
+      globalTypePath: "../index",
+    }),
+    myPlugin(),
   ],
-  overrideModuleCreation: ({ts, globs}) => {
+  overrideModuleCreation: ({ ts, globs }) => {
     const program = getTsProgram(ts, globs, "tsconfig-module.json");
     return program
       .getSourceFiles()
