@@ -12,6 +12,8 @@ function myPlugin() {
     name: 'my-plugin',
     packageLinkPhase({customElementsManifest,context}) {
       fs.writeFileSync("dist/vue/index.js", "import \"../index\"");
+      fs.copyFileSync('./vg-package.json',  './dist/package.json');
+      fs.copyFileSync('./vg-package-lock.json',  './dist/package-lock.json');
     }
   }
 }

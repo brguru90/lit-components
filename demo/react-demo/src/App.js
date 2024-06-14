@@ -1,5 +1,6 @@
 import './App.css';
-import {VgButton} from "vg/dist/react/"
+import {VgButton} from "vg/react"
+
 
 
 function App() {
