@@ -1,0 +1,13 @@
+{
+  "name": "vg",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {},
+  "types": "index.d.ts",
+  "module": "index.js",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "customElements": "custom-elements.json"
+}

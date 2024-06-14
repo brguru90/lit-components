@@ -11,7 +11,7 @@
     "build-module": "npm-run-all --serial build-ts build-js",
     "preview": "vite preview",
     "lsp-support": "custom-elements-manifest analyze --config custom-elements-manifest.config.mjs",
-    "pack": "touch vg.tgz && tar -czf vg.tgz  --exclude='vg.tgz' --exclude='node_modules' ./",
+    "pack": "touch vg.tgz && tar -czf vg.tgz  --exclude='vg.tgz' --exclude='node_modules' -C ./dist/ .",
     "release": "npm-run-all --serial build-module lsp-support pack"
   },
   "types": "dist/index.d.ts",
