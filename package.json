@@ -6,12 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build-module": "tsc --build tsconfig-module.json  && vite build --config vite-module.config.ts --mode development",
+    "build-ts": "tsc --build tsconfig-module.json",
+    "build-js": "vite build --config vite-module.config.ts --mode development",
+    "build-module": "npm-run-all --serial build-ts build-js",
     "preview": "vite preview",
-    "lsp_support": "custom-elements-manifest analyze --config custom-elements-manifest.config.mjs",
-    "lsp_support_old": "custom-elements-manifest analyze --litelement --globs 'src/**/*.ts' --exclude 'node_modules' 'dist' 'public' 'types' --outdir dist --packagejson",
+    "lsp-support": "custom-elements-manifest analyze --config custom-elements-manifest.config.mjs",
     "pack": "touch vg.tgz && tar -czf vg.tgz  --exclude='vg.tgz' --exclude='node_modules' ./",
-    "release": "npm-run-all --serial build-module lsp_support pack"
+    "release": "npm-run-all --serial build-module lsp-support pack"
   },
   "types": "dist/index.d.ts",
   "module": "dist/index.js",
@@ -26,15 +27,19 @@
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.10.2",
     "@web/dev-server-legacy": "^2.1.1",
+    "cem-plugin-expanded-types": "^1.3.1",
     "cem-plugin-reactify": "^0.0.2",
     "cem-plugin-vs-code-custom-data-generator": "^1.4.2",
     "custom-element-react-wrappers": "^1.6.0",
+    "custom-element-vs-code-integration": "^1.3.0",
+    "custom-element-vuejs-integration": "^1.2.0",
     "i": "^0.3.7",
     "npm": "^10.8.1",
     "npm-run-all": "^4.1.5",
     "sass": "^1.77.3",
     "typescript": "^5.2.2",
     "vite": "^5.2.0",
+    "vite-plugin-cem": "^0.8.0",
     "vite-plugin-dts": "^3.9.1",
     "vite-plugin-mkcert": "^1.17.5",
     "vite-tsconfig-paths": "^4.3.2"

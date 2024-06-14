@@ -1,0 +1,17 @@
+{
+  "name": "html-demo",
+  "version": "1.0.0",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "serve ./"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "serve": "^14.2.3",
+    "vg": "file:../../vg.tgz"
+  }
+}

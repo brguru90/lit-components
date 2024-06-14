@@ -1,6 +1,20 @@
 import { generateCustomData } from "cem-plugin-vs-code-custom-data-generator";
+import { customElementVsCodePlugin } from "custom-element-vs-code-integration";
 import { customElementReactWrapperPlugin } from "custom-element-react-wrappers";
+import { getTsProgram, expandTypesPlugin } from "cem-plugin-expanded-types";
+import { customElementVuejsPlugin } from "custom-element-vuejs-integration";
 import reactify from "cem-plugin-reactify";
+import fs from "fs"
+
+
+function myPlugin() {
+  return {
+    name: 'my-plugin',
+    packageLinkPhase({customElementsManifest,context}) {
+      fs.writeFileSync("dist/vue/index.js", "import \"../index\"");
+    }
+  }
+}
 
 export default {
   globs: ["src/**/*.{js,ts}"],
@@ -15,12 +29,13 @@ export default {
   plugins: [
     customElementReactWrapperPlugin({
       outdir: "dist/react",
+
       modulePath: (className, tagName) => `../index.js`,
       attributeMapping: {
         for: "_for",
       },
       ssrSafe: false,
-      reactProps:true,
+      reactProps: true,
     }),
     // reactify({
     //   outdir: "dist/react2",
@@ -28,16 +43,35 @@ export default {
     //     for: "_for",
     //   },
     // }),
-    generateCustomData({
+    // generateCustomData({
+    //   outdir: "dist",
+    //   htmlFileName: "vg.html-custom-data.json",
+    //   cssFileName: "vg.css-custom-data.json",
+    //   descriptionSrc: "description",
+    //   slotDocs: true,
+    //   eventDocs: true,
+    //   cssPropertiesDocs: true,
+    //   cssPartsDocs: true,
+    //   methodDocs: true,
+    // }),
+    customElementVsCodePlugin({
       outdir: "dist",
       htmlFileName: "vg.html-custom-data.json",
       cssFileName: "vg.css-custom-data.json",
       descriptionSrc: "description",
-      slotDocs: true,
-      eventDocs: true,
-      cssPropertiesDocs: true,
-      cssPartsDocs: true,
-      methodDocs: true,
     }),
+    expandTypesPlugin({ propertyName: "type" }),
+    customElementVuejsPlugin({
+      outdir: "./dist/vue",
+      fileName: "index.d.ts",
+      globalTypePath: "../index",
+    }),
+    myPlugin(),
   ],
+  overrideModuleCreation: ({ ts, globs }) => {
+    const program = getTsProgram(ts, globs, "tsconfig-module.json");
+    return program
+      .getSourceFiles()
+      .filter((sf) => globs.find((glob) => sf.fileName.includes(glob)));
+  },
 };
