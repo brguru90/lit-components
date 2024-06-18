@@ -1,18 +1,15 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import { ref } from "vue";
+const selectedSize = ref("md");
 </script>
 
 <template>
-  <!-- <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" /> -->
-  <vg-button size="lg" @tick="e=>console.log(e)">Test2</vg-button>
+  <vg-button :size="selectedSize" @tick="(e) => console.log(e)">Test2</vg-button>
+  <select @change="(e)=>selectedSize=e.target.value">
+    <option value="lg" :selected="selectedSize=='lg'">lg</option>
+    <option value="md" :selected="selectedSize=='md'">md</option>
+    <option value="sm" :selected="selectedSize=='sm'">sm</option>
+  </select>
 </template>
 
 <style scoped>

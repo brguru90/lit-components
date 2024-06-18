@@ -1,3 +1,5 @@
 {
-    "html.customData": ["./node_modules/vg/vg.html-custom-data.json"]
-  }
+  "html.customData": [
+    "./node_modules/vg/vg.html-custom-data.json"
+  ]
+}

@@ -25,8 +25,8 @@ const ButtonSizeValues = {
 }
 
 /**
- * @event {CustomEvent} tick - some description for typed-event
- * @slot "Test button" - You can put some elements here
+ * @event {CustomEvent} tick - event on click button
+ * @slot "Test button" - child elements
  */
 
 @customElement("vg-button")
@@ -43,18 +43,39 @@ export class VgButton extends LitElement {
     @state()
     fontSize: string = ButtonSizeValues[this.size]
 
+    @state()
+    counter: number = 0
+
+
+    private interval: NodeJS.Timeout | null = null
+
+    connectedCallback() {
+        super.connectedCallback()
+        this.interval = setInterval(() => {
+            this.counter++
+        }, 1000);
+    }
+
+    disconnectedCallback() {
+        clearInterval(this.interval!)
+        super.disconnectedCallback()
+    }
+
+
     updated(changedProperties: PropertyValues) {
         if (changedProperties.has("size")) {
             this.fontSize = ButtonSizeValues[this.size]
         }
     }
+
+
     private _onClick(e: MouseEvent) {
         let event = new CustomEvent('tick', {
             bubbles: true,
             cancelable: true,
             detail: {
-                test:'This is awesome.',
-                originalEvent:e,
+                test: 'This is awesome.',
+                originalEvent: e,
             }
         });
         this.dispatchEvent(event);
@@ -69,6 +90,10 @@ export class VgButton extends LitElement {
         <slot>default value</slot>
         <slot name="postIcon"></slot>
    </button>
+   <fieldset>
+        <legend>Internal state:</legend>
+        <b>Counter:</b>${this.counter}
+    </fieldset>
     `;
     }
 
