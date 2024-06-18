@@ -25,8 +25,8 @@ const ButtonSizeValues = {
 }
 
 /**
- * @event {CustomEvent} tick - some description for typed-event
- * @slot "Test button" - You can put some elements here
+ * @event {CustomEvent} tick - event on click button
+ * @slot "Test button" - child elements
  */
 
 @customElement("vg-button")
