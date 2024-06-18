@@ -10,9 +10,14 @@ import { Component,CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 })
 export class BtnWrapperComponent {
 
+  public selectedSize:string="md"
+
   onButtonClick(e:Event){
     console.log(e)
   }
 
+  onSizeChange(e:Event){
+    this.selectedSize=(e!.target as HTMLInputElement).value
+  }
 
 }

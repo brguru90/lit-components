@@ -1,5 +1,10 @@
 <p>
-    <vg-button (tick)="onButtonClick($event)">
+    <vg-button [size]="selectedSize" (tick)="onButtonClick($event)">
         Test Button 
     </vg-button>
+    <select (change)="onSizeChange($event)">
+        <option value="lg" [selected]="selectedSize=='lg'">lg</option>
+        <option value="md" [selected]="selectedSize=='md'">md</option>
+        <option value="sm" [selected]="selectedSize=='sm'">sm</option>
+    </select>
 </p>
