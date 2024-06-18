@@ -12,10 +12,9 @@ export class MyElement extends LitElement {
 
   render() {
     return html`
-    svds
       <vg-button size='sm'  @tick=${(e:Event)=>console.log(e)}>
         Test
-      </vg-button>
+      </vg-button><br /><br />
 
       <vg-button></vg-button>
       

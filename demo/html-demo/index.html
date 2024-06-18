@@ -1,14 +1,30 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <script type="module" src="./node_modules/vg/index.js"></script>
-  </head>
-  <body>
-    <vg-button size="lg">Test</vg-button>
-  </body>
-  <script>
-    document.querySelector("vg-button").addEventListener("tick", function (e) {
-      console.log(e);
-    });
-  </script>
+
+<head>
+  <script type="module" src="./node_modules/vg/index.js"></script>
+</head>
+
+<body>
+  <vg-button size="lg" class="react">Test</vg-button><br />
+  <fieldset>
+    <legend>With some reactivity:</legend>
+    <select onchange="onDropDownChange(this)">
+      <option value="lg">lg</option>
+      <option value="md">md</option>
+      <option value="sm">sm</option>
+    </select>
+  </fieldset>
+</body>
+<script>
+  document.querySelector("vg-button").addEventListener("tick", function (e) {
+    console.log(e);
+  });
+
+  function onDropDownChange(e) {
+    console.log(e.value)
+    document.querySelector("vg-button").setAttribute("size",e.value)
+  }
+</script>
+
 </html>
