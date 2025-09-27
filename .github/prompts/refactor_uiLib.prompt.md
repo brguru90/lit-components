@@ -1,11 +1,15 @@
+---
+mode: ask
+---
 # Can you refactor Lit ui-library to proper setup, which implements following,
+- make sure you are using Lit v3 (https://lit.dev/docs/)
 
-### ThemeProvider:
+### ThemeProvider and css styles:
 - for now implement four types of theme like dark, light, glass, cartoon
 - default theme mode will be dark mode
 - to easily manage app themes from single place
-- if theme is set to light mode, then it should switch to light mode for all the components and it should use the predeclared css variables for light mode,
-- you can use scss to programatically generate css varaible with respective color usig the loop provided by scss
+- if theme is set to light mode, then it should switch to light mode for all the components and it should use the pre-declared css variables for light mode,
+- you can use scss to programmatically generate css variable with respective color using the loop provided by scss
 - dark, light, glass or any etc mode will share same css variable like 
   ```
   --vg-text-color, --vg-text-color-disabled,--vg-text-color-primary --vg-text-color-secondary, --vg-text-color-tertiary, --vg-background-color, --vg-background-color-primary, --vg-background-color-secondary, --vg-background-color-tertiary
@@ -29,7 +33,7 @@
       ...
     }
     ```
-- also predefine(or programatically generate using scss) font size, margins,padding,border-color,shadow, etc 
+- also predefine(or programmatically generate using scss) font size, margins,padding,border-color,shadow, etc 
 
 ### Create few reusable ui-rich components like button, card, input,dropdown etc:
 - which should use the theme provider
@@ -42,4 +46,4 @@
 - create proper types for component props/arguments,events and export them
 
 
-make sure every component, props, events, types etc should have ts-doc string so it should provide those information in vscode linter and also later it should support to generate documentaion out of it
+make sure every component, props, events, types etc should have ts-doc string so it should provide those information in vscode linter and also later it should support to generate documentation out of it
