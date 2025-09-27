@@ -46,7 +46,7 @@ function App() {
           label="Button variant"
           value={variant}
           options={VARIANT_OPTIONS}
-          helperText="Preview updates immediately"
+          helper-text="Preview updates immediately"
           onChange={(event) => setVariant(event.detail.value)}
         />
         <VgDropdown
@@ -59,7 +59,7 @@ function App() {
           label="Button label"
           value={label}
           placeholder="Type a label"
-          helperText="Try updating the label to see changes"
+          helper-text="Try updating the label to see changes"
           onChange={(event) => setLabel(event.detail.value)}
         />
       </VgCard>
@@ -68,7 +68,7 @@ function App() {
         <VgButton
           variant={variant}
           size={size}
-          onTick={(event) => {
+          onClick={(event) => {
             setClicks((previous) => previous + 1);
             console.info("Button tick", event.detail);
           }}

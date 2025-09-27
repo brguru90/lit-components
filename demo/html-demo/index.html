@@ -79,7 +79,7 @@
       if (button && clickCounter) {
         let clickCount = 0;
         clickCounter.textContent = "Clicked 0 times";
-        button.addEventListener("tick", (event) => {
+        button.addEventListener("click", (event) => {
           clickCount += 1;
           clickCounter.textContent = `Clicked ${clickCount} times`;
           console.log("Button tick", event.detail);

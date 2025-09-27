@@ -50,7 +50,7 @@ export class VgInput extends LitElement {
 	 * Provides additional guidance displayed beneath the control.
 	 */
 	@property({ type: String, attribute: "helper-text" })
-	helperText: string | null = null
+	"helper-text": string | null = null
 
 	/**
 	 * Error message to display. When present the input is marked as invalid.
@@ -125,7 +125,7 @@ export class VgInput extends LitElement {
 		}
 
 		const describedBy = [
-			this.helperText ? `${this.inputId}-helper` : null,
+			this["helper-text"] ? `${this.inputId}-helper` : null,
 			this.error ? `${this.inputId}-error` : null,
 		].filter((value): value is string => value !== null)
 
@@ -148,7 +148,7 @@ export class VgInput extends LitElement {
 					/>
 					<slot name="suffix" @slotchange=${this.onSlotChange}></slot>
 				</div>
-				${this.helperText ? html`<p id=${`${this.inputId}-helper`} class="field__helper">${this.helperText}</p>` : null}
+				${this["helper-text"] ? html`<p id=${`${this.inputId}-helper`} class="field__helper">${this["helper-text"]}</p>` : null}
 				${this.error ? html`<p id=${`${this.inputId}-error`} class="field__error">${this.error}</p>` : null}
 			</label>
 		`

@@ -49,6 +49,7 @@ export class MyElement extends LitElement {
 
   render() {
     return html`
+     <h1>Lit Demo</h1>
       <vg-theme-provider mode=${this.theme}>
         <section class="playground">
           <vg-card heading="Theme controls" variant="subtle">
