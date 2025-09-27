@@ -3,6 +3,10 @@ mode: ask
 ---
 # Can you refactor Lit ui-library to proper setup, which implements following,
 - make sure you are using Lit v3 (https://lit.dev/docs/)
+- don't create new project refactor existing ui-library
+- you will be using typescript
+- use vite as build tool
+- all the code should be in /src folder and remaining files like vite config, package.json etc should be in root folder
 
 ### ThemeProvider and css styles:
 - for now implement four types of theme like dark, light, glass, cartoon
