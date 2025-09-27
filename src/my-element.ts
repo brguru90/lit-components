@@ -19,7 +19,7 @@ export class MyElement extends LitElement {
         Test
       </vg-button>
       
-      <select @change=${(e: Event) => this.selectedSize=e.target!.value}>
+      <select @change=${(e: Event) => this.selectedSize=(e.target as HTMLSelectElement).value as ButtonSizeType}>
         <option value="lg" ?selected=${this.selectedSize=="lg"}>lg</option>
         <option value="md" ?selected=${this.selectedSize=="md"}>md</option>
         <option value="sm" ?selected=${this.selectedSize=="sm"}>sm</option>

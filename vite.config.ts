@@ -7,14 +7,14 @@ import { resolve } from 'path'
 export default defineConfig({
   plugins: [
     tsconfigPaths(),
-    mkcert(),
+    // mkcert(), // Commented out to avoid sudo requirement
   ],
   server: {
     open: true,
-    host: '0.0.0.0',
+    host: '0.0.0.0', 
     strictPort: true,
-    port: 8080, // required for local as it's used for login to okta
-    https: true,
+    port: 8080,
+    // https: true, // Disabled HTTPS for development to avoid sudo
   },
   preview: {
     port: 8080,
