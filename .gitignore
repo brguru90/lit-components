@@ -27,3 +27,5 @@ build
 types
 package copy.json
 package-lock.json
+tsconfig.tsbuildinfo
+demo/node_modules

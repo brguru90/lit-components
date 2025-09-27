@@ -1,0 +1,35 @@
+@use "../../styles/theme-tokens" as tokens;
+
+:host {
+	display: contents;
+	@include tokens.emit-scale-tokens();
+}
+
+@each $theme-name in tokens.theme-names() {
+	$selector: tokens.theme-class($theme-name);
+	$theme-values: tokens.theme-tokens($theme-name);
+
+	:host(.#{$selector}) {
+		@include tokens.apply-theme-appearance($theme-values);
+	}
+
+	:host(.#{$selector}) ::slotted(*) {
+		color: inherit;
+	}
+
+	:host(.#{$selector}) ::slotted(a) {
+		color: var(--vg-text-color-primary);
+	}
+}
+
+:host(.#{tokens.theme-class("glass")}) {
+	@include tokens.apply-glass-effects();
+}
+
+:host(.#{tokens.theme-class("cartoon")}) {
+	@include tokens.apply-cartoon-effects();
+}
+
+::slotted(*) {
+	transition: color var(--vg-transition-base) ease, background-color var(--vg-transition-slow) ease;
+}

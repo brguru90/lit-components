@@ -1,28 +1,94 @@
 <script setup>
 import { ref } from "vue";
-const selectedSize = ref("md");
+
+const theme = ref("dark");
+const variant = ref("primary");
+const size = ref("md");
+const label = ref("Launch demo");
+const clicks = ref(0);
+
+const themeOptions = [
+  { label: "Dark", value: "dark" },
+  { label: "Light", value: "light" },
+  { label: "Glass", value: "glass" },
+  { label: "Cartoon", value: "cartoon" },
+];
+
+const variantOptions = [
+  { label: "Primary", value: "primary" },
+  { label: "Secondary", value: "secondary" },
+  { label: "Ghost", value: "ghost" },
+];
+
+const sizeOptions = [
+  { label: "Small", value: "sm" },
+  { label: "Medium", value: "md" },
+  { label: "Large", value: "lg" },
+];
+
+const onThemeChange = (event) => {
+  theme.value = event.detail.value;
+};
+
+const onVariantChange = (event) => {
+  variant.value = event.detail.value;
+};
+
+const onSizeChange = (event) => {
+  size.value = event.detail.value;
+};
+
+const onLabelChange = (event) => {
+  label.value = event.detail.value;
+};
+
+const onButtonTick = (event) => {
+  clicks.value += 1;
+  console.info("Button tick", event.detail);
+};
 </script>
 
 <template>
-  <vg-button :size="selectedSize" @tick="(e) => console.log(e)">Test2</vg-button>
-  <select @change="(e)=>selectedSize=e.target.value">
-    <option value="lg" :selected="selectedSize=='lg'">lg</option>
-    <option value="md" :selected="selectedSize=='md'">md</option>
-    <option value="sm" :selected="selectedSize=='sm'">sm</option>
-  </select>
-</template>
+  <h1>Vue Demo</h1>
+  <vg-theme-provider :mode="theme">
+    <vg-card heading="Theme controls" variant="subtle">
+      <vg-dropdown
+        label="Theme"
+        :value="theme"
+        :options="themeOptions"
+        @change="onThemeChange"
+      ></vg-dropdown>
+      <vg-dropdown
+        label="Button variant"
+        :value="variant"
+        :options="variantOptions"
+        helper-text="Preview updates immediately"
+        @change="onVariantChange"
+      ></vg-dropdown>
+      <vg-dropdown
+        label="Button size"
+        :value="size"
+        :options="sizeOptions"
+        @change="onSizeChange"
+      ></vg-dropdown>
+      <vg-input
+        label="Button label"
+        :value="label"
+        placeholder="Type a label"
+        helper-text="Try updating the label to see changes"
+        @change="onLabelChange"
+      ></vg-input>
+    </vg-card>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+    <vg-card heading="Preview" variant="outlined">
+      <vg-button
+        :variant="variant"
+        :size="size"
+        @tick="onButtonTick"
+      >
+        {{ label }}
+      </vg-button>
+      <p role="status">Clicked {{ clicks }} times</p>
+    </vg-card>
+  </vg-theme-provider>
+</template>

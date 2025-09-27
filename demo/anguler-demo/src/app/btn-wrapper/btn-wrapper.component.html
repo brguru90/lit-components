@@ -1,10 +1,41 @@
-<p>
-    <vg-button [size]="selectedSize" (tick)="onButtonClick($event)">
-        Test Button 
-    </vg-button>
-    <select (change)="onSizeChange($event)">
-        <option value="lg" [selected]="selectedSize=='lg'">lg</option>
-        <option value="md" [selected]="selectedSize=='md'">md</option>
-        <option value="sm" [selected]="selectedSize=='sm'">sm</option>
-    </select>
-</p>
+<vg-theme-provider [attr.mode]="theme">
+    <vg-card heading="Theme controls" variant="subtle">
+        <vg-dropdown
+            label="Theme"
+            [value]="theme"
+            [options]="themeOptions"
+            (change)="onThemeChange($event)"
+        ></vg-dropdown>
+        <vg-dropdown
+            label="Button variant"
+            helper-text="Preview updates immediately"
+            [value]="variant"
+            [options]="variantOptions"
+            (change)="onVariantChange($event)"
+        ></vg-dropdown>
+        <vg-dropdown
+            label="Button size"
+            [value]="size"
+            [options]="sizeOptions"
+            (change)="onSizeChange($event)"
+        ></vg-dropdown>
+        <vg-input
+            label="Button label"
+            placeholder="Type a label"
+            helper-text="Try updating the label to see changes"
+            [value]="label"
+            (change)="onLabelChange($event)"
+        ></vg-input>
+    </vg-card>
+
+    <vg-card heading="Preview" variant="outlined">
+        <vg-button
+            [variant]="variant"
+            [size]="size"
+            (tick)="onButtonTick($event)"
+        >
+            {{ label }}
+        </vg-button>
+        <p role="status">Clicked {{ clicks }} times</p>
+    </vg-card>
+</vg-theme-provider>

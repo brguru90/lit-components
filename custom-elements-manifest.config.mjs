@@ -10,10 +10,10 @@ import fs from "fs"
 function myPlugin() {
   return {
     name: 'my-plugin',
-    packageLinkPhase({customElementsManifest,context}) {
-      fs.writeFileSync("dist/vue/index.js", "import \"../index\"");
-      fs.copyFileSync('./vg-package.json',  './dist/package.json');
-      fs.copyFileSync('./vg-package-lock.json',  './dist/package-lock.json');
+    packageLinkPhase({ customElementsManifest, context }) {
+      fs.writeFileSync("dist/vue/index.js", "import \"../index.js\";\nimport \"../index.css\";\n");
+      fs.copyFileSync('./vg-package.json', './dist/package.json');
+      fs.copyFileSync('./vg-package-lock.json', './dist/package-lock.json');
     }
   }
 }

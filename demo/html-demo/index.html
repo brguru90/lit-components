@@ -3,28 +3,112 @@
 
 <head>
   <script type="module" src="./node_modules/vg/index.js"></script>
+  <link rel="stylesheet" href="./node_modules/vg/index.css" />
+  <script>;
+
+    const themeOptions = [
+      { label: "Dark", value: "dark" },
+      { label: "Light", value: "light" },
+      { label: "Glass", value: "glass" },
+      { label: "Cartoon", value: "cartoon" },
+    ];
+
+    const variantOptions = [
+      { label: "Primary", value: "primary" },
+      { label: "Secondary", value: "secondary" },
+      { label: "Ghost", value: "ghost" },
+    ];
+
+    const sizeOptions = [
+      { label: "Small", value: "sm" },
+      { label: "Medium", value: "md" },
+      { label: "Large", value: "lg" },
+    ];
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const provider = document.querySelector("vg-theme-provider");
+      const button = document.querySelector("vg-button");
+      const themeDropdown = document.querySelector("vg-dropdown[data-control='theme']");
+      const variantDropdown = document.querySelector("vg-dropdown[data-control='variant']");
+      const sizeDropdown = document.querySelector("vg-dropdown[data-control='size']");
+      const labelInput = document.querySelector("vg-input[data-control='label']");
+      const clickCounter = document.querySelector("#click-counter");
+
+      if (themeDropdown) {
+        themeDropdown.options = themeOptions;
+        themeDropdown.value = provider?.getAttribute("mode") ?? "dark";
+        themeDropdown.addEventListener("change", (event) => {
+          const nextMode = event.detail?.value;
+          if (nextMode) {
+            provider?.setAttribute("mode", nextMode);
+          }
+        });
+      }
+
+      if (variantDropdown) {
+        variantDropdown.options = variantOptions;
+        variantDropdown.value = button?.getAttribute("variant") ?? "primary";
+        variantDropdown.addEventListener("change", (event) => {
+          const variant = event.detail?.value;
+          if (variant) {
+            button?.setAttribute("variant", variant);
+          }
+        });
+      }
+
+      if (sizeDropdown) {
+        sizeDropdown.options = sizeOptions;
+        sizeDropdown.value = button?.getAttribute("size") ?? "md";
+        sizeDropdown.addEventListener("change", (event) => {
+          const size = event.detail?.value;
+          if (size) {
+            button?.setAttribute("size", size);
+          }
+        });
+      }
+
+      if (labelInput) {
+        labelInput.addEventListener("change", (event) => {
+          const value = event.detail?.value ?? "";
+          if (button) {
+            button.textContent = value || "Launch demo";
+          }
+        });
+      }
+
+      if (button && clickCounter) {
+        let clickCount = 0;
+        clickCounter.textContent = "Clicked 0 times";
+        button.addEventListener("tick", (event) => {
+          clickCount += 1;
+          clickCounter.textContent = `Clicked ${clickCount} times`;
+          console.log("Button tick", event.detail);
+        });
+      }
+    });
+  </script>
 </head>
 
 <body>
-  <vg-button size="lg" class="react">Test</vg-button><br />
-  <fieldset>
-    <legend>With some reactivity:</legend>
-    <select onchange="onDropDownChange(this)">
-      <option value="lg">lg</option>
-      <option value="md">md</option>
-      <option value="sm">sm</option>
-    </select>
-  </fieldset>
-</body>
-<script>
-  document.querySelector("vg-button").addEventListener("tick", function (e) {
-    console.log(e);
-  });
+  <h1>HTML Demo</h1>
+  <vg-theme-provider mode="dark">
+    <vg-card heading="Theme controls" variant="subtle">
+      <vg-dropdown data-control="theme" label="Theme" value="dark"></vg-dropdown>
+      <vg-dropdown data-control="variant" label="Button variant" value="primary"></vg-dropdown>
+      <vg-dropdown data-control="size" label="Button size" value="md"></vg-dropdown>
+      <vg-input
+        data-control="label"
+        label="Button label"
+        value="Launch demo"
+        placeholder="Type a label"
+      ></vg-input>
+    </vg-card>
 
-  function onDropDownChange(e) {
-    console.log(e.value)
-    document.querySelector("vg-button").setAttribute("size",e.value)
-  }
-</script>
+    <vg-card heading="Preview" variant="outlined">
+      <vg-button variant="primary" size="md">Launch demo</vg-button>
+      <p id="click-counter" role="status">Clicked 0 times</p>
+    </vg-card>
+  </vg-theme-provider>
+</body>
 
 </html>

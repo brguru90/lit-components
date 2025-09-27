@@ -1,9 +1,9 @@
 ---
-mode: ask
+mode: agent
 ---
 # Can you refactor Lit ui-library to proper setup, which implements following,
 - make sure you are using Lit v3 (https://lit.dev/docs/)
-- don't create new project refactor existing ui-library
+- don't create new project/workspace, but refactor existing code in this project
 - you will be using typescript
 - use vite as build tool
 - all the code should be in /src folder and remaining files like vite config, package.json etc should be in root folder
@@ -48,6 +48,7 @@ mode: ask
   ```
 - add doc strings for components, properties, events, information about slots etc
 - create proper types for component props/arguments,events and export them
+- for events don't prefix anything, just use event name like 'click', 'change' etc
 
 
 make sure every component, props, events, types etc should have ts-doc string so it should provide those information in vscode linter and also later it should support to generate documentation out of it

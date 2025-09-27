@@ -9,5 +9,15 @@
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {},
-  "customElements": "custom-elements.json"
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "default": "./index.js"
+    },
+    "./index.css": "./index.css",
+    "./react": "./react/index.js",
+    "./vue": "./vue/index.js"
+  },
+  "customElements": "./custom-elements.json"
 }

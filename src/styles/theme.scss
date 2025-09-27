@@ -1,0 +1,37 @@
+@use "./theme-tokens" as tokens;
+
+:root {
+	@include tokens.emit-scale-tokens();
+	@include tokens.apply-theme-appearance(tokens.theme-tokens(dark));
+}
+
+[data-vg-theme],
+.vg-theme-provider {
+	@include tokens.emit-scale-tokens();
+}
+
+@each $theme-name in tokens.theme-names() {
+	$theme-class: ".#{tokens.theme-class($theme-name)}";
+	$theme-attr: "[data-vg-theme='#{$theme-name}']";
+	$theme-values: tokens.theme-tokens($theme-name);
+
+	#{$theme-class},
+	#{$theme-attr} {
+		@include tokens.apply-theme-appearance($theme-values);
+	}
+}
+
+.#{tokens.theme-class("glass")},
+[data-vg-theme="glass"] {
+	@include tokens.apply-glass-effects();
+}
+
+.#{tokens.theme-class("cartoon")},
+[data-vg-theme="cartoon"] {
+	@include tokens.apply-cartoon-effects();
+}
+
+[class*="vg-theme-"] *,
+[data-vg-theme] * {
+	transition: color var(--vg-transition-base) ease, background-color var(--vg-transition-slow) ease;
+}
