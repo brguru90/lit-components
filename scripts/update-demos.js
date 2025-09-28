@@ -9,9 +9,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 /**
- * Find the latest vg-*.tgz file in the root directory
+ * Find all vg-*.tgz files and return them sorted by version (latest first)
  */
-function findLatestTarFile() {
+function getAllTarFiles() {
   const rootDir = path.resolve(__dirname, '..');
   const files = fs.readdirSync(rootDir);
   
@@ -34,11 +34,56 @@ function findLatestTarFile() {
       return patchB - patchA;
     });
   
+  return tarFiles;
+}
+
+/**
+ * Find the latest vg-*.tgz file in the root directory
+ */
+function findLatestTarFile() {
+  const tarFiles = getAllTarFiles();
+  
   if (tarFiles.length === 0) {
     throw new Error('No vg-*.tgz files found in root directory');
   }
   
   return tarFiles[0]; // Return the latest version
+}
+
+/**
+ * Clean up old tar files, keeping only the latest one
+ */
+function cleanupOldTarFiles() {
+  const rootDir = path.resolve(__dirname, '..');
+  const tarFiles = getAllTarFiles();
+  
+  if (tarFiles.length <= 1) {
+    console.log('💡 No old tar files to clean up');
+    return { deleted: [], kept: tarFiles };
+  }
+  
+  const latestFile = tarFiles[0];
+  const oldFiles = tarFiles.slice(1);
+  const deletedFiles = [];
+  
+  console.log(`🗑️  Cleaning up old tar files (keeping ${latestFile})...`);
+  
+  for (const oldFile of oldFiles) {
+    try {
+      const filePath = path.join(rootDir, oldFile);
+      fs.unlinkSync(filePath);
+      deletedFiles.push(oldFile);
+      console.log(`  ✓ Deleted ${oldFile}`);
+    } catch (error) {
+      console.error(`  ✗ Failed to delete ${oldFile}:`, error.message);
+    }
+  }
+  
+  if (deletedFiles.length > 0) {
+    console.log(`🧹 Cleaned up ${deletedFiles.length} old tar file(s)`);
+  }
+  
+  return { deleted: deletedFiles, kept: [latestFile] };
 }
 
 /**
@@ -98,24 +143,6 @@ function findDemoPackageJsonFiles() {
 }
 
 /**
- * Run npm install in a directory
- */
-function runNpmInstall(dir) {
-  try {
-    console.log(`Running npm install in ${dir}...`);
-    execSync('npm install', { 
-      cwd: dir, 
-      stdio: 'inherit',
-      timeout: 60000 // 60 second timeout
-    });
-    return true;
-  } catch (error) {
-    console.error(`Failed to run npm install in ${dir}:`, error.message);
-    return false;
-  }
-}
-
-/**
  * Main function
  */
 function main() {
@@ -124,6 +151,10 @@ function main() {
   try {
     const latestTarFile = findLatestTarFile();
     console.log(`📦 Latest tar file: ${latestTarFile}`);
+    
+    // Clean up old tar files first
+    console.log('\n🧹 Checking for old tar files...');
+    cleanupOldTarFiles();
     
     const packageJsonFiles = findDemoPackageJsonFiles();
     console.log(`\n📝 Found ${packageJsonFiles.length} package.json files in demo directories`);
@@ -141,14 +172,6 @@ function main() {
     
     if (updatedCount > 0) {
       console.log(`\n✅ Updated ${updatedCount} package.json files`);
-      
-      // Run npm install in each updated directory
-      console.log('\n📦 Running npm install in updated directories...');
-      for (const dir of updatedDirs) {
-        runNpmInstall(dir);
-      }
-      
-      console.log('\n🎉 All demo dependencies have been updated to the latest version!');
     } else {
       console.log('\n💡 No package.json files needed updating');
     }
@@ -164,4 +187,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   main();
 }
 
-export { findLatestTarFile, updatePackageJson, findDemoPackageJsonFiles };
+export { findLatestTarFile, getAllTarFiles, cleanupOldTarFiles, updatePackageJson, findDemoPackageJsonFiles };
