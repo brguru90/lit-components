@@ -14,8 +14,9 @@
     "pack-old": "touch vg.tgz && tar -czf vg.tgz  --exclude='vg.tgz' --exclude='node_modules' -C ./dist/ .",
     "pack": "npm pack",
     "update_version": "npm version patch",
-    "release": "npm-run-all --serial build-module lsp-support pack",
-    "release_version": "npm-run-all --serial build-module lsp-support update_version pack",
+    "update-demos": "node scripts/update-demos.js",
+    "install-demos": "npm install --prefix demo",
+    "release": "npm-run-all --serial build-module lsp-support update_version pack update-demos install-demos",
     "demo": "npm start --prefix demo"
   },
   "types": "dist/index.d.ts",
