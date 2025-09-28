@@ -24,10 +24,18 @@ export interface CardActionDetail {
 /**
  * Theme-aware content container with optional header/footer slots.
  *
- * @slot header - Optional content rendered before the body, often containing a title or metadata.
- * @slot - Main card body content.
- * @slot footer - Optional actions or supporting content rendered after the body.
- * @fires {CustomEvent<CardActionDetail>} vg-action - Fired when an interactive card is triggered.
+ * @tag vg-card
+ * @tagname vg-card
+ * @summary The Card component, used for displaying content in a structured container.
+ *
+ * @slot header - Optional content rendered before the body, often containing a title or metadata
+ * @slot - Main card body content
+ * @slot footer - Optional actions or supporting content rendered after the body
+ *
+ * @csspart card - Allows you to style the card container element
+ *
+ * @fires {CustomEvent<CardActionDetail>} vg-action - Fired when an interactive card is triggered
+ *
  */
 @customElement("vg-card")
 export class VgCard extends LitElement {
@@ -37,20 +45,23 @@ export class VgCard extends LitElement {
 	 * Display heading rendered above the default slot when provided.
 	 */
 	@property({ type: String })
-	heading: string | null = null
+	public heading: string | null = null
 
 	/**
 	 * Visual variant for the card container.
 	 */
 	@property({ type: String })
-	variant: CardVariant = "elevated"
+	public variant: CardVariant = "elevated"
 
 	/**
 	 * Enables hover/press affordances and makes the card keyboard activatable.
 	 */
 	@property({ type: Boolean, reflect: true })
-	interactive = false
+	public interactive = false
 
+	/**
+	 * @inheritdoc
+	 */
 	protected render() {
 		const classes = {
 			card: true,

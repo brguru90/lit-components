@@ -35,10 +35,18 @@ const SUPPORTED_SIZES: readonly ButtonSize[] = ["sm", "md", "lg"]
 /**
  * Accessible, theme-aware button component with size and variant controls.
  *
- * @slot prefix - Optional leading icon or element rendered before the label.
- * @slot - Button label content.
- * @slot suffix - Optional trailing icon or element rendered after the label.
- * @fires {CustomEvent<ButtonClickDetail>} vg-click - Fired when the button is activated.
+ * @tag vg-button
+ * @tagname vg-button
+ * @summary The Button component, used for calling attention to actions.
+ *
+ * @slot prefix - Optional leading icon or element rendered before the label
+ * @slot - Button label content
+ * @slot suffix - Optional trailing icon or element rendered after the label
+ *
+ * @csspart button - No input css variables
+ *
+ * @fires {CustomEvent<ButtonClickDetail>} vg-click - Fired when the button is activated
+ *
  */
 @customElement("vg-button")
 export class VgButton extends LitElement {
@@ -48,31 +56,31 @@ export class VgButton extends LitElement {
      * Disables pointer interaction and visually indicates an unavailable state.
      */
     @property({ type: Boolean, reflect: true })
-    disabled = false
+    public disabled = false
 
     /**
      * Renders a lightweight loading indicator and prevents interaction while true.
      */
     @property({ type: Boolean, reflect: true })
-    loading = false
+    public loading = false
 
     /**
      * Visual style variant for the button.
      */
     @property({ type: String })
-    variant: ButtonVariant = "primary"
+    public variant: ButtonVariant = "primary"
 
     /**
      * Controls the paddings and font sizing of the button.
      */
     @property({ type: String })
-    size: ButtonSize = "md"
+    public size: ButtonSize = "md"
 
     /**
-     * Button `type` attribute mirroring the native element contract.
+     * Button type attribute mirroring the native element contract.
      */
     @property({ type: String, attribute: "buttonType" })
-    buttonType: ButtonNativeType = "button"
+    public buttonType: ButtonNativeType = "button"
     protected willUpdate(changedProperties: Map<string | number | symbol, unknown>) {
         if (changedProperties.has("variant")) {
             const normalisedVariant = this.normaliseVariant(this.variant)
@@ -89,6 +97,9 @@ export class VgButton extends LitElement {
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     protected render() {
         const isDisabled = this.disabled || this.loading
         const classes = {
@@ -106,7 +117,7 @@ export class VgButton extends LitElement {
                 aria-busy=${this.loading}
                 @click=${this.handleClick}
             >
-                <span class="loader" aria-hidden="true"></span>
+                ${this.loading ? html`<span class="loader" aria-hidden="true"></span>` : null}
                 <span class="content">
                     <slot name="prefix"></slot>
                     <span class="label"><slot></slot></span>

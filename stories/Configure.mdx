@@ -1,0 +1,264 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="VG Component Library" />
+
+# VG Component Library
+
+**A modern TypeScript-based component library built with Lit 3**
+
+VG is a comprehensive design system featuring theme-aware web components with seamless framework integrations for React, Vue, Angular, and vanilla HTML/JavaScript.
+
+---
+
+## 🚀 Quick Start
+
+### Installation
+
+```bash
+npm install vg
+```
+
+### Basic Usage
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="module" src="./node_modules/vg/dist/index.js"></script>
+  <link rel="stylesheet" href="./node_modules/vg/dist/index.css" />
+</head>
+<body>
+  <vg-theme-provider mode="dark">
+    <vg-card heading="Welcome to VG">
+      <vg-button variant="primary" size="md">Get Started</vg-button>
+    </vg-card>
+  </vg-theme-provider>
+</body>
+</html>
+```
+
+---
+
+## 🧩 Available Components
+
+Explore our comprehensive set of components designed with consistency and flexibility in mind:
+
+### Core Components
+
+- **[Theme Provider](/?path=/docs/themeprovider--docs)** - Design system theme controller with multiple theme modes
+- **[Button](/?path=/docs/button--docs)** - Versatile button with variants, sizes, and states
+- **[Card](/?path=/docs/card--docs)** - Container component with header, content, and footer slots
+- **[Input](/?path=/docs/input--docs)** - Text input with label, validation, and helper text
+- **[Dropdown](/?path=/docs/dropdown--docs)** - Select dropdown with rich option support
+
+Each component is built with accessibility, performance, and developer experience in mind.
+
+---
+
+## 🎨 Design System
+
+### Theme Modes
+Our theme provider supports multiple design modes to match your application's aesthetic:
+
+- **Dark Mode** - High contrast theme for low-light environments
+- **Light Mode** - Clean, bright theme for daylight usage  
+- **Glass Mode** - Modern glassmorphism with backdrop blur effects
+- **Cartoon Mode** - Playful theme with enhanced visual elements
+
+### Design Tokens
+All components use CSS custom properties for consistent styling:
+
+```css
+:root {
+  --vg-font-family-base: 'Inter', 'Segoe UI', sans-serif;
+  --vg-spacing-sm: 0.75rem;
+  --vg-spacing-md: 1rem;
+  --vg-spacing-lg: 1.5rem;
+  --vg-text-color: #ffffff;
+  --vg-background-color: #1a1a1a;
+  /* ... and many more design tokens */
+}
+```
+
+---
+
+## 🔧 Framework Integration
+
+### React Integration
+```jsx
+import { VgThemeProvider, VgButton, VgCard } from "vg/react";
+import "vg/index.css";
+
+function App() {
+  return (
+    <VgThemeProvider mode="dark">
+      <VgCard heading="React Example">
+        <VgButton 
+          variant="primary"
+          onVgClick={(event) => console.log('Clicked!', event.detail)}
+        >
+          Click Me
+        </VgButton>
+      </VgCard>
+    </VgThemeProvider>
+  );
+}
+```
+
+### Vue Integration
+```vue
+<template>
+  <vg-theme-provider mode="dark">
+    <vg-card heading="Vue Example">
+      <vg-button variant="primary" @vg-click="handleClick">
+        Click Me
+      </vg-button>
+    </vg-card>
+  </vg-theme-provider>
+</template>
+
+<script setup>
+import "vg/vue";
+const handleClick = (event) => console.log('Clicked!', event.detail);
+</script>
+```
+
+### Angular Integration
+```typescript
+// app.component.ts
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <vg-theme-provider mode="dark">
+      <vg-card heading="Angular Example">
+        <vg-button variant="primary" (vg-click)="handleClick($event)">
+          Click Me
+        </vg-button>
+      </vg-card>
+    </vg-theme-provider>
+  `,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+})
+export class AppComponent {
+  handleClick(event: Event) {
+    console.log('Clicked!', (event as CustomEvent).detail);
+  }
+}
+```
+
+---
+
+## 📋 Event System
+
+All VG components follow a consistent event naming convention:
+
+- Events are prefixed with `vg-` (e.g., `vg-click`, `vg-change`)
+- Framework wrappers provide appropriate event handlers:
+  - **React**: `onVgClick`, `onVgChange`
+  - **Angular**: `(vg-click)`, `(vg-change)`  
+  - **Vue**: `@vg-click`, `@vg-change`
+
+---
+
+## 🛠️ Development & Customization
+
+### TypeScript Support
+Full TypeScript definitions are included for all components with comprehensive intellisense support.
+
+### Custom Elements Manifest
+All components include rich metadata for:
+- VS Code custom element intellisense
+- Framework wrapper generation
+- Automated documentation
+
+### Styling Customization
+Override CSS custom properties to customize the appearance:
+
+```css
+:root {
+  --vg-primary-color: #your-brand-color;
+  --vg-border-radius: 8px;
+  --vg-font-family-base: 'Your Font', sans-serif;
+}
+```
+
+---
+
+## 📖 Resources
+
+### Live Demos
+Experience VG components across different frameworks:
+- [HTML/Vanilla Demo](http://localhost:4000) - Pure web components implementation
+- [React Demo](http://localhost:3000) - React wrapper integration  
+- [Vue Demo](http://localhost:5173) - Vue.js integration
+- [Angular Demo](http://localhost:4200) - Angular integration
+
+### Documentation Tools
+- **API Explorer**: Interactive component documentation at `apt-viewer.html`
+- **VS Code Integration**: Automatic intellisense for custom elements
+- **Storybook**: This documentation site for component exploration
+
+### Build Tools
+The library uses modern tooling for optimal developer experience:
+- **Vite** - Fast development and build system
+- **TypeScript** - Type safety and modern JavaScript features  
+- **Lit 3** - Efficient, standards-based web components
+- **SCSS** - Enhanced CSS with design token integration
+
+---
+
+## 🚀 Getting Started
+
+1. **Explore Components**: Browse the component documentation in the sidebar
+2. **Try Examples**: Copy code examples and experiment with properties
+3. **Check Integrations**: See how components work in your preferred framework
+4. **Customize Themes**: Experiment with different theme modes
+5. **Build Something**: Start building with VG components in your project!
+
+---
+
+<div style={{
+  padding: '2rem',
+  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+  borderRadius: '12px',
+  color: 'white',
+  textAlign: 'center',
+  marginTop: '3rem'
+}}>
+  <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.5rem' }}>Ready to get started?</h3>
+  <p style={{ margin: '0 0 1.5rem 0', opacity: 0.9 }}>
+    Explore our components, experiment with themes, and start building amazing user interfaces.
+  </p>
+  <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+    <a 
+      href="/?path=/docs/components-button--docs" 
+      style={{ 
+        padding: '0.75rem 1.5rem', 
+        background: 'rgba(255,255,255,0.2)', 
+        borderRadius: '6px', 
+        textDecoration: 'none', 
+        color: 'white',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255,255,255,0.3)'
+      }}
+    >
+      View Components
+    </a>
+    <a 
+      href="/?path=/docs/components-themeprovider--docs" 
+      style={{ 
+        padding: '0.75rem 1.5rem', 
+        background: 'rgba(255,255,255,0.2)', 
+        borderRadius: '6px', 
+        textDecoration: 'none', 
+        color: 'white',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255,255,255,0.3)'
+      }}
+    >
+      Explore Themes
+    </a>
+  </div>
+</div>
