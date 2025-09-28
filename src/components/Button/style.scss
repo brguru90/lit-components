@@ -1,0 +1,132 @@
+:host {
+	display: inline-flex;
+}
+
+button {
+	align-items: center;
+	appearance: none;
+	background: var(--vg-accent-color);
+	border: var(--vg-border-width-thin) solid transparent;
+	border-radius: var(--vg-radius-md);
+	color: var(--vg-background-color);
+	cursor: pointer;
+	display: inline-flex;
+	font-family: inherit;
+	font-weight: 600;
+	gap: var(--vg-spacing-xs);
+	justify-content: center;
+	line-height: var(--vg-line-height-tight);
+	min-width: 3rem;
+	overflow: hidden;
+	position: relative;
+	text-decoration: none;
+	transition: background-color var(--vg-transition-fast) ease, box-shadow var(--vg-transition-fast) ease,
+		transform var(--vg-transition-fast) ease;
+	width: max-content;
+}
+
+button.primary {
+	background: var(--vg-accent-color);
+	color: var(--vg-background-color);
+	box-shadow: var(--vg-shadow-soft);
+}
+
+button.secondary {
+	background: var(--vg-background-color-primary);
+	border-color: var(--vg-border-color);
+	color: var(--vg-text-color);
+}
+
+button.ghost {
+	background: transparent;
+	color: var(--vg-text-color-primary);
+	border-color: transparent;
+}
+
+button:hover:not(.loading):not(:disabled) {
+	transform: translateY(-1px);
+	box-shadow: var(--vg-shadow-strong);
+}
+
+button:active:not(:disabled) {
+	transform: translateY(0);
+}
+
+button:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.35);
+}
+
+button:disabled,
+:host([disabled]) button,
+button.loading {
+	cursor: not-allowed;
+	opacity: 0.7;
+	box-shadow: none;
+}
+
+button.loading .content {
+	opacity: 0.65;
+}
+
+.content {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--vg-spacing-2xs);
+	transition: opacity var(--vg-transition-fast) ease;
+}
+
+.label {
+	display: inline-flex;
+	align-items: center;
+}
+
+.loader {
+	border-radius: 50%;
+	border: 2px solid transparent;
+	border-top-color: currentColor;
+	display: inline-flex;
+	height: 1rem;
+	margin-right: calc(var(--vg-spacing-2xs) * 0.5);
+	opacity: 0;
+	transform: scale(0.6);
+	transition: opacity var(--vg-transition-fast) ease, transform var(--vg-transition-fast) ease;
+	width: 1rem;
+}
+
+button.loading .loader {
+	animation: vg-spin 0.9s linear infinite;
+	opacity: 1;
+	transform: scale(1);
+}
+
+button.sm {
+	border-radius: var(--vg-radius-sm);
+	font-size: var(--vg-font-size-sm);
+	min-height: 2.1rem;
+	padding: var(--vg-spacing-2xs) var(--vg-spacing-sm);
+}
+
+button.md {
+	border-radius: var(--vg-radius-md);
+	font-size: var(--vg-font-size-md);
+	min-height: 2.5rem;
+	padding: var(--vg-spacing-xs) var(--vg-spacing-md);
+}
+
+button.lg {
+	border-radius: var(--vg-radius-lg);
+	font-size: var(--vg-font-size-lg);
+	min-height: 3rem;
+	padding: var(--vg-spacing-sm) var(--vg-spacing-lg);
+}
+
+@keyframes vg-spin {
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(360deg);
+	}
+}

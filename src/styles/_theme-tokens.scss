@@ -1,0 +1,138 @@
+@use "sass:map";
+
+$theme-class-prefix: "vg-theme-" !default;
+
+$theme-token-map: (
+	dark: (
+		text-color: #f8fafc,
+		text-color-disabled: rgba(248, 250, 252, 0.45),
+		text-color-primary: #38bdf8,
+		text-color-secondary: #94a3b8,
+		text-color-tertiary: #64748b,
+		background-color: #020617,
+		background-color-primary: #0f172a,
+		background-color-secondary: #1e293b,
+		background-color-tertiary: #334155,
+		border-color: rgba(148, 163, 184, 0.4),
+		shadow-color: rgba(15, 23, 42, 0.6),
+		accent-color: #22d3ee
+	),
+	light: (
+		text-color: #0f172a,
+		text-color-disabled: rgba(15, 23, 42, 0.38),
+		text-color-primary: #2563eb,
+		text-color-secondary: #475569,
+		text-color-tertiary: #64748b,
+		background-color: #ffffff,
+		background-color-primary: #f8fafc,
+		background-color-secondary: #e2e8f0,
+		background-color-tertiary: #cbd5f5,
+		border-color: rgba(15, 23, 42, 0.18),
+		shadow-color: rgba(15, 23, 42, 0.18),
+		accent-color: #7c3aed
+	),
+	glass: (
+		text-color: rgba(255, 255, 255, 0.88),
+		text-color-disabled: rgba(255, 255, 255, 0.55),
+		text-color-primary: #60a5fa,
+		text-color-secondary: rgba(226, 232, 240, 0.85),
+		text-color-tertiary: rgba(148, 163, 184, 0.75),
+		background-color: rgba(15, 23, 42, 0.35),
+		background-color-primary: rgba(15, 23, 42, 0.65),
+		background-color-secondary: rgba(30, 41, 59, 0.48),
+		background-color-tertiary: rgba(100, 116, 139, 0.3),
+		border-color: rgba(148, 163, 184, 0.35),
+		shadow-color: rgba(15, 23, 42, 0.45),
+		accent-color: rgba(94, 234, 212, 0.85)
+	),
+	cartoon: (
+		text-color: #1f0a2a,
+		text-color-disabled: rgba(31, 10, 42, 0.45),
+		text-color-primary: #9a3412,
+		text-color-secondary: #92400e,
+		text-color-tertiary: #134e4a,
+		background-color: #fefae0,
+		background-color-primary: #ffd166,
+		background-color-secondary: #fcbf49,
+		background-color-tertiary: #e09f3e,
+		border-color: rgba(31, 10, 42, 0.35),
+		shadow-color: rgba(31, 10, 42, 0.35),
+		accent-color: #2563eb
+	)
+) !default;
+
+$scale-token-map: (
+	font-family-base: "'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
+	font-size-xs: 0.75rem,
+	font-size-sm: 0.875rem,
+	font-size-md: 1rem,
+	font-size-lg: 1.125rem,
+	font-size-xl: 1.25rem,
+	font-size-2xl: 1.5rem,
+	line-height-tight: 1.25,
+	line-height-normal: 1.5,
+	line-height-relaxed: 1.75,
+	spacing-2xs: 0.25rem,
+	spacing-xs: 0.5rem,
+	spacing-sm: 0.75rem,
+	spacing-md: 1rem,
+	spacing-lg: 1.5rem,
+	spacing-xl: 2rem,
+	radius-xs: 0.25rem,
+	radius-sm: 0.375rem,
+	radius-md: 0.5rem,
+	radius-lg: 0.75rem,
+	border-width-thin: 1px,
+	border-width-regular: 1.5px,
+	border-width-thick: 2px,
+	shadow-soft: 0 10px 30px var(--vg-shadow-color),
+	shadow-strong: 0 20px 45px var(--vg-shadow-color),
+	transition-fast: 120ms,
+	transition-base: 220ms,
+	transition-slow: 360ms
+) !default;
+
+@function vg-var($token) {
+	@return unquote("--vg-#{$token}");
+}
+
+@mixin emit-token-map($tokens) {
+	@each $token, $value in $tokens {
+		#{vg-var($token)}: #{$value};
+	}
+}
+
+@mixin emit-scale-tokens() {
+	font-family: var(--vg-font-family-base);
+	@include emit-token-map($scale-token-map);
+}
+
+@mixin apply-theme-appearance($tokens) {
+	color: var(--vg-text-color);
+	background-color: var(--vg-background-color);
+	@include emit-token-map($tokens);
+}
+
+@mixin apply-glass-effects() {
+	backdrop-filter: blur(20px) saturate(130%);
+}
+
+@mixin apply-cartoon-effects() {
+	letter-spacing: 0.02em;
+}
+
+@function theme-class($theme-name) {
+	@return unquote("#{$theme-class-prefix}#{$theme-name}");
+}
+
+@function theme-tokens($theme-name) {
+	@return map.get($theme-token-map, $theme-name);
+}
+
+@function theme-names() {
+	@return map.keys($theme-token-map);
+}
+
+@function scale-tokens() {
+	@return $scale-token-map;
+}

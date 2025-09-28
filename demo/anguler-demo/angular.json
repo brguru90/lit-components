@@ -29,6 +29,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*.css",
+                "input": "./node_modules/vg",
+                "output": "assets/vg"
               }
             ],
             "styles": [
@@ -88,6 +93,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*.css",
+                "input": "./node_modules/vg",
+                "output": "assets/vg"
               }
             ],
             "styles": [

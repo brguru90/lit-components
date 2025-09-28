@@ -4,16 +4,21 @@ import { customElementReactWrapperPlugin } from "custom-element-react-wrappers";
 import { getTsProgram, expandTypesPlugin } from "cem-plugin-expanded-types";
 import { customElementVuejsPlugin } from "custom-element-vuejs-integration";
 import reactify from "cem-plugin-reactify";
+import {dynamicRenameEventsPlugin} from './scripts/event_rename.js'
+// import { customJSDocTagsPlugin } from "cem-plugin-custom-jsdoc-tags";
+// import { updateCemInheritance } from "custom-elements-manifest-inheritance";
+
+
 import fs from "fs"
 
 
 function myPlugin() {
   return {
     name: 'my-plugin',
-    packageLinkPhase({customElementsManifest,context}) {
-      fs.writeFileSync("dist/vue/index.js", "import \"../index\"");
-      fs.copyFileSync('./vg-package.json',  './dist/package.json');
-      fs.copyFileSync('./vg-package-lock.json',  './dist/package-lock.json');
+    packageLinkPhase({ customElementsManifest, context }) {
+      fs.writeFileSync("dist/vue/index.js", "import \"../index.js\";\nimport \"../index.css\";\n");
+      fs.copyFileSync('./vg-package.json', './dist/package.json');
+      fs.copyFileSync('./vg-package-lock.json', './dist/package-lock.json');
     }
   }
 }
@@ -63,6 +68,9 @@ export default {
       descriptionSrc: "description",
     }),
     expandTypesPlugin({ propertyName: "type" }),
+    dynamicRenameEventsPlugin({
+      transform: (name) =>name.includes("-") ? `-${name}` : name
+    }),
     customElementVuejsPlugin({
       outdir: "./dist/vue",
       fileName: "index.d.ts",

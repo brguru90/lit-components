@@ -57,10 +57,20 @@ export default defineConfig({
     minify: false,
     sourcemap: true,
     outDir: 'dist',
+    cssCodeSplit: false,
     rollupOptions: {
       context: 'window',
       external: (id) => {
         return id.startsWith('demo') || id.startsWith('dist') || id.startsWith('types');
+      },
+      output: {
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name === 'style.css') {
+            return 'index.css'
+          }
+
+          return 'assets/[name]-[hash][extname]'
+        }
       }
       //   // make sure to externalize deps that shouldn't be bundled
       //   // into your library
