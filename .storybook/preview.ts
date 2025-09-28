@@ -7,17 +7,44 @@ import '../src/index.ts'
 // Import custom elements manifest for automatic controls
 import customElements from '../dist/custom-elements.json'
 
+customElements.modules.forEach((mod) => {
+  mod.declarations.forEach((decl) => {
+    decl?.events?.forEach((event) => {
+      if(event["x-originalName"]){
+        event.name = event["x-originalName"]
+      }
+    })
+    decl.members=[]
+  })
+})
+
 // Set the custom elements manifest
 setCustomElementsManifest(customElements)
 
 const preview: Preview = {
   parameters: {
     docs: {
-      extractComponentDescription: (component: any, { notes }: { notes?: any }) => {
-        if (notes) {
-          return typeof notes === 'string' ? notes : notes.markdown || notes.text
+      extractComponentDescription: (component: string) => {
+        // Extract description from Custom Elements Manifest
+        const module = customElements.modules.find((mod: any) =>
+          mod.declarations.some((decl: any) => decl.tagName === component)
+        )
+        
+        if (module) {
+          const declaration = module.declarations.find(
+            (decl: any) => decl.tagName === component
+          )
+          
+          if (declaration && declaration.description) {
+            return `> ####${component}:\n${declaration.description}`
+          }
         }
-        return null
+        
+        return undefined
+      },
+      source: {
+        excludeDecorators: true,
+        type: 'dynamic',
       },
     },
     controls: {
@@ -26,6 +53,7 @@ const preview: Preview = {
         date: /Date$/i,
       },
       expanded: true,
+      sort: 'alpha',
     },
   },
   tags: ['autodocs'],

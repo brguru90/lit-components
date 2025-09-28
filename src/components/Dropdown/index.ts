@@ -54,9 +54,18 @@ const nextDropdownId = () => `vg-dropdown-${++dropdownId}`
 /**
  * Theme-aware dropdown select element supporting helper text, errors, and descriptions per option.
  *
- * @slot prefix - Optional slot rendered before the native select.
- * @slot suffix - Optional slot rendered after the native select (for badges, icons, etc.).
- * @fires {CustomEvent<DropdownChangeDetail>} vg-change - Emitted when the selected option changes.
+ * @tag vg-dropdown
+ * @tagname vg-dropdown
+ * @summary The Dropdown component, used for selecting options from a list.
+ *
+ * @slot prefix - Optional slot rendered before the native select
+ * @slot suffix - Optional slot rendered after the native select (for badges, icons, etc.)
+ *
+ * @csspart select - Allows you to style the select element
+ * @csspart label - Allows you to style the label element
+ *
+ * @fires {CustomEvent<DropdownChangeDetail>} vg-change - Emitted when the selected option changes
+ *
  */
 @customElement("vg-dropdown")
 export class VgDropdown extends LitElement {
@@ -66,55 +75,55 @@ export class VgDropdown extends LitElement {
 	 * Label displayed above the dropdown control.
 	 */
 	@property({ type: String })
-	label: string | null = null
+	public label: string | null = null
 
 	/**
 	 * Optional text rendered below the control for guidance.
 	 */
 	@property({ type: String, attribute: "helper-text" })
-	helperText: string | null = null
+	public helperText: string | null = null
 
 	/**
 	 * Error message displayed below the control; marks the dropdown as invalid.
 	 */
 	@property({ type: String })
-	error: string | null = null
+	public error: string | null = null
 
 	/**
 	 * Placeholder rendered as the first option when no value is selected.
 	 */
 	@property({ type: String })
-	placeholder: string | null = null
+	public placeholder: string | null = null
 
 	/**
 	 * Currently selected value.
 	 */
 	@property({ type: String })
-	value: string | null = null
+	public value: string | null = null
 
 	/**
 	 * Name attribute forwarded to the native select element.
 	 */
 	@property({ type: String })
-	name: string | null = null
+	public name: string | null = null
 
 	/**
 	 * Disables the dropdown and prevents user interaction.
 	 */
 	@property({ type: Boolean, reflect: true })
-	disabled = false
+	public disabled = false
 
 	/**
 	 * Marks the dropdown as required when used in forms.
 	 */
 	@property({ type: Boolean, reflect: true })
-	required = false
+	public required = false
 
 	/**
 	 * Collection of options rendered by the dropdown.
 	 */
 	@property({ attribute: false })
-	options: DropdownOption[] = []
+	public options: DropdownOption[] = []
 
 	@query("select")
 	private selectElement!: HTMLSelectElement
@@ -141,6 +150,9 @@ export class VgDropdown extends LitElement {
 		}
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	protected render() {
 		const classes = {
 			control: true,

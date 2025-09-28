@@ -6,6 +6,7 @@
 - Components live under `src/components/<Name>/`. The repo ships a playground element in `src/my-element.ts` that mounts `<my-element>` for quick manual testing without touching the library entry points.
 
 ## Component authoring pattern
+- Documentation and type definition are defined as per https://custom-elements-manifest.open-wc.org/analyzer/getting-started/
 - Extend `LitElement`, decorate with `@customElement`, and append the matching `declare global` block (see `src/components/Button/index.ts`).
 - SCSS sits beside the component (`style.scss`) and is imported with `?inline`, then applied via `unsafeCSS`. Keep selectors scoped to the host.
 - Derive computed state inside `willUpdate` instead of `render` (e.g. `fontSize` recomputed from the `size` property). Use `@state` fields for internal state the template depends on.

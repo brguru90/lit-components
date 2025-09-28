@@ -3,6 +3,7 @@ import { customElementVsCodePlugin } from "custom-element-vs-code-integration";
 import { customElementReactWrapperPlugin } from "custom-element-react-wrappers";
 import { getTsProgram, expandTypesPlugin } from "cem-plugin-expanded-types";
 import { customElementVuejsPlugin } from "custom-element-vuejs-integration";
+import { jsDocTagsPlugin } from "@wc-toolkit/jsdoc-tags";
 import reactify from "cem-plugin-reactify";
 import {dynamicRenameEventsPlugin} from './scripts/event_rename.js'
 // import { customJSDocTagsPlugin } from "cem-plugin-custom-jsdoc-tags";
@@ -34,6 +35,20 @@ export default {
   stencil: false,
   catalyst: false,
   plugins: [
+    jsDocTagsPlugin({
+      tags: {
+        figma: {
+          description: "Link to the Figma design",
+          type: "string",
+          tagMapping: "figma",
+        },
+        github: {
+          description: "Link to the GitHub repo",
+          type: "string",
+          tagMapping: "github",
+        },
+      },
+    }),
     customElementReactWrapperPlugin({
       outdir: "dist/react",
 

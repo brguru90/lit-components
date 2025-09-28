@@ -31,9 +31,18 @@ const nextId = () => `vg-input-${++idCounter}`
 /**
  * Theme-aware text input supporting helper and error messaging.
  *
- * @slot prefix - Optional content rendered before the native input (e.g. icons).
- * @slot suffix - Optional content rendered after the native input (e.g. actions).
- * @fires {CustomEvent<InputChangeDetail>} vg-change - Fired whenever the value changes via user input.
+ * @tag vg-input
+ * @tagname vg-input
+ * @summary The Input component, used for text input with validation support.
+ *
+ * @slot prefix - Optional content rendered before the native input (e.g. icons)
+ * @slot suffix - Optional content rendered after the native input (e.g. actions)
+ *
+ * @csspart input - Allows you to style the input element
+ * @csspart label - Allows you to style the label element
+ *
+ * @fires {CustomEvent<InputChangeDetail>} vg-change - Fired whenever the value changes via user input
+ *
  */
 @customElement("vg-input")
 export class VgInput extends LitElement {
@@ -43,55 +52,55 @@ export class VgInput extends LitElement {
 	 * Input label rendered above the control.
 	 */
 	@property({ type: String })
-	label: string | null = null
+	public label: string | null = null
 
 	/**
 	 * Provides additional guidance displayed beneath the control.
 	 */
 	@property({ type: String, attribute: "helper-text" })
-	helperText: string | null = null
+	public helperText: string | null = null
 
 	/**
 	 * Error message to display. When present the input is marked as invalid.
 	 */
 	@property({ type: String })
-	error: string | null = null
+	public error: string | null = null
 
 	/**
 	 * Placeholder text forwarded to the native input element.
 	 */
 	@property({ type: String })
-	placeholder: string | null = null
+	public placeholder: string | null = null
 
 	/**
 	 * Current value of the input. Setting the property updates the native control.
 	 */
 	@property({ type: String })
-	value = ""
+	public value = ""
 
 	/**
 	 * Name attribute forwarded to the native input.
 	 */
 	@property({ type: String })
-	name: string | null = null
+	public name: string | null = null
 
 	/**
 	 * Native input type.
 	 */
 	@property({ type: String })
-	type: InputType = "text"
+	public type: InputType = "text"
 
 	/**
 	 * Disables user interaction with the input control.
 	 */
 	@property({ type: Boolean, reflect: true })
-	disabled = false
+	public disabled = false
 
 	/**
 	 * Marks the input as required for form validation.
 	 */
 	@property({ type: Boolean, reflect: true })
-	required = false
+	public required = false
 
 	@query("input")
 	private inputElement!: HTMLInputElement
@@ -115,6 +124,9 @@ export class VgInput extends LitElement {
 		}
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	protected render() {
 		const controlClasses = {
 			control: true,

@@ -29,8 +29,17 @@ const THEME_CLASSES = SUPPORTED_THEMES.map((mode) => `${THEME_CLASS_PREFIX}${mod
 /**
  * Theme provider that exposes vg design tokens as CSS variables and toggles between predefined modes.
  *
- * @slot - Components that should inherit the active theme and design tokens.
- * @fires {CustomEvent<ThemeChangeDetail>} vg-change - Emitted whenever the active theme mode changes.
+ * @tag vg-theme-provider
+ * @tagname vg-theme-provider
+ * @summary The ThemeProvider component, used for managing application-wide theme and design tokens.
+ *
+ * @slot - Components that should inherit the active theme and design tokens
+ *
+ * @csspart provider - Allows you to style the theme provider container
+ *
+ * @fires {CustomEvent<ThemeChangeDetail>} vg-change - Emitted whenever the active theme mode changes
+ *
+ * @attr {"dark" | "light" | "glass" | "cartoon"} mode - Theme mode that controls which token values are exposed
  */
 @customElement("vg-theme-provider")
 export class ThemeProvider extends LitElement {
@@ -38,11 +47,10 @@ export class ThemeProvider extends LitElement {
 
     /**
      * Theme mode that controls which token values are exposed.
-     *
-     * The value is normalised to one of {@link ThemeMode}. Unsupported values fall back to `"dark"`.
+     * The value is normalised to one of ThemeMode. Unsupported values fall back to "dark".
      */
     @property({ type: String, reflect: true })
-    mode: ThemeMode = "dark"
+    public mode: ThemeMode = "dark"
 
     protected willUpdate(changedProperties: PropertyValueMap<this>) {
         if (changedProperties.has("mode")) {
@@ -74,6 +82,9 @@ export class ThemeProvider extends LitElement {
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     render() {
         return html`<slot></slot>`
     }

@@ -1,7 +1,7 @@
 {
   "name": "vg",
   "private": true,
-  "version": "0.0.36",
+  "version": "0.0.38",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -41,6 +41,7 @@
     "./vue": "./dist/vue/index.js"
   },
   "dependencies": {
+    "@wc-toolkit/jsdoc-tags": "^1.1.0",
     "lit": "^3.1.2"
   },
   "devDependencies": {
@@ -48,6 +49,7 @@
     "@custom-elements-manifest/analyzer": "^0.10.8",
     "@storybook/addon-docs": "^9.1.8",
     "@storybook/web-components-vite": "^9.1.8",
+    "@wc-toolkit/storybook-helpers": "^9.0.1",
     "@web/dev-server-legacy": "^2.1.1",
     "cem-plugin-expanded-types": "^1.4.0",
     "cem-plugin-reactify": "^0.0.2",
@@ -65,8 +67,7 @@
     "vite-plugin-cem": "^0.8.0",
     "vite-plugin-dts": "^3.9.1",
     "vite-plugin-mkcert": "^1.17.5",
-    "vite-tsconfig-paths": "^4.3.2",
-    "wc-storybook-helpers": "^2.0.4"
+    "vite-tsconfig-paths": "^4.3.2"
   },
   "customElements": "dist/custom-elements.json"
 }
