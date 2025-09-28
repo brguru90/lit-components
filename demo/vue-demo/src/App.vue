@@ -56,27 +56,27 @@ const onButtonTick = (event) => {
         label="Theme"
         :value="theme"
         :options="themeOptions"
-        @change="onThemeChange"
+        @vg-change="onThemeChange"
       ></vg-dropdown>
       <vg-dropdown
         label="Button variant"
         :value="variant"
         :options="variantOptions"
         helper-text="Preview updates immediately"
-        @change="onVariantChange"
+        @vg-change="onVariantChange"
       ></vg-dropdown>
       <vg-dropdown
         label="Button size"
         :value="size"
         :options="sizeOptions"
-        @change="onSizeChange"
+        @vg-change="onSizeChange"
       ></vg-dropdown>
       <vg-input
         label="Button label"
         :value="label"
         placeholder="Type a label"
         helper-text="Try updating the label to see changes"
-        @change="onLabelChange"
+        @vg-change="onLabelChange"
       ></vg-input>
     </vg-card>
 

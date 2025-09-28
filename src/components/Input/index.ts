@@ -23,7 +23,6 @@ export interface InputChangeDetail {
 	readonly originalEvent: InputEvent
 }
 
-const INPUT_CHANGE_EVENT = "change"
 
 let idCounter = 0
 
@@ -34,7 +33,7 @@ const nextId = () => `vg-input-${++idCounter}`
  *
  * @slot prefix - Optional content rendered before the native input (e.g. icons).
  * @slot suffix - Optional content rendered after the native input (e.g. actions).
- * @fires {CustomEvent<InputChangeDetail>} change - Fired whenever the value changes via user input.
+ * @fires {CustomEvent<InputChangeDetail>} vg-change - Fired whenever the value changes via user input.
  */
 @customElement("vg-input")
 export class VgInput extends LitElement {
@@ -161,7 +160,7 @@ export class VgInput extends LitElement {
 
 		this.value = this.inputElement.value
 
-		this.dispatchEvent(new CustomEvent<InputChangeDetail>(INPUT_CHANGE_EVENT, {
+		this.dispatchEvent(new CustomEvent<InputChangeDetail>('vg-change', {
 			detail: {
 				value: this.value,
 				originalEvent: event,

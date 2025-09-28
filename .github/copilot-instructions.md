@@ -9,7 +9,8 @@
 - Extend `LitElement`, decorate with `@customElement`, and append the matching `declare global` block (see `src/components/Button/index.ts`).
 - SCSS sits beside the component (`style.scss`) and is imported with `?inline`, then applied via `unsafeCSS`. Keep selectors scoped to the host.
 - Derive computed state inside `updated` instead of `render` (e.g. `fontSize` recomputed from the `size` property). Use `@state` fields for internal state the template depends on.
-- Fire bubbled `CustomEvent`s with clear payloads; `VgButton` emits `tick` carrying `{ test, originalEvent }`. React consumers receive this as `onTick`, Angular uses `(tick)` bindings, vanilla listens via `addEventListener('tick', …)`.
+- always prefix events with vg-, Example: `vg-click` instead of `click` to avoid collisions with native DOM events and use dashed case to separate words.
+- Fire bubbled `CustomEvent`s with clear payloads; `VgButton` emits `vg-click` carrying `{ test, originalEvent }`. React consumers receive this as `onVgClick`, Angular uses `(vg-click)` bindings, vanilla listens via `addEventListener('vg-click', …)`.
 - Clean up side effects in `disconnectedCallback`; `VgButton` clears an interval—follow the same pattern for timers or subscriptions.
 
 ## Styling & tokens
@@ -34,7 +35,7 @@
 ## Framework demos & debugging aids
 - Each demo app under `demo/*` depends on the tarball via `"vg": "file:../../vg.tgz"`. After `npm run release`, run their standard commands (`npm run start`, `react-scripts start`, `ng serve`, `npm run dev` for Vue) to verify integrations.
 - `apt-viewer.html` loads `dist/custom-elements.json` with `<api-viewer>` for quick documentation previews; ensure the manifest is fresh before opening it.
-- The React wrapper exposes properties as props and custom events as camel-cased handlers (`onTick`). Angular uses `CUSTOM_ELEMENTS_SCHEMA` and template bindings; Vue relies on the generated plugin to register elements globally.
+- The React wrapper exposes properties as props and custom events as camel-cased handlers (`onVgClick`). Angular uses `CUSTOM_ELEMENTS_SCHEMA` and template bindings; Vue relies on the generated plugin to register elements globally.
 
 ## Conventions & guardrails
 - Do not hand-edit `dist/`, `types/`, or `vg.tgz`; always rebuild through the scripts above so manifests, wrappers, and metadata stay aligned.

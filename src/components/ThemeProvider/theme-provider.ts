@@ -25,13 +25,12 @@ const THEME_CLASS_PREFIX = "vg-theme-"
 const SUPPORTED_THEMES: readonly ThemeMode[] = ["dark", "light", "glass", "cartoon"]
 const SUPPORTED_THEME_SET = new Set<ThemeMode>(SUPPORTED_THEMES)
 const THEME_CLASSES = SUPPORTED_THEMES.map((mode) => `${THEME_CLASS_PREFIX}${mode}`)
-const THEME_CHANGE_EVENT = "change"
 
 /**
  * Theme provider that exposes vg design tokens as CSS variables and toggles between predefined modes.
  *
  * @slot - Components that should inherit the active theme and design tokens.
- * @fires {CustomEvent<ThemeChangeDetail>} change - Emitted whenever the active theme mode changes.
+ * @fires {CustomEvent<ThemeChangeDetail>} vg-change - Emitted whenever the active theme mode changes.
  */
 @customElement("vg-theme-provider")
 export class ThemeProvider extends LitElement {
@@ -63,7 +62,7 @@ export class ThemeProvider extends LitElement {
             this.setThemeAttributes(nextMode)
 
             if (previousMode !== nextMode) {
-                this.dispatchEvent(new CustomEvent<ThemeChangeDetail>(THEME_CHANGE_EVENT, {
+                this.dispatchEvent(new CustomEvent<ThemeChangeDetail>("vg-change", {
                     detail: {
                         mode: nextMode,
                         previousMode,

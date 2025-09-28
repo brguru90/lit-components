@@ -57,27 +57,27 @@ export class MyElement extends LitElement {
               label="Theme"
               .value=${this.theme}
               .options=${this.themeOptions}
-              @change=${this.onThemeChange}
+              @vg-change=${this.onThemeChange}
             ></vg-dropdown>
             <vg-dropdown
               label="Button variant"
               .value=${this.buttonVariant}
               .options=${this.variantOptions}
               helper-text="Preview updates immediately"
-              @change=${this.onVariantChange}
+              @vg-change=${this.onVariantChange}
             ></vg-dropdown>
             <vg-dropdown
               label="Button size"
               .value=${this.buttonSize}
               .options=${this.sizeOptions}
-              @change=${this.onSizeChange}
+              @vg-change=${this.onSizeChange}
             ></vg-dropdown>
             <vg-input
               label="Button label"
               placeholder="Type something friendly"
               .value=${this.buttonLabel}
               helper-text="Try updating the label to see how the button adapts."
-              @change=${this.onLabelChange}
+              @vg-change=${this.onLabelChange}
             ></vg-input>
           </vg-card>
 

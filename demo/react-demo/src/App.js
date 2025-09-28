@@ -42,27 +42,27 @@ function App() {
           label="Theme"
           value={theme}
           options={THEME_OPTIONS}
-          onChange={(event) => setTheme(event.detail.value)}
+          onVgChange={(event) => setTheme(event.detail.value)}
         />
         <VgDropdown
           label="Button variant"
           value={variant}
           options={VARIANT_OPTIONS}
           helperText="Preview updates immediately"
-          onChange={(event) => setVariant(event.detail.value)}
+          onVgChange={(event) => setVariant(event.detail.value)}
         />
         <VgDropdown
           label="Button size"
           value={size}
           options={SIZE_OPTIONS}
-          onChange={(event) => setSize(event.detail.value)}
+          onVgChange={(event) => setSize(event.detail.value)}
         />
         <VgInput
           label="Button label"
           value={label}
           placeholder="Type a label"
           helperText="Try updating the label to see changes"
-          onChange={(event) => setLabel(event.detail.value)}
+          onVgChange={(event) => setLabel(event.detail.value)}
         />
       </VgCard>
 

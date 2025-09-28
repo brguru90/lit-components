@@ -37,7 +37,7 @@
       if (themeDropdown) {
         themeDropdown.options = themeOptions;
         themeDropdown.value = provider?.getAttribute("mode") ?? "dark";
-        themeDropdown.addEventListener("change", (event) => {
+        themeDropdown.addEventListener("vg-change", (event) => {
           const nextMode = event.detail?.value;
           if (nextMode) {
             provider?.setAttribute("mode", nextMode);
@@ -48,7 +48,7 @@
       if (variantDropdown) {
         variantDropdown.options = variantOptions;
         variantDropdown.value = button?.getAttribute("variant") ?? "primary";
-        variantDropdown.addEventListener("change", (event) => {
+        variantDropdown.addEventListener("vg-change", (event) => {
           const variant = event.detail?.value;
           if (variant) {
             button?.setAttribute("variant", variant);
@@ -59,7 +59,7 @@
       if (sizeDropdown) {
         sizeDropdown.options = sizeOptions;
         sizeDropdown.value = button?.getAttribute("size") ?? "md";
-        sizeDropdown.addEventListener("change", (event) => {
+        sizeDropdown.addEventListener("vg-change", (event) => {
           const size = event.detail?.value;
           if (size) {
             button?.setAttribute("size", size);
@@ -68,7 +68,7 @@
       }
 
       if (labelInput) {
-        labelInput.addEventListener("change", (event) => {
+        labelInput.addEventListener("vg-change", (event) => {
           const value = event.detail?.value ?? "";
           if (button) {
             button.textContent = value || "Launch demo";

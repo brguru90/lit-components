@@ -20,7 +20,6 @@ export interface CardActionDetail {
 	readonly originalEvent: MouseEvent | KeyboardEvent
 }
 
-const CARD_ACTION_EVENT = "action"
 
 /**
  * Theme-aware content container with optional header/footer slots.
@@ -28,7 +27,7 @@ const CARD_ACTION_EVENT = "action"
  * @slot header - Optional content rendered before the body, often containing a title or metadata.
  * @slot - Main card body content.
  * @slot footer - Optional actions or supporting content rendered after the body.
- * @fires {CustomEvent<CardActionDetail>} action - Fired when an interactive card is triggered.
+ * @fires {CustomEvent<CardActionDetail>} vg-action - Fired when an interactive card is triggered.
  */
 @customElement("vg-card")
 export class VgCard extends LitElement {
@@ -97,7 +96,7 @@ export class VgCard extends LitElement {
 	}
 
 	private dispatchAction(event: MouseEvent | KeyboardEvent) {
-		this.dispatchEvent(new CustomEvent<CardActionDetail>(CARD_ACTION_EVENT, {
+		this.dispatchEvent(new CustomEvent<CardActionDetail>("vg-action", {
 			detail: { originalEvent: event },
 			bubbles: true,
 			composed: true,

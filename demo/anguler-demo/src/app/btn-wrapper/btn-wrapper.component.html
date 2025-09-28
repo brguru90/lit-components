@@ -4,27 +4,27 @@
             label="Theme"
             [value]="theme"
             [options]="themeOptions"
-            (change)="onThemeChange($event)"
+            (vg-change)="onThemeChange($event)"
         ></vg-dropdown>
         <vg-dropdown
             label="Button variant"
             helper-text="Preview updates immediately"
             [value]="variant"
             [options]="variantOptions"
-            (change)="onVariantChange($event)"
+            (vg-change)="onVariantChange($event)"
         ></vg-dropdown>
         <vg-dropdown
             label="Button size"
             [value]="size"
             [options]="sizeOptions"
-            (change)="onSizeChange($event)"
+            (vg-change)="onSizeChange($event)"
         ></vg-dropdown>
         <vg-input
             label="Button label"
             placeholder="Type a label"
             helper-text="Try updating the label to see changes"
             [value]="label"
-            (change)="onLabelChange($event)"
+            (vg-change)="onLabelChange($event)"
         ></vg-input>
     </vg-card>
 

@@ -45,7 +45,7 @@ export interface DropdownChangeDetail {
 	readonly originalEvent: Event
 }
 
-const DROPDOWN_CHANGE_EVENT = "change"
+
 
 let dropdownId = 0
 
@@ -56,7 +56,7 @@ const nextDropdownId = () => `vg-dropdown-${++dropdownId}`
  *
  * @slot prefix - Optional slot rendered before the native select.
  * @slot suffix - Optional slot rendered after the native select (for badges, icons, etc.).
- * @fires {CustomEvent<DropdownChangeDetail>} change - Emitted when the selected option changes.
+ * @fires {CustomEvent<DropdownChangeDetail>} vg-change - Emitted when the selected option changes.
  */
 @customElement("vg-dropdown")
 export class VgDropdown extends LitElement {
@@ -213,7 +213,7 @@ export class VgDropdown extends LitElement {
 		this.value = target.value || null
 		const selected = this.options.find((option) => option.value === this.value)
 
-		this.dispatchEvent(new CustomEvent<DropdownChangeDetail>(DROPDOWN_CHANGE_EVENT, {
+		this.dispatchEvent(new CustomEvent<DropdownChangeDetail>("vg-change", {
 			detail: {
 				value: this.value ?? "",
 				option: selected,
