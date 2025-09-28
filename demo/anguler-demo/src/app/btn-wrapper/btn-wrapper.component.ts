@@ -56,6 +56,7 @@ export class BtnWrapperComponent {
   }
 
   onLabelChange(event: Event) {
+    console.log(event)
     const detail = (event as CustomEvent<{ value?: string }>).detail;
     if (detail?.value !== undefined) {
       this.label = detail.value;

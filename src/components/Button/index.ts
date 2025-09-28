@@ -26,10 +26,9 @@ export interface ButtonClickDetail {
     /**
      * Original pointer event that triggered the handler.
      */
-    readonly originalEvent: MouseEvent
+    readonly originalEvent: PointerEvent
 }
 
-const BUTTON_CLICK_EVENT = "click"
 const SUPPORTED_VARIANTS: readonly ButtonVariant[] = ["primary", "secondary", "ghost"]
 const SUPPORTED_SIZES: readonly ButtonSize[] = ["sm", "md", "lg"]
 
@@ -39,7 +38,7 @@ const SUPPORTED_SIZES: readonly ButtonSize[] = ["sm", "md", "lg"]
  * @slot prefix - Optional leading icon or element rendered before the label.
  * @slot - Button label content.
  * @slot suffix - Optional trailing icon or element rendered after the label.
- * @fires {CustomEvent<ButtonClickDetail>} click - Fired when the button is activated.
+ * @fires {CustomEvent<ButtonClickDetail>} vg-click - Fired when the button is activated.
  */
 @customElement("vg-button")
 export class VgButton extends LitElement {
@@ -117,20 +116,20 @@ export class VgButton extends LitElement {
         `
     }
 
-    private handleClick(event: MouseEvent) {
+    private handleClick(event: PointerEvent) {
         if (this.disabled || this.loading) {
             event.preventDefault()
             event.stopImmediatePropagation()
             return
         }
 
-        event.stopPropagation()
-
-        this.dispatchEvent(new CustomEvent<ButtonClickDetail>(BUTTON_CLICK_EVENT, {
+        this.dispatchEvent(new CustomEvent<ButtonClickDetail>("vg-click", {
             detail: { originalEvent: event },
             bubbles: true,
             composed: true,
+            cancelable: true,
         }))
+
     }
 
     private normaliseVariant(value: string): ButtonVariant {

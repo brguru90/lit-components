@@ -84,7 +84,7 @@ const onButtonTick = (event) => {
       <vg-button
         :variant="variant"
         :size="size"
-        @click="onButtonTick"
+        @vg-click="onButtonTick"
       >
         {{ label }}
       </vg-button>

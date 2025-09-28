@@ -6,6 +6,7 @@ import {
   VgDropdown,
   VgInput,
 } from "vg/react";
+import "vg"
 
 const THEME_OPTIONS = [
   { label: "Dark", value: "dark" },
@@ -69,10 +70,17 @@ function App() {
         <VgButton
           variant={variant}
           size={size}
-          onClick={(event) => {
-            event.stopPropagation();
+          onVgClick={(event) => {
+            console.info("onClick called with:", {
+              type: event.type,
+              detail: event.detail,
+              target: event.target.tagName,
+              currentTarget: event.currentTarget.tagName,
+              timeStamp: event.timeStamp,
+              stack: new Error().stack.split('\n').slice(1, 4)
+            });
+            // event.stopPropagation();
             setClicks((previous) => previous + 1);
-            console.info("Button click", event.detail);
           }}
         >
           {label}
