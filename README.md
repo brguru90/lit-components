@@ -256,6 +256,16 @@ The library includes a comprehensive design system with CSS custom properties:
 - **Glass**: Modern glassmorphism effect with backdrop blur
 - **Cartoon**: Playful theme with increased letter spacing
 
+
+## �📋 Event System
+
+All components follow a consistent event naming convention:
+- Events are prefixed with `vg-` (e.g., `vg-click`, `vg-change`)
+- Framework wrappers convert to appropriate conventions:
+  - React: `onVgClick`, `onVgChange`
+  - Angular: `(vg-click)`, `(vg-change)`
+  - Vue: `@vg-click`, `@vg-change`
+
 ## 🛠 Development
 
 ### Prerequisites
@@ -352,11 +362,23 @@ Individual demos:
 - **Vue**: `npm run dev --prefix demo/vue-demo` (Port 5173)
 - **Angular**: `npm run start --prefix demo/angular-demo` (Port 4200)
 
-## 📋 Event System
+## � Demo Screenshots
 
-All components follow a consistent event naming convention:
-- Events are prefixed with `vg-` (e.g., `vg-click`, `vg-change`)
-- Framework wrappers convert to appropriate conventions:
-  - React: `onVgClick`, `onVgChange`
-  - Angular: `(vg-click)`, `(vg-change)`
-  - Vue: `@vg-click`, `@vg-change`
+Here's how the component library looks across different frameworks:
+
+### Lit Playground
+![Lit Demo](./assets/demo/lit-demo.png)
+
+### HTML/Vanilla JavaScript
+![HTML Demo](./assets/demo/html-demo.png)
+
+### React Integration
+![React Demo](./assets/demo/react-demo.png)
+
+### Vue Integration
+![Vue Demo](./assets/demo/vue-demo.png)
+
+### Angular Integration
+![Angular Demo](./assets/demo/anguler-demo.png)
+
+All demos showcase the same components with consistent theming and functionality across frameworks, demonstrating the library's versatility and framework-agnostic design.
