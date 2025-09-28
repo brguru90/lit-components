@@ -2,9 +2,9 @@
 <html>
 
 <head>
-  <script type="module" src="./node_modules/vg/index.js"></script>
-  <link rel="stylesheet" href="./node_modules/vg/index.css" />
-  <script>;
+  <script type="module" src="./node_modules/vg/dist/index.js"></script>
+  <link rel="stylesheet" href="./node_modules/vg/dist/index.css" />
+  <script>
 
     const themeOptions = [
       { label: "Dark", value: "dark" },
@@ -94,13 +94,14 @@
   <vg-theme-provider mode="dark">
     <vg-card heading="Theme controls" variant="subtle">
       <vg-dropdown data-control="theme" label="Theme" value="dark"></vg-dropdown>
-      <vg-dropdown data-control="variant" label="Button variant" value="primary"></vg-dropdown>
+      <vg-dropdown data-control="variant" label="Button variant" value="primary" helper-text="Preview updates immediately"></vg-dropdown>
       <vg-dropdown data-control="size" label="Button size" value="md"></vg-dropdown>
       <vg-input
         data-control="label"
         label="Button label"
         value="Launch demo"
         placeholder="Type a label"
+        helper-text="Try updating the label to see changes"
       ></vg-input>
     </vg-card>
 

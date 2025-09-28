@@ -33,6 +33,7 @@ function App() {
   const [label, setLabel] = useState("Launch demo");
   const [clicks, setClicks] = useState(0);
 
+
   return (
     <VgThemeProvider mode={theme}>
       <VgCard heading="Theme controls" variant="subtle">
@@ -46,7 +47,7 @@ function App() {
           label="Button variant"
           value={variant}
           options={VARIANT_OPTIONS}
-          helper-text="Preview updates immediately"
+          helperText="Preview updates immediately"
           onChange={(event) => setVariant(event.detail.value)}
         />
         <VgDropdown
@@ -59,7 +60,7 @@ function App() {
           label="Button label"
           value={label}
           placeholder="Type a label"
-          helper-text="Try updating the label to see changes"
+          helperText="Try updating the label to see changes"
           onChange={(event) => setLabel(event.detail.value)}
         />
       </VgCard>
@@ -69,8 +70,9 @@ function App() {
           variant={variant}
           size={size}
           onClick={(event) => {
+            event.stopPropagation();
             setClicks((previous) => previous + 1);
-            console.info("Button tick", event.detail);
+            console.info("Button click", event.detail);
           }}
         >
           {label}

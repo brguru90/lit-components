@@ -72,8 +72,8 @@ export class VgButton extends LitElement {
     /**
      * Button `type` attribute mirroring the native element contract.
      */
-    @property({ type: String, attribute: "button-type" })
-    "button-type": ButtonNativeType = "button"
+    @property({ type: String, attribute: "buttonType" })
+    buttonType: ButtonNativeType = "button"
     protected willUpdate(changedProperties: Map<string | number | symbol, unknown>) {
         if (changedProperties.has("variant")) {
             const normalisedVariant = this.normaliseVariant(this.variant)
@@ -101,7 +101,7 @@ export class VgButton extends LitElement {
         return html`
             <button
                 class=${classMap(classes)}
-                type=${this["button-type"]}
+                type=${this["buttonType"]}
                 ?disabled=${isDisabled}
                 aria-live="polite"
                 aria-busy=${this.loading}

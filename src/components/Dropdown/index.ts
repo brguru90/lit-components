@@ -72,7 +72,7 @@ export class VgDropdown extends LitElement {
 	 * Optional text rendered below the control for guidance.
 	 */
 	@property({ type: String, attribute: "helper-text" })
-	"helper-text": string | null = null
+	helperText: string | null = null
 
 	/**
 	 * Error message displayed below the control; marks the dropdown as invalid.
@@ -150,7 +150,7 @@ export class VgDropdown extends LitElement {
 		}
 
 		const describedBy = [
-			this["helper-text"] ? `${this.dropdownId}-helper` : null,
+			this.helperText ? `${this.dropdownId}-helper` : null,
 			this.error ? `${this.dropdownId}-error` : null,
 		].filter((value): value is string => value !== null)
 
@@ -203,7 +203,7 @@ export class VgDropdown extends LitElement {
 
 	private renderDescriptions() {
 		return html`
-			${this["helper-text"] ? html`<p id=${`${this.dropdownId}-helper`} class="field__helper">${this["helper-text"]}</p>` : null}
+			${this.helperText ? html`<p id=${`${this.dropdownId}-helper`} class="field__helper">${this.helperText}</p>` : null}
 			${this.error ? html`<p id=${`${this.dropdownId}-error`} class="field__error">${this.error}</p>` : null}
 		`
 	}

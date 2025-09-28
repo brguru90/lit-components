@@ -12,6 +12,6 @@
   "description": "",
   "dependencies": {
     "serve": "^14.2.3",
-    "vg": "file:../../vg.tgz"
+    "vg": "file:../../vg-0.0.0.tgz"
   }
 }
