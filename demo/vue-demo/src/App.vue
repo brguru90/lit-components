@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-
+import "vg/vue";
 const theme = ref("dark");
 const variant = ref("primary");
 const size = ref("md");
