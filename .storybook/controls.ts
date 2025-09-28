@@ -20,24 +20,23 @@ export function getArgTypesFromManifest(componentName: string) {
 
     const argTypes: ArgTypes = {};
 
+
     declaration.attributes.forEach((attr) => {
         const options = getOptions(attr.type.text);
-        const valueType=getControlType(attr.type.text)
+        const valueType = getControlType(attr.type.text)
         const argType: any = {
             control: { type: valueType },
             description: attr.description,
             defaultValue: attr.default,
         };
-        
+
         // Only add options if there are actual options (for select controls)
         if (options.length > 0) {
             argType.options = options;
         }
-        
+
         argTypes[attr.name] = argType;
     });
-
-    console.log(argTypes)
 
     return { argTypes };
 }
@@ -47,7 +46,7 @@ function getControlType(type: string): string {
     if (type.includes("|")) {
         const types = type.split("|").map(t => t.trim());
         const nonNullableTypes = types.filter(t => t !== "null" && t !== "undefined");
-        
+
         // If it's a nullable union with only one non-nullable type, treat as that type
         if (nonNullableTypes.length === 1) {
             const baseType = nonNullableTypes[0].replace(/"/g, "");
@@ -62,13 +61,13 @@ function getControlType(type: string): string {
                     return "text";
             }
         }
-        
+
         // If it's a true union with multiple non-nullable types, treat as select
         if (nonNullableTypes.length > 1) {
             return "select";
         }
     }
-    
+
     // Handle single types
     const cleanType = type.replace(/"/g, "");
     switch (cleanType) {
@@ -85,9 +84,9 @@ function getControlType(type: string): string {
 
 function getOptions(type: string): string[] {
     if (type.includes("|")) {
-        const types = type.split("|").map(t => t.trim());
+        const types = type.split("|").map(t => t.trim().slice(1, -1));
         const nonNullableTypes = types.filter(t => t !== "null" && t !== "undefined");
-        
+
         // Only return options for true unions (not nullable types)
         if (nonNullableTypes.length > 1) {
             return nonNullableTypes.map(option => option.replace(/"/g, ""));

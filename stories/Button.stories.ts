@@ -6,7 +6,7 @@ import { getArgTypesFromManifest } from '../.storybook/controls'
 
 const { events, args, argTypes, template } = getStorybookHelpers('vg-button')
 
-console.log({ events, args, argTypes: argTypes, template })
+// console.log({ events, args, argTypes: argTypes, template })
 type Story = StoryObj<VgButton & typeof args>
 
 const meta: Meta = {

@@ -7,9 +7,13 @@ import '../src/index.ts'
 // Import custom elements manifest for automatic controls
 import customElements from '../dist/custom-elements.json'
 
-customElements.modules.forEach((mod) => {
-  mod.declarations.forEach((decl) => {
-    decl?.events?.forEach((event) => {
+// Import theme configuration and decorators
+import { withThemeProvider, globalTypes } from './decorators'
+import { darkTheme, lightTheme, glassTheme, cartoonTheme,themes } from './themes'
+
+customElements.modules.forEach((mod: any) => {
+  mod.declarations.forEach((decl: any) => {
+    decl?.events?.forEach((event: any) => {
       if(event["x-originalName"]){
         event.name = event["x-originalName"]
       }
@@ -24,6 +28,8 @@ setCustomElementsManifest(customElements)
 const preview: Preview = {
   parameters: {
     docs: {
+      // Apply theme to docs as well
+      // theme: darkTheme,
       extractComponentDescription: (component: string) => {
         // Extract description from Custom Elements Manifest
         const module = customElements.modules.find((mod: any) =>
@@ -55,7 +61,16 @@ const preview: Preview = {
       expanded: true,
       sort: 'alpha',
     },
+    backgrounds: {
+      disable: false, // Disable default backgrounds since we use theme provider
+    },
   },
+  // Add global types for theme toolbar
+  globalTypes,
+  
+  // Add global decorator for theme provider
+  decorators: [withThemeProvider],
+  
   tags: ['autodocs'],
 }
 

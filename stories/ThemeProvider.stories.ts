@@ -4,16 +4,34 @@ import { getStorybookHelpers } from '@wc-toolkit/storybook-helpers'
 import { ThemeProvider } from '../src'
 import { getArgTypesFromManifest } from '../.storybook/controls'
 
+import { addons } from 'storybook/manager-api'
+import { ThemeChangeDetail } from '../src/components/ThemeProvider/theme-provider'
+import { themes } from '../.storybook/themes'
+
 const { events, args, argTypes, template } = getStorybookHelpers('vg-theme-provider')
 
 type Story = StoryObj<ThemeProvider & typeof args>
+
+
+const onThemeChange = (event: CustomEvent<ThemeChangeDetail>) => {
+  const newTheme = themes[event.detail.mode]
+  console.log(newTheme, event.detail.mode)
+
+  if (newTheme) {
+    addons.setConfig({
+      theme: newTheme,
+    })
+  }
+}
+
+
 
 const meta: Meta = {
   title: 'Components/ThemeProvider',
   tags: ['autodocs'],
   component: 'vg-theme-provider',
-  
-  args,
+
+  args: { ...args,"@vg-change":console.log },
   ...getArgTypesFromManifest('vg-theme-provider'),
   render: (args) => template(args),
   parameters: {
@@ -100,10 +118,10 @@ export const WithMultipleComponents: Story = {
           label="Options" 
           placeholder="Select..."
           .options=${[
-            { label: 'Option 1', value: '1' },
-            { label: 'Option 2', value: '2' },
-            { label: 'Option 3', value: '3' },
-          ]}
+      { label: 'Option 1', value: '1' },
+      { label: 'Option 2', value: '2' },
+      { label: 'Option 3', value: '3' },
+    ]}
         ></vg-dropdown>
       </div>
     </div>

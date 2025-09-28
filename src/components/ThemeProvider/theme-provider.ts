@@ -39,7 +39,6 @@ const THEME_CLASSES = SUPPORTED_THEMES.map((mode) => `${THEME_CLASS_PREFIX}${mod
  *
  * @fires {CustomEvent<ThemeChangeDetail>} vg-change - Emitted whenever the active theme mode changes
  *
- * @attr {"dark" | "light" | "glass" | "cartoon"} mode - Theme mode that controls which token values are exposed
  */
 @customElement("vg-theme-provider")
 export class ThemeProvider extends LitElement {
