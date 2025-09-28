@@ -117,7 +117,7 @@ export class VgButton extends LitElement {
                 aria-busy=${this.loading}
                 @click=${this.handleClick}
             >
-                <span class="loader" aria-hidden="true"></span>
+                ${this.loading ? html`<span class="loader" aria-hidden="true"></span>` : null}
                 <span class="content">
                     <slot name="prefix"></slot>
                     <span class="label"><slot></slot></span>
