@@ -21,9 +21,9 @@ export function getArgTypesFromManifest(componentName: string) {
     const argTypes: ArgTypes = {};
 
 
-    declaration.attributes.forEach((attr) => {
-        const options = getOptions(attr.type.text);
-        const valueType = getControlType(attr.type.text)
+    (declaration.members?.filter(memeber=>memeber.kind=="field" && memeber.privacy=="public" && memeber.type) || declaration.attributes).forEach((attr) => {
+        const options = getOptions(attr.type!.text);
+        const valueType = getControlType(attr.type!.text)
         const argType: any = {
             control: { type: valueType },
             description: attr.description,

@@ -4,6 +4,8 @@ import { customElementReactWrapperPlugin } from "custom-element-react-wrappers";
 import { getTsProgram, expandTypesPlugin } from "cem-plugin-expanded-types";
 import { customElementVuejsPlugin } from "custom-element-vuejs-integration";
 import { jsDocTagsPlugin } from "@wc-toolkit/jsdoc-tags";
+import { jsxTypesPlugin } from "@wc-toolkit/jsx-types";
+
 import reactify from "cem-plugin-reactify";
 import {dynamicRenameEventsPlugin} from './scripts/event_rename.js'
 // import { customJSDocTagsPlugin } from "cem-plugin-custom-jsdoc-tags";
@@ -18,6 +20,7 @@ function myPlugin() {
     name: 'my-plugin',
     packageLinkPhase({ customElementsManifest, context }) {
       fs.writeFileSync("dist/vue/index.js", "import \"../index.js\";\nimport \"../index.css\";\n");
+      fs.writeFileSync("dist/jsx/index.js", "import \"../index.js\";\nimport \"../index.css\";\n");
       fs.copyFileSync('./vg-package.json', './dist/package.json');
       fs.copyFileSync('./vg-package-lock.json', './dist/package-lock.json');
     }
@@ -49,9 +52,13 @@ export default {
         },
       },
     }),
+    jsxTypesPlugin({
+      outdir: "dist/jsx",
+      fileName: "index.d.ts",
+      globalTypePath: "../index",
+    }),
     customElementReactWrapperPlugin({
       outdir: "dist/react",
-
       modulePath: (className, tagName) => `../index.js`,
       attributeMapping: {
         for: "_for",
@@ -83,13 +90,17 @@ export default {
       descriptionSrc: "description",
     }),
     expandTypesPlugin({ propertyName: "type" }),
-    dynamicRenameEventsPlugin({
+    dynamicRenameEventsPlugin({ // fix for vue event names
       transform: (name) =>name.includes("-") ? `-${name}` : name
     }),
     customElementVuejsPlugin({
       outdir: "./dist/vue",
       fileName: "index.d.ts",
+      typesSrc: "./dist/vue",
       globalTypePath: "../index",
+    }),
+    dynamicRenameEventsPlugin({ // reset event name after vuejs plugin
+      transform: (name) =>name.startsWith("-") ? name.slice(1) : name
     }),
     myPlugin(),
   ],

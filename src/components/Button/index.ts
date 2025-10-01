@@ -45,7 +45,7 @@ const SUPPORTED_SIZES: readonly ButtonSize[] = ["sm", "md", "lg"]
  *
  * @csspart button - No input css variables
  *
- * @fires {CustomEvent<ButtonClickDetail>} vg-click - Fired when the button is activated
+ * @fires {ButtonClickDetail} vg-click - Fired when the button is activated
  *
  */
 @customElement("vg-button")
