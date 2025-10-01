@@ -60,6 +60,7 @@ const preview: Preview = {
             storyContext.parameters.docs.source.transform_executed=true
             return storyContext.parameters.docs.source.transform(code, storyContext)
           }
+
           // Extract component name
           const componentName = typeof storyContext.component === 'string'
             ? storyContext.component
@@ -67,7 +68,7 @@ const preview: Preview = {
             (storyContext.title?.split('/').pop()?.toLowerCase() || 'component');
 
 
-          console.log(storyContext.id, storyContext)
+          // console.log(storyContext.id, storyContext)
           
           let attrs = '';
 
@@ -85,8 +86,7 @@ const preview: Preview = {
             if (typeof value === 'function') {
               value = `()=>{/* function */}`
             }
-            // Convert camelCase to kebab-case for HTML attributes
-            const attrName = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+            const attrName = key.replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^on-/, 'on')
 
             if (value === true) {
               attrs += `\n  ${attrName}`;

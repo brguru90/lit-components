@@ -1,4 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/web-components'
+import type { Meta, StoryObj } from '@storybook/web-components-vite'
+import { useArgs, useState } from 'storybook/preview-api'
 import { html } from 'lit'
 import { getStorybookHelpers } from '@wc-toolkit/storybook-helpers'
 import { ThemeProvider } from '../src'
