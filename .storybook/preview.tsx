@@ -14,6 +14,7 @@ import { themes } from "./themes";
 import { PropsWithChildren } from "react";
 import { DocsContainer } from "@storybook/addon-docs/blocks";
 import type { ThemeMode } from "./themes";
+import { transformCodeForFramework, type FrameworkType } from "./framework-transformer";
 
 
 const ThemedDocsContainer = (props: PropsWithChildren<any>) => {
@@ -84,46 +85,11 @@ const preview: Preview = {
             );
           }
 
-          // Extract component name
-          const componentName =
-            typeof storyContext.component === "string"
-              ? storyContext.component
-              : storyContext.componentId?.split("--")[0] ||
-                storyContext.title?.split("/").pop()?.toLowerCase() ||
-                "component";
-
-          // console.log(storyContext.id, storyContext)
-
-          let attrs = "";
-
-          // Convert args to HTML attributes
-          for (let [key, value] of Object.entries(storyContext.args || {})) {
-            // if(key.startsWith('on')) continue; // Skip event handlers
-            if (typeof value === "object") {
-              try {
-                value = JSON.stringify(value);
-              } catch (error) {}
-            }
-            if (typeof value === "function") {
-              value = `()=>{/* function */}`;
-            }
-            const attrName = key
-              .replace(/([A-Z])/g, "-$1")
-              .toLowerCase()
-              .replace(/^on-/, "on");
-
-            if (value === true) {
-              attrs += `\n  ${attrName}`;
-            } else if (
-              value !== false &&
-              value !== undefined &&
-              value !== null
-            ) {
-              attrs += `\n  ${attrName}="${value}"`;
-            }
-          }
-
-          return `<${componentName}${attrs}\n>\n</${componentName}>`;
+          // Get selected framework from globals
+          const framework: FrameworkType = storyContext.globals.framework || 'html';
+          
+          // Pass the original rendered code to help extract slots
+          return transformCodeForFramework(framework, storyContext, code);
         },
       },
     },

@@ -45,5 +45,22 @@ export const globalTypes = {
       dynamicTitle: true,
     },
   },
+  framework: {
+    name: 'Framework',
+    description: 'View code examples in different frameworks',
+    defaultValue: 'html',
+    toolbar: {
+      title: 'Framework',
+      icon: 'code',
+      items: [
+        { value: 'html', title: 'HTML', icon: 'markup' },
+        { value: 'react', title: 'React', icon: 'graphql' },
+        { value: 'vue', title: 'Vue', icon: 'component' },
+        { value: 'angular', title: 'Angular', icon: 'admin' },
+        { value: 'lit', title: 'Lit', icon: 'lightning' },
+      ],
+      dynamicTitle: true,
+    },
+  },
 }
 

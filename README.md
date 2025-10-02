@@ -347,6 +347,36 @@ npm run release
 - **API Documentation**: Generated automatically via `apt-viewer.html`
 - **VS Code IntelliSense**: Automatic via custom elements manifest
 - **Component Explorer**: Use the playground at `http://localhost:8080`
+- **Storybook**: Run `npm run storybook` for interactive component documentation
+
+### Framework Switcher
+
+Our Storybook includes a unique **Framework Switcher** feature that demonstrates the true power of Web Components - **write once, use anywhere**!
+
+When viewing component documentation in Storybook, you can select your preferred framework from the toolbar, and the code examples automatically transform to show the appropriate syntax:
+
+- 📄 **HTML**: Vanilla Web Components with event listeners
+- ⚛️ **React**: JSX with React wrapper components
+- 🟢 **Vue**: Single File Components with Composition API
+- 🅰️ **Angular**: Component classes with templates
+- 🔥 **Lit**: LitElement with decorators
+
+**Example**: The same button story shows different code for each framework:
+
+```bash
+# Start Storybook
+npm run storybook
+```
+
+Then in the toolbar, select: `Framework: [React ▾]` to see React code, or `Framework: [Vue ▾]` for Vue code, etc.
+
+This feature helps developers:
+- ✅ Copy-paste ready code for their framework
+- ✅ Understand how to integrate components in their specific environment  
+- ✅ Learn Web Component patterns across frameworks
+- ✅ Reduce onboarding friction
+
+For detailed documentation, see [Framework Switcher Documentation](./docs/FRAMEWORK_SWITCHER.md)
 
 ## 🧪 Framework Demos
 

@@ -193,35 +193,6 @@ export const WithPrefixIcon: Story = {
       Selected: <b>${value}</b>
     `
   },
-  parameters: {
-    actions: {
-      handles: events,
-    },
-    docs: {
-      source: {
-        type: 'dynamic',
-        // transformSource receives the original source and story context (args, etc.)
-        transform: (_src: string, storyContext:StoryContext) => {
-          const { options, ...otherArgs } = storyContext.args
-          return `
-            <vg-dropdown 
-              label="${otherArgs.label || ''}"
-              placeholder="${otherArgs.placeholder || ''}"
-              disabled="${otherArgs.disabled}"
-              required="${otherArgs.required}"
-              value="${otherArgs.value || ''}"
-              options="${JSON.stringify(options)}"
-              on-vg-change="(event) => { /* handler */ }"
-            >
-              <svg slot="prefix" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 12px;">
-                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-              </svg>
-            </vg-dropdown>
-          `
-        },
-      },
-    },
-  },
 }
 
 export const WithSuffixBadge: Story = {
@@ -236,49 +207,26 @@ export const WithSuffixBadge: Story = {
     ],
   },
   render: (args) => {
-    const { options, ...otherArgs } = args
+    const [currentArgs, updateArgs] = useArgs();
+    const [value, setValue] = useState(currentArgs.value || '');
+    const onchange = (e: CustomEvent) => {
+      setValue(e.detail.value);
+      updateArgs({ value: e.detail.value })
+    }
     return html`
       <vg-dropdown 
-        label=${otherArgs.label || ''}
-        placeholder=${otherArgs.placeholder || ''}
-        ?disabled=${otherArgs.disabled}
-        ?required=${otherArgs.required}
-        value=${otherArgs.value || ''}
-        .options=${options}
+        label=${args.label || ''}
+        placeholder=${args.placeholder || ''}
+        ?disabled=${args.disabled}
+        ?required=${args.required}
+        value=${args.value || ''}
+        .options=${args.options}
         @vg-change=${onchange}
       >
         <span slot="suffix" style="background: #28a745; color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px; margin-right: 8px;">Popular</span>
-      </vg-dropdown>
+      </vg-dropdown><br />
+      Selected: <b>${value}</b>
     `
-  },
-  parameters: {
-    actions: {
-      handles: events,
-    },
-    docs: {
-      source: {
-        type: 'dynamic',
-        // transformSource receives the original source and story context (args, etc.)
-        transform: (_src: string, storyContext:StoryContext) => {
-          const { options, ...otherArgs } = storyContext.args
-          return `
-            <vg-dropdown 
-              label="${otherArgs.label || ''}"
-              placeholder="${otherArgs.placeholder || ''}"
-              disabled="${otherArgs.disabled}"
-              required="${otherArgs.required}"
-              value="${otherArgs.value || ''}"
-              options='${JSON.stringify(options)}'
-              on-vg-change="(event) => { /* handler */ }"
-            >
-               <span slot="suffix" style="background: #28a745; color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px; margin-right: 8px;">
-                Popular
-               </span>
-            </vg-dropdown>
-          `
-        },
-      },
-    },
   },
 }
 
