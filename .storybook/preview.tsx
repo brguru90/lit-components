@@ -5,9 +5,6 @@ import { setCustomElementsManifest } from "@storybook/web-components";
 // Import all components globally
 import "../src/index.ts";
 
-// Import Lighthouse addon preview logic
-import "./addons/lighthouse/preview.ts";
-
 // Import custom elements manifest for automatic controls
 import customElements from "../dist/custom-elements.json";
 

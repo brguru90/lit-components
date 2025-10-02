@@ -148,9 +148,14 @@ export async function startLighthouseServer() {
   /**
    * POST /api/lighthouse
    * Run a Lighthouse audit
+   * 
+   * Body parameters:
+   * - url: URL to audit (required)
+   * - options: Lighthouse options (optional)
+   * - skipCache: Set to true to bypass cache and force fresh audit (optional, default: false)
    */
   app.post('/api/lighthouse', async (req, res) => {
-    const { url, options = {} } = req.body;
+    const { url, options = {}, skipCache = false } = req.body;
 
     if (!url) {
       return res.status(400).json({
@@ -169,9 +174,9 @@ export async function startLighthouseServer() {
       });
     }
 
-    // Check cache
+    // Check cache (unless skipCache is true)
     const cacheKey = `${url}_${JSON.stringify(options)}`;
-    if (auditCache.has(cacheKey)) {
+    if (!skipCache && auditCache.has(cacheKey)) {
       const cachedResult = auditCache.get(cacheKey);
       const age = Date.now() - new Date(cachedResult.timestamp).getTime();
       
@@ -184,6 +189,11 @@ export async function startLighthouseServer() {
           cacheAge: age,
         });
       }
+    }
+    
+    // Log if cache was skipped
+    if (skipCache) {
+      console.log('🔄 Skipping cache - running fresh audit');
     }
 
     try {

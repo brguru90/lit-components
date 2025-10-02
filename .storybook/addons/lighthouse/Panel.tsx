@@ -1,10 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useChannel, useStorybookApi } from 'storybook/manager-api';
+import { useStorybookApi } from 'storybook/manager-api';
 import { AddonPanel } from 'storybook/internal/components';
 import { styled } from 'storybook/theming';
-
-const LIGHTHOUSE_EVENT = 'lighthouse/results';
-const RUN_LIGHTHOUSE_EVENT = 'lighthouse/run';
 
 // Styled components
 const Container = styled.div`
@@ -230,19 +227,60 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
   const [error, setError] = useState<string | null>(null);
   const api = useStorybookApi();
 
-  const emit = useChannel({
-    [LIGHTHOUSE_EVENT]: (data: LighthouseResults) => {
-      setResults(data);
-      setLoading(false);
-      setError(null);
-    },
-  });
-
-  const runLighthouse = useCallback(() => {
+  // Direct API call - no channel communication needed!
+  const runLighthouse = useCallback(async (skipCache = false) => {
     setLoading(true);
     setError(null);
-    emit(RUN_LIGHTHOUSE_EVENT, { storyId: api.getUrlState().storyId });
-  }, [emit, api]);
+    
+    try {
+      const storyId = api.getUrlState().storyId;
+      console.log('🔦 Running Lighthouse audit for story:', storyId, skipCache ? '(forcing fresh audit)' : '');
+      
+      // Get the story URL - construct from storyId
+      const baseUrl = window.location.origin;
+      const storyUrl = `${baseUrl}/iframe.html?viewMode=story&id=${storyId}`;
+      
+      // Call Lighthouse API directly
+      const apiUrl = 'http://localhost:9002/api/lighthouse';
+      console.log(`🔦 Calling Lighthouse API at ${apiUrl}...`);
+      
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          url: storyUrl,
+          skipCache, // Pass skipCache to API
+        }),
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`API returned ${response.status}: ${errorText}`);
+      }
+      
+      const data = await response.json();
+      console.log('✅ Real Lighthouse results received:', data);
+      
+      // Log if result was cached
+      if (data.cached) {
+        console.log(`📦 Result from cache (${Math.round(data.cacheAge / 1000)}s old)`);
+      }
+      
+      setResults(data);
+      setLoading(false);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      console.error('❌ Lighthouse API failed:', errorMessage);
+      
+      setError(
+        `Failed to run Lighthouse audit.\n\n` +
+        `Error: ${errorMessage}\n\n` +
+        `Make sure the Lighthouse API server is running:\n` +
+        `npm run lighthouse:api`
+      );
+      setLoading(false);
+    }
+  }, [api]);
 
   if (!active) {
     return null;
@@ -284,7 +322,7 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
           <p style={{ marginBottom: '1.5rem', maxWidth: '400px' }}>
             Run Lighthouse to audit this story's performance, accessibility, best practices, and SEO.
           </p>
-          <Button onClick={runLighthouse}>Run Lighthouse Audit</Button>
+          <Button onClick={() => runLighthouse(false)}>Run Lighthouse Audit</Button>
         </EmptyState>
       </AddonPanel>
     );
@@ -309,7 +347,7 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
               </div>
             )}
           </div>
-          <Button onClick={runLighthouse} disabled={loading}>
+          <Button onClick={() => runLighthouse(true)} disabled={loading}>
             {loading ? 'Running...' : 'Re-run Audit'}
           </Button>
         </Header>
