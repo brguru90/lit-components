@@ -22,6 +22,7 @@ export function getArgTypesFromManifest(componentName: string) {
 
 
     (declaration.members?.flat()?.filter(memeber=>memeber.kind=="field" && memeber.type) || declaration.attributes).forEach((attr) => {
+        if((attr as any).privacy === "public" && (attr as any).kind == "field" && !(attr as any)?.attribute) return; // means its a runtime property not an attribute
         const options = getOptions(attr.type!.text);
         const valueType = getControlType(attr.type!.text)
         const argType: any = {
