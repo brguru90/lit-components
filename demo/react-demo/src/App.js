@@ -43,7 +43,12 @@ function App() {
           value={theme}
           options={THEME_OPTIONS}
           onVgChange={(event) => setTheme(event.detail.value)}
-        />
+        >
+          <svg slot="prefix" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 2a7 7 0 1 0 10 10"/>
+          </svg>
+        </VgDropdown>
         <VgDropdown
           label="Button variant"
           value={variant}

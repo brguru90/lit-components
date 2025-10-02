@@ -58,7 +58,12 @@ export class MyElement extends LitElement {
               .value=${this.theme}
               .options=${this.themeOptions}
               @vg-change=${this.onThemeChange}
-            ></vg-dropdown>
+            >
+              <svg slot="prefix" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 2a7 7 0 1 0 10 10"/>
+              </svg>
+            </vg-dropdown>
             <vg-dropdown
               label="Button variant"
               .value=${this.buttonVariant}
