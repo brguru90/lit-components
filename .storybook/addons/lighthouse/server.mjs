@@ -41,9 +41,17 @@ export async function startLighthouseServer() {
     let chrome;
     
     try {
-      // Launch Chrome
+      // Launch Chrome with flags optimized for Lighthouse testing
       chrome = await chromeLauncher.launch({
-        chromeFlags: ['--headless', '--disable-gpu', '--no-sandbox'],
+        chromeFlags: [
+          // Essential flags
+          '--headless',                          // Run without UI
+          '--incognito',                         // Clean slate: no extensions, cache, cookies, or sync
+          '--no-sandbox',                        // Required for Docker/CI environments
+          '--disable-dev-shm-usage',            // Prevent shared memory issues in containers
+          '--disable-gpu',                       // Disable GPU hardware acceleration
+          '--window-size=1920,1080',            // Consistent viewport size
+        ],
       });
 
       // Configure Lighthouse options
