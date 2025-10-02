@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useStorybookApi } from 'storybook/manager-api';
+import { useStorybookApi, useStorybookState } from 'storybook/manager-api';
 import { AddonPanel } from 'storybook/internal/components';
 import { styled } from 'storybook/theming';
 
@@ -225,7 +225,25 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
   const [results, setResults] = useState<LighthouseResults | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentStoryId, setCurrentStoryId] = useState<string | null>(null);
   const api = useStorybookApi();
+  const state = useStorybookState();
+
+  // Listen for story changes and clear results
+  useEffect(() => {
+    const storyId = state.storyId;
+    
+    // If story changed, clear the old results
+    if (currentStoryId && storyId && storyId !== currentStoryId) {
+      console.log(`📖 Story changed (${currentStoryId} → ${storyId}), clearing previous Lighthouse results`);
+      setResults(null);
+      setError(null);
+    }
+    
+    if (storyId) {
+      setCurrentStoryId(storyId);
+    }
+  }, [state.storyId, currentStoryId]);
 
   // Direct API call - no channel communication needed!
   const runLighthouse = useCallback(async (skipCache = false) => {
