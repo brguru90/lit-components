@@ -5,6 +5,9 @@ import { setCustomElementsManifest } from "@storybook/web-components";
 // Import all components globally
 import "../src/index.ts";
 
+// Import Lighthouse addon preview logic
+import "./addons/lighthouse/preview.ts";
+
 // Import custom elements manifest for automatic controls
 import customElements from "../dist/custom-elements.json";
 
@@ -14,6 +17,7 @@ import { themes } from "./themes";
 import { PropsWithChildren } from "react";
 import { DocsContainer } from "@storybook/addon-docs/blocks";
 import type { ThemeMode } from "./themes";
+
 
 const ThemedDocsContainer = (props: PropsWithChildren<any>) => {
   const theme: ThemeMode =

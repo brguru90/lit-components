@@ -7,7 +7,8 @@ const config: StorybookConfig = {
   ],
   addons: [
     "@storybook/addon-docs",
-    "@chromatic-com/storybook"
+    "@chromatic-com/storybook",
+    "./addons/lighthouse/register.tsx"
   ],
   framework: {
     name: "@storybook/web-components-vite",
