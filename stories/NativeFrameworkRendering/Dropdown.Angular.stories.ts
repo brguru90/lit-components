@@ -115,8 +115,10 @@ export const WithValue: Story = {
     })
     
     await step('Dropdown has initial value', async () => {
-      const dropdown = canvas.getByTestId('country-dropdown')
-      await expect(dropdown).toHaveAttribute('value', 'us')
+      const dropdown = canvas.getByTestId('country-dropdown') as any
+      await waitFor(() => {
+        expect(dropdown.value).toBe('us')
+      }, { timeout: 1000 })
     })
     
     await step('Dropdown is required', async () => {
@@ -213,11 +215,13 @@ export const ComponentDemo: Story = {
     })
     
     await step('Angular components render correctly', async () => {
-      const themeDropdown = canvas.getByTestId('theme-dropdown')
-      const countryDropdown = canvas.getByTestId('country-dropdown')
+      const themeDropdown = canvas.getByTestId('theme-dropdown') as any
+      const countryDropdown = canvas.getByTestId('country-dropdown') as any
       
-      await expect(themeDropdown).toHaveAttribute('value', 'dark')
-      await expect(countryDropdown).toHaveAttribute('value', 'us')
+      await waitFor(() => {
+        expect(themeDropdown.value).toBe('dark')
+        expect(countryDropdown.value).toBe('us')
+      }, { timeout: 1000 })
     })
     
     await step('Change counter initializes to 0', async () => {

@@ -69,18 +69,18 @@ export const Primary: Story = {
     const canvas = within(canvasElement)
     
     await step('Button is rendered and visible', async () => {
-      const button = canvas.getByRole('button', { name: /Primary Button/i })
+      const button = canvasElement.querySelector('vg-button')
       await expect(button).toBeInTheDocument()
       await expect(button).toBeVisible()
     })
     
     await step('Button has correct variant', async () => {
-      const button = canvas.getByRole('button')
+      const button = canvasElement.querySelector('vg-button')
       await expect(button).toHaveAttribute('variant', 'primary')
     })
     
     await step('Button is clickable', async () => {
-      const button = canvas.getByRole('button')
+      const button = canvasElement.querySelector('vg-button') as HTMLElement
       await userEvent.click(button)
       
       // Verify click count increased (from your ExampleComponent state)

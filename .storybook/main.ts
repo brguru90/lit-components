@@ -1,4 +1,5 @@
 import type { StorybookConfig } from '@storybook/web-components-vite';
+import istanbul from 'vite-plugin-istanbul';
 
 const config: StorybookConfig = {
   stories: [
@@ -7,6 +8,7 @@ const config: StorybookConfig = {
   ],
   addons: [
     "@storybook/addon-docs",
+    "@storybook/addon-coverage",
     "@chromatic-com/storybook",
     "./addons/lighthouse/register.tsx"
   ],
@@ -26,6 +28,17 @@ const config: StorybookConfig = {
       const { startLighthouseServer } = await import('./addons/lighthouse/server.mjs');
       await startLighthouseServer();
     }
+      const mod = await import('vite-plugin-istanbul');
+      const istanbul = (mod && (mod as any).default) || mod;
+      config.plugins = [
+        ...(config.plugins || []),
+        istanbul({
+          include: ['src/**/*'],
+          exclude: ['node_modules', 'stories', 'test'],
+          extension: ['.js', '.jsx', '.ts', '.tsx'],
+          // requireEnv: true  // optional: only instrument when a specific env var is set
+        }),
+      ];
     return config;
   },
 };

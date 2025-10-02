@@ -36,3 +36,4 @@ storybook-static
 # Lighthouse CI
 .lighthouseci/
 lighthouse-*.report.*
+coverage

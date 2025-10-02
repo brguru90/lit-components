@@ -10,7 +10,7 @@
     "build-js": "vite build --config vite-module.config.ts --mode development",
     "build-module": "npm-run-all --serial build-ts build-js",
     "preview": "vite preview",
-    "type-check":"npx tsc --noEmit",
+    "type-check": "npx tsc --noEmit",
     "lsp-support": "custom-elements-manifest analyze --config custom-elements-manifest.config.mjs",
     "pack-old": "touch vg.tgz && tar -czf vg.tgz  --exclude='vg.tgz' --exclude='node_modules' -C ./dist/ .",
     "pack": "npm pack",
@@ -46,6 +46,7 @@
     "./jsx": "./dist/jsx/index.js"
   },
   "dependencies": {
+    "@storybook/addon-coverage": "^2.0.0",
     "@storybook/react": "^9.1.10",
     "@storybook/vue3": "^9.1.10",
     "@storybook/vue3-vite": "^9.1.10",
@@ -103,6 +104,7 @@
     "vite": "^5.2.0",
     "vite-plugin-cem": "^0.8.0",
     "vite-plugin-dts": "^3.9.1",
+    "vite-plugin-istanbul": "^7.2.0",
     "vite-plugin-mkcert": "^1.17.5",
     "vite-tsconfig-paths": "^4.3.2",
     "zone.js": "^0.14.0"
