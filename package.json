@@ -10,6 +10,7 @@
     "build-js": "vite build --config vite-module.config.ts --mode development",
     "build-module": "npm-run-all --serial build-ts build-js",
     "preview": "vite preview",
+    "type-check":"npx tsc --noEmit",
     "lsp-support": "custom-elements-manifest analyze --config custom-elements-manifest.config.mjs",
     "pack-old": "touch vg.tgz && tar -czf vg.tgz  --exclude='vg.tgz' --exclude='node_modules' -C ./dist/ .",
     "pack": "npm pack",
@@ -22,8 +23,7 @@
     "demo": "npm start --prefix demo",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "test-storybook": "test-storybook",
-    "test-storybook:watch": "test-storybook --watch",
+    "test": "test-storybook --coverage -- --json --outputFile=coverage.json",
     "lighthouse": "npm run build-storybook && lhci autorun",
     "lighthouse:server": "lhci server"
   },
