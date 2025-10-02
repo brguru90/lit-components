@@ -81,14 +81,17 @@ export const Default: Story = {
     const canvas = within(canvasElement)
     
     await step('Dropdown renders with label', async () => {
-      const dropdown = canvas.getByTestId('default-dropdown')
-      await expect(dropdown).toBeInTheDocument()
-      await expect(dropdown).toHaveAttribute('label', 'Select an Option')
+      await waitFor(async () => {
+        const dropdown = canvas.getByTestId('default-dropdown') as any
+        await expect(dropdown).toBeInTheDocument()
+        await expect(dropdown.options).toBeTruthy()
+        await expect(dropdown.label).toBe('Select an Option')
+      }, { timeout: 3000 })
     })
     
     await step('Dropdown shows placeholder', async () => {
-      const dropdown = canvas.getByTestId('default-dropdown')
-      await expect(dropdown).toHaveAttribute('placeholder', 'Choose one...')
+      const dropdown = canvas.getByTestId('default-dropdown') as any
+      await expect(dropdown.placeholder).toBe('Choose one...')
     })
   },
 }
@@ -130,13 +133,17 @@ export const WithValue: Story = {
     const canvas = within(canvasElement)
     
     await step('Dropdown has initial value', async () => {
-      const dropdown = canvas.getByTestId('country-dropdown')
-      await expect(dropdown).toHaveAttribute('value', 'us')
+      await waitFor(async () => {
+        const dropdown = canvas.getByTestId('country-dropdown') as any
+        await expect(dropdown.options).toBeTruthy()
+        await expect(dropdown.value).toBe('us')
+      }, { timeout: 3000 })
     })
     
     await step('Dropdown is required', async () => {
-      const dropdown = canvas.getByTestId('country-dropdown')
-      await expect(dropdown).toHaveAttribute('required')
+      const dropdown = canvas.getByTestId('country-dropdown') as any
+      // For web components, required is set as a property but may be reflected differently
+      await expect(dropdown.required !== undefined && dropdown.required !== null && dropdown.required !== false).toBe(true)
     })
   },
 }
@@ -193,12 +200,15 @@ export const WithPrefixIcon: Story = {
     const canvas = within(canvasElement)
     
     await step('Dropdown with icon renders', async () => {
-      const dropdown = canvas.getByTestId('location-dropdown')
-      await expect(dropdown).toBeInTheDocument()
-      
-      // Check if slot content exists
-      const svg = dropdown.querySelector('svg[slot="prefix"]')
-      await expect(svg).toBeTruthy()
+      await waitFor(async () => {
+        const dropdown = canvas.getByTestId('location-dropdown') as any
+        await expect(dropdown).toBeInTheDocument()
+        await expect(dropdown.options).toBeTruthy()
+        
+        // Check if slot content exists
+        const svg = dropdown.querySelector('svg[slot="prefix"]')
+        await expect(svg).toBeTruthy()
+      }, { timeout: 3000 })
     })
   },
 }
@@ -232,18 +242,21 @@ export const Disabled: Story = {
     const canvas = within(canvasElement)
     
     await step('Dropdown is disabled', async () => {
-      const dropdown = canvas.getByTestId('disabled-dropdown')
-      await expect(dropdown).toHaveAttribute('disabled')
+      await waitFor(async () => {
+        const dropdown = canvas.getByTestId('disabled-dropdown') as any
+        await expect(dropdown.options).toBeTruthy()
+        await expect(dropdown.disabled !== undefined && dropdown.disabled !== null && dropdown.disabled !== false).toBe(true)
+      }, { timeout: 3000 })
     })
     
     await step('Disabled dropdown does not open on click', async () => {
-      const dropdown = canvas.getByTestId('disabled-dropdown')
+      const dropdown = canvas.getByTestId('disabled-dropdown') as any
       
       // Try to click
       await userEvent.click(dropdown)
       
       // Verify it stays disabled
-      await expect(dropdown).toHaveAttribute('disabled')
+      await expect(dropdown.disabled !== undefined && dropdown.disabled !== null && dropdown.disabled !== false).toBe(true)
     })
   },
 }
@@ -282,8 +295,11 @@ export const WithError: Story = {
     const canvas = within(canvasElement)
     
     await step('Dropdown shows error when empty', async () => {
-      const dropdown = canvas.getByTestId('error-dropdown')
-      await expect(dropdown).toHaveAttribute('error', 'This field is required')
+      await waitFor(async () => {
+        const dropdown = canvas.getByTestId('error-dropdown') as any
+        await expect(dropdown.options).toBeTruthy()
+        await expect(dropdown.error).toBe('This field is required')
+      }, { timeout: 3000 })
     })
   },
 }
@@ -331,8 +347,11 @@ export const InteractiveSelection: Story = {
     const canvas = within(canvasElement)
     
     await step('Dropdown renders', async () => {
-      const dropdown = canvas.getByTestId('interactive-dropdown')
-      await expect(dropdown).toBeInTheDocument()
+      await waitFor(async () => {
+        const dropdown = canvas.getByTestId('interactive-dropdown') as any
+        await expect(dropdown).toBeInTheDocument()
+        await expect(dropdown.options).toBeTruthy()
+      }, { timeout: 3000 })
     })
     
     await step('Initial state is empty', async () => {
@@ -414,11 +433,25 @@ export const ReactHooksIntegration: Story = {
     const canvas = within(canvasElement)
     
     await step('React components render correctly', async () => {
-      const themeDropdown = canvas.getByTestId('theme-dropdown') as any
-      const countryDropdown = canvas.getByTestId('country-dropdown') as any
+      // Wait for React components to be fully initialized
+      await waitFor(async () => {
+        const themeDropdown = canvas.getByTestId('theme-dropdown') as any
+        const countryDropdown = canvas.getByTestId('country-dropdown') as any
+        
+        // Ensure components have their options and values set
+        await expect(themeDropdown.options).toBeTruthy()
+        await expect(countryDropdown.options).toBeTruthy()
+        await expect(themeDropdown.value).toBe('dark')
+        await expect(countryDropdown.value).toBe('us')
+      }, { timeout: 3000 })
+    })
+    
+    await step('Verify theme and country display values', async () => {
+      const themeText = canvas.getByText(/Theme:/)
+      const countryText = canvas.getByText(/Country:/)
       
-      await expect(themeDropdown.value).toBe('dark')
-      await expect(countryDropdown.value).toBe('us')
+      await expect(themeText).toBeInTheDocument()
+      await expect(countryText).toBeInTheDocument()
     })
   },
   parameters: {

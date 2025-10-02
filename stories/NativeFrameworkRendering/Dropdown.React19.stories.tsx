@@ -78,9 +78,12 @@ export const Default: Story = {
     const canvas = within(canvasElement)
     
     await step('Dropdown renders with label', async () => {
-      const dropdown = canvas.getByTestId('default-dropdown')
-      await expect(dropdown).toBeInTheDocument()
-      await expect(dropdown).toHaveAttribute('label', 'Select an Option')
+      await waitFor(async () => {
+        const dropdown = canvas.getByTestId('default-dropdown') as any
+        await expect(dropdown).toBeInTheDocument()
+        await expect(dropdown.options).toBeTruthy()
+        await expect(dropdown.label).toBe('Select an Option')
+      }, { timeout: 3000 })
     })
   },
 }
@@ -122,8 +125,11 @@ export const WithValue: Story = {
     const canvas = within(canvasElement)
     
     await step('Dropdown has initial value', async () => {
-      const dropdown = canvas.getByTestId('country-dropdown')
-      await expect(dropdown).toHaveAttribute('value', 'us')
+      await waitFor(async () => {
+        const dropdown = canvas.getByTestId('country-dropdown') as any
+        await expect(dropdown.options).toBeTruthy()
+        await expect(dropdown.value).toBe('us')
+      }, { timeout: 3000 })
     })
   },
 }
@@ -180,11 +186,14 @@ export const WithPrefixIcon: Story = {
     const canvas = within(canvasElement)
     
     await step('Dropdown with icon renders', async () => {
-      const dropdown = canvas.getByTestId('location-dropdown')
-      await expect(dropdown).toBeInTheDocument()
-      
-      const svg = dropdown.querySelector('svg[slot="prefix"]')
-      await expect(svg).toBeTruthy()
+      await waitFor(async () => {
+        const dropdown = canvas.getByTestId('location-dropdown') as any
+        await expect(dropdown).toBeInTheDocument()
+        await expect(dropdown.options).toBeTruthy()
+        
+        const svg = dropdown.querySelector('svg[slot="prefix"]')
+        await expect(svg).toBeTruthy()
+      }, { timeout: 3000 })
     })
   },
 }
@@ -218,8 +227,11 @@ export const Disabled: Story = {
     const canvas = within(canvasElement)
     
     await step('Dropdown is disabled', async () => {
-      const dropdown = canvas.getByTestId('disabled-dropdown')
-      await expect(dropdown).toHaveAttribute('disabled')
+      await waitFor(async () => {
+        const dropdown = canvas.getByTestId('disabled-dropdown') as any
+        await expect(dropdown.options).toBeTruthy()
+        await expect(dropdown.disabled !== undefined && dropdown.disabled !== null && dropdown.disabled !== false).toBe(true)
+      }, { timeout: 3000 })
     })
   },
 }
@@ -286,11 +298,15 @@ export const React19AppDemo: Story = {
     const canvas = within(canvasElement)
     
     await step('React 19 components render correctly', async () => {
-      const themeDropdown = canvas.getByTestId('theme-dropdown')
-      const countryDropdown = canvas.getByTestId('country-dropdown')
-      
-      await expect(themeDropdown).toHaveAttribute('value', 'dark')
-      await expect(countryDropdown).toHaveAttribute('value', 'us')
+      await waitFor(async () => {
+        const themeDropdown = canvas.getByTestId('theme-dropdown') as any
+        const countryDropdown = canvas.getByTestId('country-dropdown') as any
+        
+        await expect(themeDropdown.options).toBeTruthy()
+        await expect(countryDropdown.options).toBeTruthy()
+        await expect(themeDropdown.value).toBe('dark')
+        await expect(countryDropdown.value).toBe('us')
+      }, { timeout: 3000 })
     })
   },
   parameters: {
