@@ -2,9 +2,6 @@ import React from "react";
 import type { Preview, StoryContext } from "@storybook/web-components-vite";
 import { setCustomElementsManifest } from "@storybook/web-components";
 
-// Import all components globally
-import "../src/index.ts";
-
 // Import custom elements manifest for automatic controls
 import customElements from "../dist/custom-elements.json";
 

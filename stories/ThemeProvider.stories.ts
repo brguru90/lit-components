@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/web-components-vite'
 import { useArgs, useState } from 'storybook/preview-api'
 import { html } from 'lit'
 import { getStorybookHelpers } from '@wc-toolkit/storybook-helpers'
+import "../src/index.ts";
 import { ThemeProvider } from '../src'
 import { getArgTypesFromManifest } from '../.storybook/controls'
 

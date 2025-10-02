@@ -2,8 +2,10 @@ import type { Meta, StoryObj, StoryContext } from '@storybook/web-components-vit
 import { useArgs, useState } from 'storybook/preview-api'
 import { html } from 'lit'
 import { getStorybookHelpers } from '@wc-toolkit/storybook-helpers'
+import "../src/index.ts";
 import { VgButton } from '../src'
 import { getArgTypesFromManifest } from '../.storybook/controls'
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 
 const { events, args, argTypes, template } = getStorybookHelpers('vg-button')
 
@@ -63,6 +65,31 @@ export const Primary: Story = {
     variant: 'primary',
   },
   render: (args) => ExampleComponent(args, html`Primary Button`),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement)
+    
+    await step('Button is rendered and visible', async () => {
+      const button = canvas.getByRole('button', { name: /Primary Button/i })
+      await expect(button).toBeInTheDocument()
+      await expect(button).toBeVisible()
+    })
+    
+    await step('Button has correct variant', async () => {
+      const button = canvas.getByRole('button')
+      await expect(button).toHaveAttribute('variant', 'primary')
+    })
+    
+    await step('Button is clickable', async () => {
+      const button = canvas.getByRole('button')
+      await userEvent.click(button)
+      
+      // Verify click count increased (from your ExampleComponent state)
+      await waitFor(() => {
+        const clickCount = canvas.getByText(/Click Count:/)
+        expect(clickCount).toBeInTheDocument()
+      })
+    })
+  },
   parameters: {
     lighthouse: {
       // Custom Lighthouse thresholds for this story

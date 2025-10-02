@@ -4,11 +4,22 @@ import { legacyPlugin } from '@web/dev-server-legacy';
 import { resolve } from 'path'
 import VitePluginCustomElementsManifest from 'vite-plugin-cem';
 import dts from 'vite-plugin-dts';
+import vue from '@vitejs/plugin-vue';
+import vueJsx from '@vitejs/plugin-vue-jsx';
 
 export default defineConfig({
   plugins: [
     tsconfigPaths(),
     dts({ insertTypesEntry: true }),
+    vue({
+      template: {
+        compilerOptions: {
+          // Treat all tags starting with 'vg-' as custom elements
+          isCustomElement: (tag) => tag.startsWith('vg-')
+        }
+      }
+    }),
+    // vueJsx(),
     // VitePluginCustomElementsManifest({
     //   config: "custom-elements-manifest.config.mjs",
     // }),
