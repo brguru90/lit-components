@@ -93,7 +93,12 @@
   <h1>HTML Demo</h1>
   <vg-theme-provider mode="dark">
     <vg-card heading="Theme controls" variant="subtle">
-      <vg-dropdown data-control="theme" label="Theme" value="dark"></vg-dropdown>
+      <vg-dropdown data-control="theme" label="Theme" value="dark">
+        <svg slot="prefix" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 2a7 7 0 1 0 10 10"/>
+        </svg>
+      </vg-dropdown>
       <vg-dropdown data-control="variant" label="Button variant" value="primary" helper-text="Preview updates immediately"></vg-dropdown>
       <vg-dropdown data-control="size" label="Button size" value="md"></vg-dropdown>
       <vg-input

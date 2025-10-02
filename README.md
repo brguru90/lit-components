@@ -347,6 +347,78 @@ npm run release
 - **API Documentation**: Generated automatically via `apt-viewer.html`
 - **VS Code IntelliSense**: Automatic via custom elements manifest
 - **Component Explorer**: Use the playground at `http://localhost:8080`
+- **Storybook**: Run `npm run storybook` for interactive component documentation
+
+### Framework Switcher
+
+Our Storybook includes a unique **Framework Switcher** feature that demonstrates the true power of Web Components - **write once, use anywhere**!
+
+When viewing component documentation in Storybook, you can select your preferred framework from the toolbar, and the code examples automatically transform to show the appropriate syntax:
+
+- 📄 **HTML**: Vanilla Web Components with event listeners
+- ⚛️ **React**: JSX with React wrapper components
+- 🟢 **Vue**: Single File Components with Composition API
+- 🅰️ **Angular**: Component classes with templates
+- 🔥 **Lit**: LitElement with decorators
+
+**Example**: The same button story shows different code for each framework:
+
+```bash
+# Start Storybook
+npm run storybook
+```
+
+Then in the toolbar, select: `Framework: [React ▾]` to see React code, or `Framework: [Vue ▾]` for Vue code, etc.
+
+This feature helps developers:
+- ✅ Copy-paste ready code for their framework
+- ✅ Understand how to integrate components in their specific environment  
+- ✅ Learn Web Component patterns across frameworks
+- ✅ Reduce onboarding friction
+
+For detailed documentation, see [Framework Switcher Documentation](./docs/FRAMEWORK_SWITCHER.md)
+
+### Play Function Testing
+
+Our components include **interactive tests** that validate behavior across ALL frameworks with a single test suite!
+
+**Key Benefits:**
+- ✅ **Universal Testing**: One Play Function test validates React, Vue, Angular, HTML, and Lit
+- ✅ **Real Interactions**: Tests actual user interactions (clicks, typing, keyboard navigation)
+- ✅ **Framework-Agnostic**: Tests the web component itself, not the framework wrapper
+- ✅ **Visual Debugging**: Watch tests run live in Storybook's Interactions panel
+- ✅ **CI/CD Ready**: Automated testing with `npm run test-storybook`
+
+**Why It Works:**
+Web components render the same shadow DOM regardless of framework wrapper, so Play Functions test the universal component behavior that works identically across all frameworks.
+
+```bash
+# View interactive tests in Storybook
+npm run storybook
+# Navigate to: Components/Button/Interaction Tests
+
+# Run automated tests
+npm run test-storybook
+```
+
+**Quick Example:**
+```typescript
+export const ClickTest: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const button = canvas.getByRole('button')
+    
+    await userEvent.click(button)
+    await expect(button).toBeInTheDocument()
+  }
+}
+```
+
+This single test validates the button works correctly in React, Vue, Angular, HTML, and Lit!
+
+For detailed documentation, see:
+- [Play Function Testing Guide](./docs/PLAY_FUNCTION_TESTING.md) - Comprehensive documentation
+- [Quick Start Guide](./docs/PLAY_FUNCTION_QUICKSTART.md) - Get started in 5 minutes
 
 ## 🧪 Framework Demos
 

@@ -69,7 +69,6 @@ export class ThemeProvider extends LitElement {
             this.setThemeAttributes(nextMode)
 
             if (previousMode !== nextMode) {
-                console.log(`theme changed to ${nextMode}`)
                 this.dispatchEvent(new CustomEvent<ThemeChangeDetail>("vg-change", {
                     detail: {
                         mode: nextMode,

@@ -2,6 +2,7 @@ import type { Meta, StoryObj, StoryContext } from '@storybook/web-components-vit
 import { useArgs, useState } from 'storybook/preview-api'
 import { html } from 'lit'
 import { getStorybookHelpers } from '@wc-toolkit/storybook-helpers'
+import "../src/index.ts";
 import { VgInput } from '../src'
 import { getArgTypesFromManifest } from '../.storybook/controls'
 
@@ -126,26 +127,6 @@ export const WithPrefixIcon: Story = {
       <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
     </svg>
   `),
-  parameters: {
-    docs: {
-      source: {
-        type: 'dynamic',
-        transform: (_src: string, storyContext: StoryContext) => {
-          const args = storyContext.args
-          return `<vg-input
-  label="${args.label || ''}"
-  placeholder="${args.placeholder || ''}"
-  type="${args.type || 'text'}"${args.disabled ? '\n  disabled' : ''}${args.required ? '\n  required' : ''}${args.value ? `\n  value="${args.value}"` : ''}${args.helperText ? `\n  helper-text="${args.helperText}"` : ''}${args.error ? `\n  error="${args.error}"` : ''}
-  @vg-change="\${handleChange}"
->
-  <svg slot="prefix" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 12px;">
-    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-  </svg>
-</vg-input>`
-        },
-      },
-    },
-  },
 }
 
 export const WithSuffixButton: Story = {
@@ -161,28 +142,6 @@ export const WithSuffixButton: Story = {
       </svg>
     </button>
   `),
-  parameters: {
-    docs: {
-      source: {
-        type: 'dynamic',
-        transform: (_src: string, storyContext: StoryContext) => {
-          const args = storyContext.args
-          return `<vg-input
-  label="${args.label || ''}"
-  placeholder="${args.placeholder || ''}"
-  type="${args.type || 'text'}"${args.disabled ? '\n  disabled' : ''}${args.required ? '\n  required' : ''}${args.value ? `\n  value="${args.value}"` : ''}${args.helperText ? `\n  helper-text="${args.helperText}"` : ''}${args.error ? `\n  error="${args.error}"` : ''}
-  @vg-change="\${handleChange}"
->
-  <button slot="suffix" type="button" style="border: none; background: transparent; padding: 8px; cursor: pointer; display: flex; align-items: center;">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-    </svg>
-  </button>
-</vg-input>`
-        },
-      },
-    },
-  },
 }
 
 export const NumberInput: Story = {

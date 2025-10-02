@@ -1,4 +1,5 @@
 import type { StorybookConfig } from '@storybook/web-components-vite';
+import istanbul from 'vite-plugin-istanbul';
 
 const config: StorybookConfig = {
   stories: [
@@ -7,7 +8,9 @@ const config: StorybookConfig = {
   ],
   addons: [
     "@storybook/addon-docs",
-    "@chromatic-com/storybook"
+    "@storybook/addon-coverage",
+    "@chromatic-com/storybook",
+    "./addons/lighthouse/register.tsx"
   ],
   framework: {
     name: "@storybook/web-components-vite",
@@ -16,6 +19,27 @@ const config: StorybookConfig = {
   docs: {},
   typescript: {
     check: false,
+  },
+  
+  // Auto-start Lighthouse API server when Storybook starts
+  async viteFinal(config, { configType }) {
+    if (configType === 'DEVELOPMENT') {
+      // Import and start the Lighthouse server
+      const { startLighthouseServer } = await import('./addons/lighthouse/server.mjs');
+      await startLighthouseServer();
+    }
+      const mod = await import('vite-plugin-istanbul');
+      const istanbul = (mod && (mod as any).default) || mod;
+      config.plugins = [
+        ...(config.plugins || []),
+        istanbul({
+          include: ['src/**/*'],
+          exclude: ['node_modules', 'stories', 'test'],
+          extension: ['.js', '.jsx', '.ts', '.tsx'],
+          // requireEnv: true  // optional: only instrument when a specific env var is set
+        }),
+      ];
+    return config;
   },
 };
 

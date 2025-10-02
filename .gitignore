@@ -32,3 +32,9 @@ demo/node_modules
 vg-*.tgz
 *storybook.log
 storybook-static
+
+# Lighthouse CI
+.lighthouseci/
+lighthouse-*.report.*
+coverage
+test-output.log

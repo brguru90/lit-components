@@ -2,6 +2,7 @@ import type { Meta, StoryObj, StoryContext } from '@storybook/web-components-vit
 import { useArgs, useState } from 'storybook/preview-api'
 import { html } from 'lit'
 import { getStorybookHelpers } from '@wc-toolkit/storybook-helpers'
+import "../src/index.ts";
 import { VgCard } from '../src'
 import { getArgTypesFromManifest } from '../.storybook/controls'
 
@@ -122,26 +123,6 @@ export const WithHeaderSlot: Story = {
     </div>
     <p>This card demonstrates using the header slot for custom content like user information.</p>
   `),
-  parameters: {
-    docs: {
-      source: {
-        type: 'dynamic',
-        transform: (_src: string, storyContext: StoryContext) => {
-          const args = storyContext.args
-          return `<vg-card${args.variant && args.variant !== 'elevated' ? ` variant="${args.variant}"` : ''}${args.heading ? ` heading="${args.heading}"` : ''}${args.interactive ? ' interactive' : ''}>
-  <div slot="header" style="display: flex; align-items: center; gap: 8px; padding: 16px; border-bottom: 1px solid #e0e0e0;">
-    <img src="https://via.placeholder.com/40" alt="Avatar" style="border-radius: 50%;" />
-    <div>
-      <h4 style="margin: 0; font-size: 14px;">John Doe</h4>
-      <p style="margin: 0; font-size: 12px; color: #666;">2 hours ago</p>
-    </div>
-  </div>
-  <p>This card demonstrates using the header slot for custom content like user information.</p>
-</vg-card>`
-        },
-      },
-    },
-  },
 }
 
 export const WithFooterSlot: Story = {
@@ -157,23 +138,6 @@ export const WithFooterSlot: Story = {
       <button style="padding: 8px 16px; border: none; background: #007bff; color: white; border-radius: 4px;">Save</button>
     </div>
   `),
-  parameters: {
-    docs: {
-      source: {
-        type: 'dynamic',
-        transform: (_src: string, storyContext: StoryContext) => {
-          const args = storyContext.args
-          return `<vg-card${args.variant && args.variant !== 'elevated' ? ` variant="${args.variant}"` : ''}${args.heading ? ` heading="${args.heading}"` : ''}${args.interactive ? ' interactive' : ''}>
-  <p>This card has action buttons in the footer slot.</p>
-  <div slot="footer" style="display: flex; gap: 8px; padding: 16px; justify-content: flex-end; border-top: 1px solid #e0e0e0;">
-    <button style="padding: 8px 16px; border: 1px solid #ccc; background: white; border-radius: 4px;">Cancel</button>
-    <button style="padding: 8px 16px; border: none; background: #007bff; color: white; border-radius: 4px;">Save</button>
-  </div>
-</vg-card>`
-        },
-      },
-    },
-  },
 }
 
 export const FullyCustomized: Story = {
@@ -196,29 +160,5 @@ export const FullyCustomized: Story = {
       <button style="padding: 8px 16px; border: none; background: #007bff; color: white; border-radius: 4px;">Add to Cart</button>
     </div>
   `),
-  parameters: {
-    docs: {
-      source: {
-        type: 'dynamic',
-        transform: (_src: string, storyContext: StoryContext) => {
-          const args = storyContext.args
-          return `<vg-card${args.variant && args.variant !== 'elevated' ? ` variant="${args.variant}"` : ''}${args.heading ? ` heading="${args.heading}"` : ''}${args.interactive ? ' interactive' : ''} @vg-action="\${handleAction}">
-  <div slot="header" style="padding: 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-    <h3 style="margin: 0;">Featured Product</h3>
-  </div>
-  <div style="padding: 16px;">
-    <img src="https://via.placeholder.com/200x120" alt="Product" style="width: 100%; border-radius: 4px; margin-bottom: 12px;" />
-    <h4 style="margin: 0 0 8px 0;">Amazing Product</h4>
-    <p style="margin: 0; color: #666;">This is a featured product with custom header and footer styling.</p>
-    <div style="margin-top: 12px; font-size: 18px; font-weight: bold; color: #007bff;">$99.99</div>
-  </div>
-  <div slot="footer" style="padding: 16px; background: #f8f9fa; display: flex; justify-content: space-between; align-items: center;">
-    <span style="color: #28a745; font-size: 14px;">✓ In Stock</span>
-    <button style="padding: 8px 16px; border: none; background: #007bff; color: white; border-radius: 4px;">Add to Cart</button>
-  </div>
-</vg-card>`
-        },
-      },
-    },
-  },
+  
 }

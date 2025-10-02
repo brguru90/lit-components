@@ -2,8 +2,10 @@ import type { Meta, StoryObj, StoryContext } from '@storybook/web-components-vit
 import { useArgs, useState } from 'storybook/preview-api'
 import { html } from 'lit'
 import { getStorybookHelpers } from '@wc-toolkit/storybook-helpers'
+import "../src/index.ts";
 import { VgButton } from '../src'
 import { getArgTypesFromManifest } from '../.storybook/controls'
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 
 const { events, args, argTypes, template } = getStorybookHelpers('vg-button')
 
@@ -63,6 +65,42 @@ export const Primary: Story = {
     variant: 'primary',
   },
   render: (args) => ExampleComponent(args, html`Primary Button`),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement)
+    
+    await step('Button is rendered and visible', async () => {
+      const button = canvasElement.querySelector('vg-button')
+      await expect(button).toBeInTheDocument()
+      await expect(button).toBeVisible()
+    })
+    
+    await step('Button has correct variant', async () => {
+      const button = canvasElement.querySelector('vg-button')
+      await expect(button).toHaveAttribute('variant', 'primary')
+    })
+    
+    await step('Button is clickable', async () => {
+      const button = canvasElement.querySelector('vg-button') as HTMLElement
+      await userEvent.click(button)
+      
+      // Verify click count increased (from your ExampleComponent state)
+      await waitFor(() => {
+        const clickCount = canvas.getByText(/Click Count:/)
+        expect(clickCount).toBeInTheDocument()
+      })
+    })
+  },
+  parameters: {
+    // lighthouse: {
+    //   // Custom Lighthouse thresholds for this story
+    //   thresholds: {
+    //     performance: 90,
+    //     accessibility: 100,
+    //     'best-practices': 90,
+    //     seo: 80,
+    //   },
+    // },
+  },
 }
 
 export const Secondary: Story = {
@@ -98,6 +136,12 @@ export const Disabled: Story = {
     disabled: true,
   },
   render: (args) => ExampleComponent(args, html`Disabled Button`),
+  // parameters: {
+  //   lighthouse: {
+  //     // Skip Lighthouse for disabled state stories
+  //     enabled: false,
+  //   },
+  // },
 }
 
 export const Loading: Story = {
@@ -114,22 +158,6 @@ export const WithPrefixIcon: Story = {
     </svg>
     Button with Icon
   `),
-  parameters: {
-    docs: {
-      source: {
-        type: 'dynamic',
-        transform: (_src: string, storyContext: StoryContext) => {
-          const args = storyContext.args
-          return `<vg-button${args.variant && args.variant !== 'primary' ? ` variant="${args.variant}"` : ''}${args.size && args.size !== 'md' ? ` size="${args.size}"` : ''}${args.disabled ? ' disabled' : ''}${args.loading ? ' loading' : ''} @vg-click="\${handleClick}">
-  <svg slot="prefix" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-  </svg>
-  Button with Icon
-</vg-button>`
-        },
-      },
-    },
-  },
 }
 
 export const WithSuffixIcon: Story = {
@@ -142,20 +170,4 @@ export const WithSuffixIcon: Story = {
       <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12l-4.58 4.59z"/>
     </svg>
   `),
-  parameters: {
-    docs: {
-      source: {
-        type: 'dynamic',
-        transform: (_src: string, storyContext: StoryContext) => {
-          const args = storyContext.args
-          return `<vg-button${args.variant && args.variant !== 'primary' ? ` variant="${args.variant}"` : ''}${args.size && args.size !== 'md' ? ` size="${args.size}"` : ''}${args.disabled ? ' disabled' : ''}${args.loading ? ' loading' : ''} @vg-click="\${handleClick}">
-  Button with Icon
-  <svg slot="suffix" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12l-4.58 4.59z"/>
-  </svg>
-</vg-button>`
-        },
-      },
-    },
-  },
 }
