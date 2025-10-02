@@ -55,6 +55,7 @@ export const globalTypes = {
       items: [
         { value: 'html', title: 'HTML', icon: 'markup' },
         { value: 'react', title: 'React', icon: 'graphql' },
+        { value: 'react19', title: 'React 19', icon: 'graphql' },
         { value: 'vue', title: 'Vue', icon: 'component' },
         { value: 'angular', title: 'Angular', icon: 'admin' },
         { value: 'lit', title: 'Lit', icon: 'lightning' },

@@ -1,6 +1,6 @@
 import type { StoryContext } from '@storybook/web-components'
 
-export type FrameworkType = 'html' | 'react' | 'vue' | 'angular' | 'lit'
+export type FrameworkType = 'html' | 'react' | 'vue' | 'angular' | 'lit' | 'react19'
 
 interface TransformOptions {
   componentName: string
@@ -270,6 +270,70 @@ ${methods.join('\n')}
 }
 
 /**
+ * Transform to React 19 JSX syntax (native web components)
+ */
+function transformToReact19({ componentName, attrs, children, slots }: TransformOptions): string {
+  let jsxAttrs = ''
+  const imports: string[] = []
+  
+  for (const [key, value] of Object.entries(attrs)) {
+    // React 19 uses lowercase event handlers for custom elements
+    const propName = key.startsWith('on') 
+      ? key.replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^on-/, 'on')
+      : key.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())
+    
+    if (key.startsWith('on')) {
+      // Event handlers in React 19 for custom elements
+      jsxAttrs += `\n      ${propName}={handleEvent}`
+    } else if (value === true) {
+      jsxAttrs += `\n      ${propName}`
+    } else if (value !== false && value !== undefined && value !== null) {
+      if (typeof value === 'string') {
+        jsxAttrs += `\n      ${propName}="${value}"`
+      } else if (typeof value === 'function') {
+        jsxAttrs += `\n      ${propName}={handleEvent}`
+      } else {
+        jsxAttrs += `\n      ${propName}={${JSON.stringify(value)}}`
+      }
+    }
+  }
+  
+  imports.push(`import 'vg/jsx'`)
+  imports.push(`import 'vg/index.css'`)
+  
+  const eventHandlers = Object.entries(attrs)
+    .filter(([key]) => key.startsWith('on'))
+    .map(([key]) => {
+      const eventName = key.replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^on-/, '');
+      return `const handleEvent = (event: CustomEvent) => {
+    console.log('${eventName}', event.detail);
+  };`
+    })
+    .join('\n\n')
+  
+  // Build slot and children content
+  let contentLines: string[] = []
+  if (slots && Object.keys(slots).length > 0) {
+    contentLines.push(...Object.values(slots).map(s => `    ${s}`))
+  }
+  if (children) {
+    contentLines.push(`    {${JSON.stringify(children)}}`)
+  }
+  
+  const content = contentLines.length > 0 
+    ? '\n' + contentLines.join('\n') + '\n    '
+    : '\n    '
+  
+  return `${imports.join('\n')}
+
+function MyComponent() {
+${eventHandlers ? `  ${eventHandlers}\n\n` : ''}  return (
+    <${componentName}${jsxAttrs}\n    >${content}</${componentName}>
+  );
+}`
+}
+
+/**
  * Transform to Lit Element syntax
  */
 function transformToLit({ componentName, attrs, children, slots }: TransformOptions): string {
@@ -468,6 +532,8 @@ export function transformCodeForFramework(
       return transformToHTML(options)
     case 'react':
       return transformToReact(options)
+    case 'react19':
+      return transformToReact19(options)
     case 'vue':
       return transformToVue(options)
     case 'angular':
