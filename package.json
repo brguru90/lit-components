@@ -25,8 +25,7 @@
     "test-storybook": "test-storybook",
     "test-storybook:watch": "test-storybook --watch",
     "lighthouse": "npm run build-storybook && lhci autorun",
-    "lighthouse:server": "lhci server",
-    "lighthouse:api": "node scripts/lighthouse-api.mjs"
+    "lighthouse:server": "lhci server"
   },
   "types": "dist/index.d.ts",
   "module": "dist/index.js",
