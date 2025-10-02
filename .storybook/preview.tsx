@@ -135,15 +135,8 @@ const preview: Preview = {
       sort: "alpha",
     },
     backgrounds: {
-      // disable: true, // Disable default backgrounds since we use theme provider
-      default: "light",
-      values: [
-        { name: "light", value: themes.light.appPreviewBg },
-        { name: "dark", value: themes.dark.appPreviewBg },
-        { name: "glass", value: themes.glass.appPreviewBg },
-        { name: "cartoon", value: themes.cartoon.appPreviewBg },
-      ],
-    },
+      disable: true, // Disable default backgrounds since we use theme provider
+    }
   },
   // Add global types for theme toolbar
   globalTypes,

@@ -17,7 +17,7 @@ const updateAllThemes = (selectedTheme: ThemeMode) => {
 
 // Configure Storybook's manager (the UI shell) to use our custom theme
 // addons.setConfig({
-//   theme: darkTheme, // Start with dark theme as default
+//   theme: themes.dark, // Start with dark theme as default
 //   panelPosition: 'right',
 //   selectedPanel: 'storybook/controls/panel',
 //   sidebar: {
