@@ -226,6 +226,44 @@ export async function startLighthouseServer() {
   });
 
   /**
+   * GET /api/lighthouse/cache/:url
+   * Get cached audit result for a specific URL without running audit
+   */
+  app.get('/api/lighthouse/cache/:encodedUrl', (req, res) => {
+    const url = decodeURIComponent(req.params.encodedUrl);
+    const options = req.query.options ? JSON.parse(req.query.options) : {};
+    
+    const cacheKey = `${url}_${JSON.stringify(options)}`;
+    
+    if (auditCache.has(cacheKey)) {
+      const cachedResult = auditCache.get(cacheKey);
+      const age = Date.now() - new Date(cachedResult.timestamp).getTime();
+      
+      // Return cached result if less than 5 minutes old
+      if (age < 5 * 60 * 1000) {
+        console.log(`📦 Returning cached result for ${url} (${Math.round(age / 1000)}s old)`);
+        return res.json({
+          ...cachedResult,
+          cached: true,
+          cacheAge: age,
+        });
+      } else {
+        console.log(`⏰ Cache expired for ${url} (${Math.round(age / 1000)}s old)`);
+        return res.status(404).json({
+          error: 'Cache expired',
+          message: 'Cached result is older than 5 minutes',
+        });
+      }
+    }
+    
+    console.log(`❌ No cache found for ${url}`);
+    res.status(404).json({
+      error: 'Not found',
+      message: 'No cached result for this URL',
+    });
+  });
+
+  /**
    * GET /api/lighthouse/health
    * Health check endpoint
    */

@@ -229,21 +229,54 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
   const api = useStorybookApi();
   const state = useStorybookState();
 
-  // Listen for story changes and clear results
+  // Listen for story changes and try to restore cached results
   useEffect(() => {
     const storyId = state.storyId;
     
-    // If story changed, clear the old results
+    // If story changed
     if (currentStoryId && storyId && storyId !== currentStoryId) {
-      console.log(`📖 Story changed (${currentStoryId} → ${storyId}), clearing previous Lighthouse results`);
+      console.log(`📖 Story changed (${currentStoryId} → ${storyId})`);
+      
+      // Clear current results
       setResults(null);
       setError(null);
+      
+      // Try to restore cached results for new story
+      fetchCachedResults(storyId);
+    } else if (storyId && !currentStoryId) {
+      // Initial load - try to restore cache
+      fetchCachedResults(storyId);
     }
     
     if (storyId) {
       setCurrentStoryId(storyId);
     }
   }, [state.storyId, currentStoryId]);
+
+  // Fetch cached results without running Lighthouse
+  const fetchCachedResults = useCallback(async (storyId: string) => {
+    try {
+      const baseUrl = window.location.origin;
+      const storyUrl = `${baseUrl}/iframe.html?viewMode=story&id=${storyId}`;
+      const encodedUrl = encodeURIComponent(storyUrl);
+      
+      const apiUrl = `http://localhost:9002/api/lighthouse/cache/${encodedUrl}`;
+      console.log('🔍 Checking for cached Lighthouse results...');
+      
+      const response = await fetch(apiUrl);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log(`✅ Restored cached results (${Math.round(data.cacheAge / 1000)}s old)`);
+        setResults(data);
+      } else {
+        console.log('📭 No cached results found for this story');
+      }
+    } catch (err) {
+      // Silently fail - just means no cache or API not available
+      console.log('📭 Could not fetch cached results');
+    }
+  }, []);
 
   // Direct API call - no channel communication needed!
   const runLighthouse = useCallback(async (skipCache = false) => {
