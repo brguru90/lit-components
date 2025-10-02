@@ -18,6 +18,16 @@ const config: StorybookConfig = {
   typescript: {
     check: false,
   },
+  
+  // Auto-start Lighthouse API server when Storybook starts
+  async viteFinal(config, { configType }) {
+    if (configType === 'DEVELOPMENT') {
+      // Import and start the Lighthouse server
+      const { startLighthouseServer } = await import('./addons/lighthouse/server.mjs');
+      await startLighthouseServer();
+    }
+    return config;
+  },
 };
 
 export default config;

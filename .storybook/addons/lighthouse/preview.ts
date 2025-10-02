@@ -44,79 +44,36 @@ if (typeof window !== 'undefined') {
 
 // Function to run Lighthouse audit
 async function runLighthouseAudit(url: string) {
-  // Try to use the real Lighthouse API server first
+  const apiUrl = 'http://localhost:9002/api/lighthouse';
+  console.log(`🔦 Calling Lighthouse API at ${apiUrl}...`);
+  
   try {
-    const apiUrl = 'http://localhost:9002/api/lighthouse';
-    console.log(`🔦 Calling Lighthouse API at ${apiUrl}...`);
-    
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url }),
     });
     
-    if (response.ok) {
-      const results = await response.json();
-      console.log('✅ Real Lighthouse results received:', results);
-      return results;
-    } else {
-      const error = await response.text();
-      console.warn(`⚠️ Lighthouse API error (${response.status}):`, error);
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`API returned ${response.status}: ${errorText}`);
     }
+    
+    const results = await response.json();
+    console.log('✅ Real Lighthouse results received:', results);
+    return results;
   } catch (e) {
-    console.warn('⚠️ Lighthouse API not available:', e instanceof Error ? e.message : 'Unknown error');
-    console.log('💡 To use real Lighthouse, run: npm run lighthouse:api');
+    const errorMessage = e instanceof Error ? e.message : 'Unknown error';
+    console.error('❌ Lighthouse API failed:', errorMessage);
+    
+    // Return error result that will be displayed in the UI
+    throw new Error(
+      `Failed to run Lighthouse audit.\n\n` +
+      `Error: ${errorMessage}\n\n` +
+      `Make sure the Lighthouse API server is running:\n` +
+      `npm run lighthouse:api`
+    );
   }
-  
-  // Fallback to simulated data
-  console.log('📊 Using simulated Lighthouse data (for demonstration)');
-  return simulateLighthouseResults();
-}
-
-// Simulate Lighthouse results for demonstration
-function simulateLighthouseResults() {
-  const performance = Math.floor(Math.random() * 30) + 70;
-  const accessibility = Math.floor(Math.random() * 20) + 80;
-  const bestPractices = Math.floor(Math.random() * 20) + 75;
-  const seo = Math.floor(Math.random() * 20) + 75;
-  
-  return {
-    scores: {
-      performance,
-      accessibility,
-      'best-practices': bestPractices,
-      seo,
-    },
-    thresholds: {
-      performance: 70,
-      accessibility: 90,
-      'best-practices': 80,
-      seo: 70,
-    },
-    metrics: {
-      'first-contentful-paint': Math.floor(Math.random() * 1000) + 500,
-      'largest-contentful-paint': Math.floor(Math.random() * 1500) + 1000,
-      'cumulative-layout-shift': (Math.random() * 0.2).toFixed(3),
-      'total-blocking-time': Math.floor(Math.random() * 300) + 100,
-      'speed-index': Math.floor(Math.random() * 2000) + 1000,
-    },
-    audits: [
-      {
-        title: 'Image elements have explicit width and height',
-        description: 'Set explicit width and height on images to reduce layout shift',
-        score: 0.8,
-        passed: false,
-      },
-      {
-        title: 'Links have descriptive text',
-        description: 'Link text should be descriptive to help users understand where the link goes',
-        score: 0.6,
-        passed: false,
-      },
-    ].filter(() => Math.random() > 0.5), // Randomly include some failures
-    timestamp: new Date().toISOString(),
-    url: window.location.href,
-  };
 }
 
 // Export for use in stories if needed
