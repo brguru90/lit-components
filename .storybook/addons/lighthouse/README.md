@@ -10,6 +10,51 @@ A custom Storybook addon that displays Google Lighthouse metrics directly in the
 - ⚡ **Core Web Vitals**: Display FCP, LCP, CLS, TBT, and Speed Index
 - ❌ **Failed Audits**: Show which audits failed and why
 - 🔄 **Real-time**: Re-run audits anytime with a single click
+- 🔁 **Smart Caching**: Cached results with 5-minute TTL, option to skip cache
+- 📐 **Shared Thresholds**: Synced thresholds between test runner and UI panel
+- 🚀 **Auto-start**: API server starts automatically with Storybook
+
+## Configuration
+
+### Shared Thresholds
+
+Lighthouse thresholds are defined in a shared configuration file:
+
+```
+.storybook/lighthouse-config.ts
+```
+
+This ensures consistency between:
+- **Test Runner** (`test-runner.ts`) - Automated testing
+- **Storybook Addon Panel** (`Panel.tsx`) - Visual display
+
+**Component-level thresholds** (stricter than Google's page-level recommendations):
+- Performance: 90 (vs 70 for pages)
+- Accessibility: 95 (vs 90 for pages)
+- Best Practices: 90 (vs 80 for pages)
+- FCP: ≤ 1000ms (vs 2000ms for pages)
+- LCP: ≤ 1500ms (vs 2500ms for pages)
+- CLS: ≤ 0.05 (vs 0.1 for pages)
+
+See [THRESHOLDS.md](./THRESHOLDS.md) for detailed explanation.
+
+### Customizing Per Story
+
+Override thresholds for specific stories:
+
+```typescript
+export default {
+  title: 'Components/ComplexComponent',
+  parameters: {
+    lighthouse: {
+      thresholds: {
+        'largest-contentful-paint': 2000,  // Relax for complex components
+        performance: 85,                   // Slightly lower if needed
+      }
+    }
+  }
+};
+```
 
 ## How It Works
 
@@ -157,11 +202,15 @@ Modify `Panel.tsx` to change:
 ## File Structure
 
 ```
-.storybook/addons/lighthouse/
-├── Panel.tsx        # Main UI component
-├── register.tsx     # Addon registration
-├── preview.ts       # Preview-side logic
-└── README.md        # This file
+.storybook/
+├── lighthouse-config.ts           # Shared thresholds configuration
+├── test-runner.ts                 # Uses shared thresholds for testing
+└── addons/lighthouse/
+    ├── Panel.tsx                  # Main UI component (uses shared thresholds)
+    ├── register.tsx               # Addon registration
+    ├── server.mjs                 # Express API server with caching
+    ├── THRESHOLDS.md             # Threshold documentation
+    └── README.md                  # This file
 ```
 
 ## Troubleshooting

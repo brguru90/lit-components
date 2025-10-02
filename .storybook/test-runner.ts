@@ -2,26 +2,13 @@ import type { TestRunnerConfig } from '@storybook/test-runner';
 import type { Page } from 'playwright';
 import lighthouse from 'lighthouse';
 import * as chromeLauncher from 'chrome-launcher';
-
-interface LighthouseThresholds {
-  performance?: number;
-  accessibility?: number;
-  'best-practices'?: number;
-  seo?: number;
-}
+import { DEFAULT_THRESHOLDS, type LighthouseThresholds } from './lighthouse-config';
 
 interface LighthouseParams {
   enabled?: boolean;
   thresholds?: LighthouseThresholds;
   printReport?: boolean;
 }
-
-const DEFAULT_THRESHOLDS: LighthouseThresholds = {
-  performance: 70,
-  accessibility: 90,
-  'best-practices': 80,
-  seo: 70,
-};
 
 // Store results for summary report
 const lighthouseResults: Array<{
@@ -64,7 +51,7 @@ async function runLighthouseAudit(
 
     const { lhr } = runnerResult;
 
-    // Extract scores
+    // Extract category scores (0-100 scale)
     const scores: Record<string, number> = {
       performance: Math.round((lhr.categories.performance?.score || 0) * 100),
       accessibility: Math.round((lhr.categories.accessibility?.score || 0) * 100),
@@ -72,30 +59,49 @@ async function runLighthouseAudit(
       seo: Math.round((lhr.categories.seo?.score || 0) * 100),
     };
 
+    // Extract Core Web Vitals metrics (actual values in ms or unitless)
+    const metrics: Record<string, number> = {
+      'first-contentful-paint': lhr.audits['first-contentful-paint']?.numericValue || 0,
+      'largest-contentful-paint': lhr.audits['largest-contentful-paint']?.numericValue || 0,
+      'cumulative-layout-shift': lhr.audits['cumulative-layout-shift']?.numericValue || 0,
+      'total-blocking-time': lhr.audits['total-blocking-time']?.numericValue || 0,
+      'speed-index': lhr.audits['speed-index']?.numericValue || 0,
+      interactive: lhr.audits['interactive']?.numericValue || 0,
+    };
+
+    // Combine scores and metrics for threshold checking
+    const allMetrics = { ...scores, ...metrics };
+
     // Check thresholds
     let passed = true;
     const failures: string[] = [];
 
     Object.keys(thresholds).forEach((category) => {
       const threshold = thresholds[category as keyof LighthouseThresholds];
-      const score = scores[category];
+      const value = allMetrics[category];
 
-      if (threshold !== undefined && score < threshold) {
+      if (threshold !== undefined && value > threshold) {
         passed = false;
-        failures.push(`${category}: ${score} < ${threshold}`);
+        const displayValue = category.includes('shift') 
+          ? value.toFixed(3) 
+          : Math.round(value);
+        failures.push(`${category}: ${displayValue} > ${threshold}`);
       }
     });
 
     // Store results
     lighthouseResults.push({
       story: storyName,
-      scores,
+      scores: allMetrics,
       passed,
     });
 
     // Print report
     console.log(`\n📊 Lighthouse Report for: ${storyName}`);
     console.log('─'.repeat(60));
+    
+    // Print category scores first
+    console.log('\n🎯 Category Scores (0-100):');
     Object.entries(scores).forEach(([category, score]) => {
       const threshold = thresholds[category as keyof LighthouseThresholds] || 0;
       const status = score >= threshold ? '✓' : '✗';
@@ -103,6 +109,26 @@ async function runLighthouseAudit(
       console.log(
         `${color}${status} ${category.padEnd(20)}: ${score}% (threshold: ${threshold}%)\x1b[0m`
       );
+    });
+
+    // Print Core Web Vitals
+    console.log('\n⚡ Core Web Vitals:');
+    Object.entries(metrics).forEach(([metric, value]) => {
+      const threshold = thresholds[metric as keyof LighthouseThresholds];
+      if (threshold !== undefined) {
+        const status = value <= threshold ? '✓' : '✗';
+        const color = value <= threshold ? '\x1b[32m' : '\x1b[31m';
+        const unit = metric === 'cumulative-layout-shift' ? '' : 'ms';
+        const displayValue = metric === 'cumulative-layout-shift' 
+          ? value.toFixed(3) 
+          : Math.round(value);
+        const displayThreshold = metric === 'cumulative-layout-shift'
+          ? threshold.toFixed(3)
+          : threshold;
+        console.log(
+          `${color}${status} ${metric.padEnd(28)}: ${displayValue}${unit} (threshold: ${displayThreshold}${unit})\x1b[0m`
+        );
+      }
     });
 
     if (!passed) {

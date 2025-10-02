@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useStorybookApi, useStorybookState } from 'storybook/manager-api';
 import { AddonPanel } from 'storybook/internal/components';
 import { styled } from 'storybook/theming';
+import { DEFAULT_THRESHOLDS, type LighthouseThresholds } from '../../lighthouse-config';
 
 // Styled components
 const Container = styled.div`
@@ -198,12 +199,7 @@ interface LighthouseResults {
     'best-practices': number;
     seo: number;
   };
-  thresholds?: {
-    performance?: number;
-    accessibility?: number;
-    'best-practices'?: number;
-    seo?: number;
-  };
+  thresholds?: LighthouseThresholds;
   audits?: Array<{
     title: string;
     description?: string;
@@ -211,14 +207,17 @@ interface LighthouseResults {
     passed: boolean;
   }>;
   metrics?: {
-    'first-contentful-paint'?: number;
-    'largest-contentful-paint'?: number;
-    'cumulative-layout-shift'?: number;
-    'total-blocking-time'?: number;
-    'speed-index'?: number;
+    'first-contentful-paint'?: number | string;
+    'largest-contentful-paint'?: number | string;
+    'cumulative-layout-shift'?: number | string;
+    'total-blocking-time'?: number | string;
+    'speed-index'?: number | string;
+    interactive?: number | string;
   };
   timestamp?: string;
   url?: string;
+  cached?: boolean;
+  cacheAge?: number;
 }
 
 export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
@@ -358,7 +357,7 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
           <ErrorContainer>
             <strong>Error:</strong> {error}
           </ErrorContainer>
-          <Button onClick={runLighthouse}>Try Again</Button>
+          <Button onClick={() => runLighthouse(false)}>Try Again</Button>
         </Container>
       </AddonPanel>
     );
@@ -386,6 +385,9 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
     { key: 'seo', label: 'SEO' },
   ];
 
+  // Use thresholds from results if available, otherwise use DEFAULT_THRESHOLDS
+  const activeThresholds = results.thresholds || DEFAULT_THRESHOLDS;
+
   return (
     <AddonPanel active={active}>
       <Container>
@@ -395,6 +397,7 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
             {results.timestamp && (
               <div style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.25rem' }}>
                 Last run: {new Date(results.timestamp).toLocaleString()}
+                {results.cached && ` • Cached (${Math.round((results as any).cacheAge / 1000)}s old)`}
               </div>
             )}
           </div>
@@ -408,7 +411,8 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
           <MetricsGrid>
             {categories.map(({ key, label }) => {
               const score = results.scores[key as keyof typeof results.scores];
-              const threshold = results.thresholds?.[key as keyof typeof results.thresholds];
+              const threshold = activeThresholds[key as keyof LighthouseThresholds];
+              const passed = threshold !== undefined ? score >= threshold : true;
               
               return (
                 <MetricCard key={key} score={score}>
@@ -416,7 +420,7 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
                   <MetricScore score={score}>{score}</MetricScore>
                   {threshold !== undefined && (
                     <MetricThreshold>
-                      Threshold: {threshold} {score >= threshold ? '✓' : '✗'}
+                      Threshold: {threshold} {passed ? '✓' : '✗'}
                     </MetricThreshold>
                   )}
                 </MetricCard>
@@ -427,19 +431,37 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
 
         {results.metrics && (
           <Section>
-            <SectionTitle>Performance Metrics</SectionTitle>
+            <SectionTitle>Core Web Vitals</SectionTitle>
             <AuditList>
-              {Object.entries(results.metrics).map(([key, value]) => (
-                <AuditItem key={key} passed={true}>
-                  <AuditIcon passed={true}>⚡</AuditIcon>
-                  <AuditContent>
-                    <AuditTitle>
-                      {key.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
-                    </AuditTitle>
-                    <AuditDescription>{value}ms</AuditDescription>
-                  </AuditContent>
-                </AuditItem>
-              ))}
+              {Object.entries(results.metrics).map(([key, value]) => {
+                const threshold = activeThresholds[key as keyof LighthouseThresholds];
+                // Convert value to number if it's a string (from server)
+                const numericValue = typeof value === 'string' ? parseFloat(value) : value;
+                const passed = threshold !== undefined ? numericValue <= threshold : true;
+                const unit = key === 'cumulative-layout-shift' ? '' : 'ms';
+                const displayValue = key === 'cumulative-layout-shift' 
+                  ? numericValue.toFixed(3) 
+                  : Math.round(numericValue);
+                
+                return (
+                  <AuditItem key={key} passed={passed}>
+                    <AuditIcon passed={passed}>
+                      {passed ? '✓' : '✗'}
+                    </AuditIcon>
+                    <AuditContent>
+                      <AuditTitle>
+                        {key.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                      </AuditTitle>
+                      <AuditDescription>
+                        {displayValue}{unit}
+                        {threshold !== undefined && (
+                          <> (threshold: {threshold === 0.05 ? '0.050' : threshold}{unit})</>
+                        )}
+                      </AuditDescription>
+                    </AuditContent>
+                  </AuditItem>
+                );
+              })}
             </AuditList>
           </Section>
         )}
