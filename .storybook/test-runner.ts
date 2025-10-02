@@ -149,18 +149,18 @@ const config: TestRunnerConfig = {
     };
 
     try {
-    //   const { passed } = await runLighthouseAudit(
-    //     storyUrl,
-    //     thresholds,
-    //     storyName
-    //   );
+      // const { passed } = await runLighthouseAudit(
+      //   storyUrl,
+      //   thresholds,
+      //   storyName
+      // );
 
-    //   // Fail the test if thresholds are not met
-    //   if (!passed) {
-    //     throw new Error(
-    //       `Lighthouse audit failed for ${storyName}. Check the report above for details.`
-    //     );
-    //   }
+      // // Fail the test if thresholds are not met
+      // if (!passed) {
+      //   throw new Error(
+      //     `Lighthouse audit failed for ${storyName}. Check the report above for details.`
+      //   );
+      // }
     } catch (error) {
       console.error(`\n❌ Error running Lighthouse for ${storyName}:`, error);
       throw error;

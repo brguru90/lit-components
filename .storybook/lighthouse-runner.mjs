@@ -22,10 +22,12 @@ async function runLighthouse() {
     // Launch Chrome
     chrome = await chromeLauncher.launch({
       chromeFlags: [
-        '--headless',
-        '--disable-gpu',
-        '--no-sandbox',
-        '--disable-dev-shm-usage',
+        '--headless',                          // Run without UI
+        '--incognito',                         // Clean slate: no extensions, cache, cookies, or sync
+        '--no-sandbox',                        // Required for Docker/CI environments
+        '--disable-dev-shm-usage',            // Prevent shared memory issues in containers
+        '--disable-gpu',                       // Disable GPU hardware acceleration
+        '--window-size=1920,1080',            // Consistent viewport size
       ],
     });
 

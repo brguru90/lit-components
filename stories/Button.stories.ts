@@ -91,15 +91,15 @@ export const Primary: Story = {
     })
   },
   parameters: {
-    lighthouse: {
-      // Custom Lighthouse thresholds for this story
-      thresholds: {
-        performance: 90,
-        accessibility: 100,
-        'best-practices': 90,
-        seo: 80,
-      },
-    },
+    // lighthouse: {
+    //   // Custom Lighthouse thresholds for this story
+    //   thresholds: {
+    //     performance: 90,
+    //     accessibility: 100,
+    //     'best-practices': 90,
+    //     seo: 80,
+    //   },
+    // },
   },
 }
 
@@ -136,12 +136,12 @@ export const Disabled: Story = {
     disabled: true,
   },
   render: (args) => ExampleComponent(args, html`Disabled Button`),
-  parameters: {
-    lighthouse: {
-      // Skip Lighthouse for disabled state stories
-      enabled: false,
-    },
-  },
+  // parameters: {
+  //   lighthouse: {
+  //     // Skip Lighthouse for disabled state stories
+  //     enabled: false,
+  //   },
+  // },
 }
 
 export const Loading: Story = {

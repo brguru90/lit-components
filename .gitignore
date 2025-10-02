@@ -37,3 +37,4 @@ storybook-static
 .lighthouseci/
 lighthouse-*.report.*
 coverage
+test-output.log
