@@ -5,7 +5,7 @@
  * Uses lowercase element names (vg-dropdown) with JSX type definitions from vg/jsx.
  */
 
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/web-components-vite'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
 import React, { useState } from 'react'
 import { createRoot } from 'react-dom/client'

@@ -6,7 +6,7 @@
  * in real React applications using the React wrapper (vg/react).
  */
 
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/web-components-vite'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
 import React, { useState } from 'react'
 import { createRoot } from 'react-dom/client'
@@ -16,7 +16,6 @@ import 'vg'
 const meta: Meta = {
   title: 'Native Framework Rendering/Dropdown/React',
   tags: ['autodocs', 'test'],
-  decorators: [], // Skip global decorators for React stories
   parameters: {
     docs: {
       description: {
