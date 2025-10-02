@@ -21,13 +21,16 @@ export function getArgTypesFromManifest(componentName: string) {
     const argTypes: ArgTypes = {};
 
 
-    declaration.attributes.forEach((attr) => {
-        const options = getOptions(attr.type.text);
-        const valueType = getControlType(attr.type.text)
+    (declaration.members?.flat()?.filter(memeber=>memeber.kind=="field" && memeber.type) || declaration.attributes).forEach((attr) => {
+        const options = getOptions(attr.type!.text);
+        const valueType = getControlType(attr.type!.text)
         const argType: any = {
             control: { type: valueType },
             description: attr.description,
             defaultValue: attr.default,
+            table: {
+                disable: (attr as any).privacy === "private"
+            }
         };
 
         // Only add options if there are actual options (for select controls)

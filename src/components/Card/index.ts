@@ -34,7 +34,7 @@ export interface CardActionDetail {
  *
  * @csspart card - Allows you to style the card container element
  *
- * @fires {CustomEvent<CardActionDetail>} vg-action - Fired when an interactive card is triggered
+ * @fires {CardActionDetail} vg-action - Fired when an interactive card is triggered
  *
  */
 @customElement("vg-card")
@@ -109,7 +109,7 @@ export class VgCard extends LitElement {
 	private dispatchAction(event: MouseEvent | KeyboardEvent) {
 		this.dispatchEvent(new CustomEvent<CardActionDetail>("vg-action", {
 			detail: { originalEvent: event },
-			bubbles: true,
+			// bubbles: true,
 			composed: true,
 		}))
 	}

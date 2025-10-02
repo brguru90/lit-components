@@ -41,7 +41,7 @@ const nextId = () => `vg-input-${++idCounter}`
  * @csspart input - Allows you to style the input element
  * @csspart label - Allows you to style the label element
  *
- * @fires {CustomEvent<InputChangeDetail>} vg-change - Fired whenever the value changes via user input
+ * @fires {InputChangeDetail} vg-change - Fired whenever the value changes via user input
  *
  */
 @customElement("vg-input")
@@ -177,7 +177,7 @@ export class VgInput extends LitElement {
 				value: this.value,
 				originalEvent: event,
 			},
-			bubbles: true,
+			// bubbles: true,
 			composed: true,
 		}))
 	}

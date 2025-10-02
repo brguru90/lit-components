@@ -37,7 +37,7 @@ const THEME_CLASSES = SUPPORTED_THEMES.map((mode) => `${THEME_CLASS_PREFIX}${mod
  *
  * @csspart provider - Allows you to style the theme provider container
  *
- * @fires {CustomEvent<ThemeChangeDetail>} vg-change - Emitted whenever the active theme mode changes
+ * @fires {ThemeChangeDetail} vg-change - Emitted whenever the active theme mode changes
  *
  */
 @customElement("vg-theme-provider")
@@ -69,12 +69,13 @@ export class ThemeProvider extends LitElement {
             this.setThemeAttributes(nextMode)
 
             if (previousMode !== nextMode) {
+                console.log(`theme changed to ${nextMode}`)
                 this.dispatchEvent(new CustomEvent<ThemeChangeDetail>("vg-change", {
                     detail: {
                         mode: nextMode,
                         previousMode,
                     },
-                    bubbles: true,
+                    // bubbles: true,
                     composed: true,
                 }))
             }

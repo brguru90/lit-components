@@ -50,7 +50,7 @@ export class MyElement extends LitElement {
   render() {
     return html`
      <h1>Lit Demo</h1>
-      <vg-theme-provider mode=${this.theme}>
+      <vg-theme-provider mode=${this.theme} @vg-change=${console.log}>
         <section class="playground">
           <vg-card heading="Theme controls" variant="subtle">
             <vg-dropdown

@@ -64,7 +64,7 @@ const nextDropdownId = () => `vg-dropdown-${++dropdownId}`
  * @csspart select - Allows you to style the select element
  * @csspart label - Allows you to style the label element
  *
- * @fires {CustomEvent<DropdownChangeDetail>} vg-change - Emitted when the selected option changes
+ * @fires {DropdownChangeDetail} vg-change - Emitted when the selected option changes
  *
  */
 @customElement("vg-dropdown")
@@ -231,7 +231,7 @@ export class VgDropdown extends LitElement {
 				option: selected,
 				originalEvent: event,
 			},
-			bubbles: true,
+			// bubbles: true,
 			composed: true,
 		}))
 	}
