@@ -13,8 +13,12 @@ export const withThemeProvider: Decorator = (story, context) => {
   const newTheme = themes[theme]
 
   const channel = addons.getChannel()
-  channel.emit('THEME_CHANGED', { theme: theme})
+  channel.emit('THEME_CHANGED', { theme: theme })
   // channel.emit('FORCE_RE_RENDER');
+
+  if (typeof document !== 'undefined') {
+    document.documentElement.style.backgroundColor = newTheme.appPreviewBg
+  }
 
   return html`
     <vg-theme-provider mode="${theme}">

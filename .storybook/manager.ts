@@ -7,7 +7,7 @@ const updateAllThemes = (selectedTheme: ThemeMode) => {
   const newTheme = themes[selectedTheme]
 
   if (newTheme) {
-    console.log('Updating both manager and docs themes to:', { selectedTheme, newTheme })
+    // console.log('Updating both manager and docs themes to:', { selectedTheme, newTheme })
     // Update manager theme
     addons.setConfig({
       theme: newTheme,

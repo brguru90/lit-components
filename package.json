@@ -49,6 +49,7 @@
   "devDependencies": {
     "@chromatic-com/storybook": "^4.1.1",
     "@custom-elements-manifest/analyzer": "^0.10.8",
+    "@storybook/addon-backgrounds": "^9.0.8",
     "@storybook/addon-docs": "^9.1.8",
     "@storybook/web-components-vite": "^9.1.8",
     "@wc-toolkit/jsx-types": "^1.4.2",
