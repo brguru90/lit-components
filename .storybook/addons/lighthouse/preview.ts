@@ -44,26 +44,32 @@ if (typeof window !== 'undefined') {
 
 // Function to run Lighthouse audit
 async function runLighthouseAudit(url: string) {
-  // In a real implementation, this would call a backend service
-  // that runs Lighthouse and returns the results
-  
-  // For development, check if there's a backend service available
+  // Try to use the real Lighthouse API server first
   try {
-    const response = await fetch('/api/lighthouse', {
+    const apiUrl = 'http://localhost:9002/api/lighthouse';
+    console.log(`🔦 Calling Lighthouse API at ${apiUrl}...`);
+    
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url }),
     });
     
     if (response.ok) {
-      return await response.json();
+      const results = await response.json();
+      console.log('✅ Real Lighthouse results received:', results);
+      return results;
+    } else {
+      const error = await response.text();
+      console.warn(`⚠️ Lighthouse API error (${response.status}):`, error);
     }
   } catch (e) {
-    // Backend not available, return mock data for demonstration
+    console.warn('⚠️ Lighthouse API not available:', e instanceof Error ? e.message : 'Unknown error');
+    console.log('💡 To use real Lighthouse, run: npm run lighthouse:api');
   }
   
-  // Mock data for demonstration
-  // In production, remove this and require the backend service
+  // Fallback to simulated data
+  console.log('📊 Using simulated Lighthouse data (for demonstration)');
   return simulateLighthouseResults();
 }
 

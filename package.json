@@ -25,7 +25,8 @@
     "test-storybook": "test-storybook",
     "test-storybook:watch": "test-storybook --watch",
     "lighthouse": "npm run build-storybook && lhci autorun",
-    "lighthouse:server": "lhci server"
+    "lighthouse:server": "lhci server",
+    "lighthouse:api": "node scripts/lighthouse-api.mjs"
   },
   "types": "dist/index.d.ts",
   "module": "dist/index.js",
@@ -66,6 +67,7 @@
     "cem-plugin-reactify": "^0.0.2",
     "cem-plugin-vs-code-custom-data-generator": "^1.4.2",
     "chrome-launcher": "^1.2.1",
+    "cors": "^2.8.5",
     "custom-element-react-wrappers": "^1.7.2",
     "custom-element-vs-code-integration": "^1.5.0",
     "custom-element-vuejs-integration": "^1.4.0",
