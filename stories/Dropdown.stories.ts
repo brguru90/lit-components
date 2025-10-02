@@ -26,7 +26,6 @@ const countryOptions = [
   { label: 'Brazil', value: 'br', description: 'South America' },
 ]
 
-
 const meta: Meta = {
   title: 'Components/Dropdown',
   tags: ['autodocs'],
