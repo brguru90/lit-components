@@ -27,13 +27,12 @@ const countryOptions = [
 ]
 
 
-
 const meta: Meta = {
   title: 'Components/Dropdown',
   tags: ['autodocs'],
   component: 'vg-dropdown',
 
-  args: args,
+  args,
   ...getArgTypesFromManifest('vg-dropdown'),
   render: (args) => template(args),
   // parameters: {

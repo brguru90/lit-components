@@ -177,7 +177,7 @@ export class VgInput extends LitElement {
 				value: this.value,
 				originalEvent: event,
 			},
-			bubbles: true,
+			// bubbles: true,
 			composed: true,
 		}))
 	}

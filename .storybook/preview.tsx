@@ -9,7 +9,9 @@ import customElements from '../dist/custom-elements.json'
 
 // Import theme configuration and decorators
 import { withThemeProvider, globalTypes } from './decorators'
-import { darkTheme, lightTheme, glassTheme, cartoonTheme, themes } from './themes'
+import { themes } from 'storybook/theming';
+import { darkTheme, lightTheme, glassTheme, cartoonTheme, themes as customTheme } from './themes'
+import { ThemedDocsContainer } from './ThemedDocsContainer.tsx'
 
 customElements.modules.forEach((mod: any) => {
   mod.declarations.forEach((decl: any) => {
@@ -18,7 +20,8 @@ customElements.modules.forEach((mod: any) => {
     //     event.name = event["x-originalName"]
     //   }
     // })
-    decl.members = []
+    // decl.membersOrig=decl.members
+    // decl.members = []
   })
 })
 
@@ -29,7 +32,8 @@ const preview: Preview = {
   parameters: {
     docs: {
       // Apply theme to docs as well
-      // theme: darkTheme,
+      // theme: themes.normal,
+      container: ThemedDocsContainer,
       extractComponentDescription: (component: string) => {
         // Extract description from Custom Elements Manifest
         const module = customElements.modules.find((mod: any) =>

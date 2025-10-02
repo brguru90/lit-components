@@ -109,7 +109,7 @@ export class VgCard extends LitElement {
 	private dispatchAction(event: MouseEvent | KeyboardEvent) {
 		this.dispatchEvent(new CustomEvent<CardActionDetail>("vg-action", {
 			detail: { originalEvent: event },
-			bubbles: true,
+			// bubbles: true,
 			composed: true,
 		}))
 	}

@@ -14,7 +14,7 @@ const meta: Meta = {
   tags: ['autodocs'],
   component: 'vg-card',
   
-  args: args,
+  args,
   ...getArgTypesFromManifest('vg-card'),
   render: (args) => template(args),
   parameters: {

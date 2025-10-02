@@ -30,7 +30,7 @@ function App() {
 
 
   return (
-    <vg-theme-provider mode={theme}>
+    <vg-theme-provider mode={theme} onvg-change={e=>console.log(e)}>
       <vg-card heading="Theme controls" variant="subtle">
         <vg-dropdown
           label="Theme"

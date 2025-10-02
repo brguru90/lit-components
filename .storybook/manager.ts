@@ -7,7 +7,7 @@ const updateAllThemes = (selectedTheme: ThemeMode) => {
   const newTheme = themes[selectedTheme]
   
   if (newTheme) {
-    console.log('Updating both manager and docs themes to:', selectedTheme)
+    console.log('Updating both manager and docs themes to:', {selectedTheme, newTheme})
     
     // Update manager theme
     addons.setConfig({
@@ -37,7 +37,6 @@ addons.register('vg-theme-sync', (api) => {
   
   // Function to handle theme updates
   const updateManagerTheme = (globals: any) => {
-    console.log('Theme change detected:', globals?.theme)
     const selectedTheme = globals?.theme as ThemeMode || 'dark'
     
     // Use the new unified theme update function

@@ -231,7 +231,7 @@ export class VgDropdown extends LitElement {
 				option: selected,
 				originalEvent: event,
 			},
-			bubbles: true,
+			// bubbles: true,
 			composed: true,
 		}))
 	}

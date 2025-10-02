@@ -136,7 +136,7 @@ export class VgButton extends LitElement {
 
         this.dispatchEvent(new CustomEvent<ButtonClickDetail>("vg-click", {
             detail: { originalEvent: event },
-            bubbles: true,
+            // bubbles: true,
             composed: true,
             cancelable: true,
         }))

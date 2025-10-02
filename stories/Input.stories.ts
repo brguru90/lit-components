@@ -14,7 +14,7 @@ const meta: Meta = {
   tags: ['autodocs'],
   component: 'vg-input',
   
-  args: args,
+  args,
   ...getArgTypesFromManifest('vg-input'),
   render: (args) => template(args),
   parameters: {
