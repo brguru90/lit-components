@@ -42,6 +42,7 @@
     "./jsx": "./dist/jsx/index.js"
   },
   "dependencies": {
+    "@storybook/react": "^9.1.10",
     "@wc-toolkit/jsdoc-tags": "^1.1.0",
     "lit": "^3.1.2"
   },

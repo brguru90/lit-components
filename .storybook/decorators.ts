@@ -1,8 +1,9 @@
 import { html } from 'lit'
 import type { Decorator } from '@storybook/web-components'
-import { addons } from 'storybook/manager-api'
+import { addons } from 'storybook/preview-api';
 import { themes } from './themes'
 import type { ThemeMode } from './themes'
+// import { FORCE_RE_RENDER,SET_CONFIG,SET_GLOBALS } from 'storybook/internal/core-events';
 
 
 // Theme decorator that wraps all stories with ThemeProvider and manages docs theme
@@ -10,15 +11,10 @@ export const withThemeProvider: Decorator = (story, context) => {
 
   const theme: ThemeMode = context.globals.theme || 'dark'
   const newTheme = themes[theme]
-  console.log("theme decorator =>", { theme, newTheme })
-  // addons.setConfig({
-  //   theme: newTheme,
-  // })
 
-  // Update docs theme by emitting an event that preview can listen to
   const channel = addons.getChannel()
-  channel.emit('FORCE_RE_RENDER');
-  channel.emit('UPDATE_DOCS_THEME', { theme: newTheme, themeName: theme })
+  channel.emit('THEME_CHANGED', { theme: theme})
+  // channel.emit('FORCE_RE_RENDER');
 
   return html`
     <vg-theme-provider mode="${theme}">

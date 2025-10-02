@@ -1,3 +1,4 @@
+import React from "react";
 import type { Preview, StoryContext } from '@storybook/web-components-vite'
 import { setCustomElementsManifest } from '@storybook/web-components'
 
@@ -9,9 +10,23 @@ import customElements from '../dist/custom-elements.json'
 
 // Import theme configuration and decorators
 import { withThemeProvider, globalTypes } from './decorators'
-import { themes } from 'storybook/theming';
-import { darkTheme, lightTheme, glassTheme, cartoonTheme, themes as customTheme } from './themes'
-import { ThemedDocsContainer } from './ThemedDocsContainer.tsx'
+import { themes } from './themes'
+import { PropsWithChildren } from "react";
+import { DocsContainer } from "@storybook/addon-docs/blocks";
+import type { ThemeMode } from "./themes";
+
+ const ThemedDocsContainer = (props: PropsWithChildren<any>) => {
+  const theme: ThemeMode =
+    props?.context?.store?.userGlobals?.globals?.theme || "dark";
+  const docsTheme = themes[theme];
+  
+  return (
+    <DocsContainer {...props} theme={docsTheme}>
+      {props.children}
+    </DocsContainer>
+  );
+};
+
 
 customElements.modules.forEach((mod: any) => {
   mod.declarations.forEach((decl: any) => {
@@ -31,8 +46,6 @@ setCustomElementsManifest(customElements)
 const preview: Preview = {
   parameters: {
     docs: {
-      // Apply theme to docs as well
-      // theme: themes.normal,
       container: ThemedDocsContainer,
       extractComponentDescription: (component: string) => {
         // Extract description from Custom Elements Manifest

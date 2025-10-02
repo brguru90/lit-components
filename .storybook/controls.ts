@@ -28,8 +28,8 @@ export function getArgTypesFromManifest(componentName: string) {
             control: { type: valueType },
             description: attr.description,
             defaultValue: attr.default,
-            table:{
-                disable:attr?.privacy=="private"
+            table: {
+                disable: (attr as any).privacy === "private"
             }
         };
 
