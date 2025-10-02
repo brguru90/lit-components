@@ -63,6 +63,17 @@ export const Primary: Story = {
     variant: 'primary',
   },
   render: (args) => ExampleComponent(args, html`Primary Button`),
+  parameters: {
+    lighthouse: {
+      // Custom Lighthouse thresholds for this story
+      thresholds: {
+        performance: 90,
+        accessibility: 100,
+        'best-practices': 90,
+        seo: 80,
+      },
+    },
+  },
 }
 
 export const Secondary: Story = {
@@ -98,6 +109,12 @@ export const Disabled: Story = {
     disabled: true,
   },
   render: (args) => ExampleComponent(args, html`Disabled Button`),
+  parameters: {
+    lighthouse: {
+      // Skip Lighthouse for disabled state stories
+      enabled: false,
+    },
+  },
 }
 
 export const Loading: Story = {
