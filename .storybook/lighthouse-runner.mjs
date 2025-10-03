@@ -5,6 +5,7 @@
  */
 import lighthouse from 'lighthouse';
 import * as chromeLauncher from 'chrome-launcher';
+import { CHROME_FLAGS, LIGHTHOUSE_OPTIONS } from './lighthouse-config.mjs';
 
 async function runLighthouse() {
   const url = process.argv[2];
@@ -19,24 +20,15 @@ async function runLighthouse() {
   let chrome = null;
 
   try {
-    // Launch Chrome
+    // Launch Chrome with shared configuration
     chrome = await chromeLauncher.launch({
-      chromeFlags: [
-        '--headless',                          // Run without UI
-        '--incognito',                         // Clean slate: no extensions, cache, cookies, or sync
-        '--no-sandbox',                        // Required for Docker/CI environments
-        '--disable-dev-shm-usage',            // Prevent shared memory issues in containers
-        '--disable-gpu',                       // Disable GPU hardware acceleration
-        '--window-size=1920,1080',            // Consistent viewport size
-      ],
+      chromeFlags: CHROME_FLAGS,
     });
 
-    // Run Lighthouse
+    // Run Lighthouse with shared configuration
     const options = {
-      logLevel: 'error',
-      output: 'json',
+      ...LIGHTHOUSE_OPTIONS,
       port: chrome.port,
-      onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo'],
     };
 
     const runnerResult = await lighthouse(url, options);
