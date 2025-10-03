@@ -1,20 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 import * as sass from 'sass';
-import type * as TypeScript from 'typescript';
+import ts from 'typescript';
 import { StoryEntry } from './documentation-extraction';
 
 export type { StoryEntry } from './documentation-extraction';
-
-// Import TypeScript dynamically
-const ts = await (async (): Promise<typeof TypeScript | null> => {
-  try {
-    return await import('typescript');
-  } catch (error) {
-    console.warn('⚠️  Could not import TypeScript:', error);
-    return null;
-  }
-})();
 
 const STORIES_DIR = `./storybook-static/stories_doc`;
 
@@ -73,11 +63,6 @@ function resolveLitComponents(): string[] {
 function extractTypescriptTypes(): ProcessedType[] {
   const allTypes: ProcessedType[] = [];
   
-  if (!ts) {
-    console.warn('⚠️  TypeScript not available, skipping type extraction');
-    return allTypes;
-  }
-  
   try {
     const srcFiles = fs.readdirSync('src/components', { recursive: true })
       .filter((file: any) => {
@@ -107,20 +92,20 @@ function extractTypescriptTypes(): ProcessedType[] {
       if (sf.isDeclarationFile) continue;
       if (!sf.fileName.includes('src/')) continue;
       
-      const visit = (node: TypeScript.Node) => {
+      const visit = (node: ts.Node) => {
         // Interfaces & Type aliases
-        if (ts!.isInterfaceDeclaration(node) || ts!.isTypeAliasDeclaration(node)) {
+        if (ts.isInterfaceDeclaration(node) || ts.isTypeAliasDeclaration(node)) {
           const typeName = node.name.text;
-          const printed = printer.printNode(ts!.EmitHint.Unspecified, node, sf);
+          const printed = printer.printNode(ts.EmitHint.Unspecified, node, sf);
           allTypes.push({
             name: typeName,
             definition: printed,
           });
         }
         // Enums
-        else if (ts!.isEnumDeclaration(node)) {
+        else if (ts.isEnumDeclaration(node)) {
           const typeName = node.name.text;
-          const printed = printer.printNode(ts!.EmitHint.Unspecified, node, sf);
+          const printed = printer.printNode(ts.EmitHint.Unspecified, node, sf);
           allTypes.push({
             name: typeName,
             definition: printed,
@@ -128,13 +113,13 @@ function extractTypescriptTypes(): ProcessedType[] {
         }
         // Exported const object maps (e.g., colorMap) -> convert to union type
         else if (
-          ts!.isVariableStatement(node) &&
-          node.modifiers?.some((m) => m.kind === ts!.SyntaxKind.ExportKeyword)
+          ts.isVariableStatement(node) &&
+          node.modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)
         ) {
           for (const decl of node.declarationList.declarations) {
-            if (!decl.name || !ts!.isIdentifier(decl.name)) continue;
+            if (!decl.name || !ts.isIdentifier(decl.name)) continue;
             const varName = decl.name.text;
-            if (decl.initializer && ts!.isObjectLiteralExpression(decl.initializer)) {
+            if (decl.initializer && ts.isObjectLiteralExpression(decl.initializer)) {
               // Treat as map -> enum-like if every property value is true literal
               const props = decl.initializer.properties;
               let allTrueBoolean = true;
@@ -142,11 +127,11 @@ function extractTypescriptTypes(): ProcessedType[] {
               
               for (const p of props) {
                 if (
-                  ts!.isPropertyAssignment(p) &&
-                  (ts!.isIdentifier(p.name) || ts!.isStringLiteral(p.name))
+                  ts.isPropertyAssignment(p) &&
+                  (ts.isIdentifier(p.name) || ts.isStringLiteral(p.name))
                 ) {
-                  const keyName = ts!.isIdentifier(p.name) ? p.name.text : p.name.text;
-                  if (p.initializer && p.initializer.kind === ts!.SyntaxKind.TrueKeyword) {
+                  const keyName = ts.isIdentifier(p.name) ? p.name.text : p.name.text;
+                  if (p.initializer && p.initializer.kind === ts.SyntaxKind.TrueKeyword) {
                     keys.push(keyName);
                   } else {
                     allTrueBoolean = false;
@@ -171,9 +156,9 @@ function extractTypescriptTypes(): ProcessedType[] {
             }
           }
         }
-        ts!.forEachChild(node, visit);
+        ts.forEachChild(node, visit);
       };
-      ts!.forEachChild(sf, visit);
+      ts.forEachChild(sf, visit);
     }
   } catch (error) {
     console.warn('⚠️  Error extracting TypeScript types:', (error as Error).message);

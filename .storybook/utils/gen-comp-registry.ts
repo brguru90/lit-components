@@ -7,7 +7,10 @@ import YAML from 'yaml';
 // Import TypeScript dynamically
 const ts = await (async (): Promise<typeof TypeScript | null> => {
   try {
-    return await import('typescript');
+    const tsModule = await import('typescript');
+    // TypeScript module can be imported as default or as namespace
+    const typescript = (tsModule.default || tsModule) as typeof TypeScript;
+    return typescript;
   } catch (error) {
     console.warn('⚠️  Could not import TypeScript:', error);
     return null;
@@ -91,18 +94,21 @@ function parseDefinitions(defs: ProcessedType[]) {
     throw new Error('TypeScript is not available');
   }
   
+  // TypeScript is available at this point, assert non-null
+  const typescript = ts as typeof TypeScript;
+  
   const filename = 'defs.ts';
   const combinedSource = defs.map((d) => d.definition).join('\n');
 
-  const sourceFile = ts.createSourceFile(
+  const sourceFile = typescript.createSourceFile(
     filename,
     combinedSource,
-    ts.ScriptTarget.Latest,
+    typescript.ScriptTarget.Latest,
     true
   );
 
-  const compilerOptions = ts.getDefaultCompilerOptions();
-  const defaultHost = ts.createCompilerHost(compilerOptions, true);
+  const compilerOptions = typescript.getDefaultCompilerOptions();
+  const defaultHost = typescript.createCompilerHost(compilerOptions, true);
 
   const customHost = {
     ...defaultHost,
@@ -116,7 +122,7 @@ function parseDefinitions(defs: ProcessedType[]) {
     readFile: (f: string) => (f === filename ? combinedSource : defaultHost.readFile(f)),
   };
 
-  const program = ts.createProgram([filename], compilerOptions, customHost);
+  const program = typescript.createProgram([filename], compilerOptions, customHost);
   const checker = program.getTypeChecker();
 
   return { program, sourceFile, checker };
@@ -128,26 +134,29 @@ function parseDefinitions(defs: ProcessedType[]) {
 function extractLiteralUnion(node: TypeScript.TypeAliasDeclaration): any[] | null {
   if (!ts) return null;
   
+  // TypeScript is available at this point, assert non-null
+  const typescript = ts as typeof TypeScript;
+  
   const t = node.type;
-  if (ts.isUnionTypeNode(t)) {
+  if (typescript.isUnionTypeNode(t)) {
     const literals: any[] = [];
     for (const member of t.types) {
-      if (!ts.isLiteralTypeNode(member)) {
+      if (!typescript.isLiteralTypeNode(member)) {
         return null;
       }
       const lit = member.literal;
-      if (ts.isStringLiteral(lit)) {
+      if (typescript.isStringLiteral(lit)) {
         literals.push(lit.text);
-      } else if (ts.isNumericLiteral(lit)) {
+      } else if (typescript.isNumericLiteral(lit)) {
         literals.push(Number(lit.text));
-      } else if (lit.kind === ts.SyntaxKind.TrueKeyword) {
+      } else if (lit.kind === typescript.SyntaxKind.TrueKeyword) {
         literals.push(true);
-      } else if (lit.kind === ts.SyntaxKind.FalseKeyword) {
+      } else if (lit.kind === typescript.SyntaxKind.FalseKeyword) {
         literals.push(false);
       } else if (
-        ts.isPrefixUnaryExpression(lit) &&
-        lit.operator === ts.SyntaxKind.MinusToken &&
-        ts.isNumericLiteral(lit.operand)
+        typescript.isPrefixUnaryExpression(lit) &&
+        lit.operator === typescript.SyntaxKind.MinusToken &&
+        typescript.isNumericLiteral(lit.operand)
       ) {
         literals.push(-Number(lit.operand.text));
       } else {
@@ -168,10 +177,13 @@ function extractTypesFromAST(
 ): Record<string, SchemaDefinition> {
   if (!ts) return {};
   
+  // TypeScript is available at this point, assert non-null
+  const typescript = ts as typeof TypeScript;
+  
   const out: Record<string, SchemaDefinition> = {};
 
   function visit(node: TypeScript.Node) {
-    if (ts!.isTypeAliasDeclaration(node)) {
+    if (typescript.isTypeAliasDeclaration(node)) {
       const name = node.name.text;
       const literalValues = extractLiteralUnion(node);
       
@@ -182,11 +194,11 @@ function extractTypesFromAST(
         
         if (
           node.type &&
-          ts!.isTypeOperatorNode(node.type) &&
-          node.type.operator === ts!.SyntaxKind.KeyOfKeyword
+          typescript.isTypeOperatorNode(node.type) &&
+          node.type.operator === typescript.SyntaxKind.KeyOfKeyword
         ) {
           const inner = node.type.type;
-          if (inner && ts!.isTypeQueryNode(inner)) {
+          if (inner && typescript.isTypeQueryNode(inner)) {
             keyOfTypeExpressionText = node.type.getText(sourceFile);
           }
         }
@@ -204,18 +216,46 @@ function extractTypesFromAST(
           out[name] = props as any;
         }
       }
-    } else if (ts!.isEnumDeclaration(node)) {
+    } else if (typescript.isInterfaceDeclaration(node)) {
+      // Handle interface declarations
+      const name = node.name.text;
+      const type = checker.getTypeAtLocation(node);
+      const props: Record<string, any> = {};
+      
+      for (const sym of type.getProperties()) {
+        const propType = checker.getTypeOfSymbolAtLocation(sym, node);
+        const propTypeString = checker.typeToString(propType);
+        
+        // Get JSDoc description if available
+        const propDeclaration = sym.valueDeclaration;
+        let description: string | undefined;
+        if (propDeclaration) {
+          const jsdocs = (typescript as any).getJSDocCommentsAndTags?.(propDeclaration) || [];
+          if (jsdocs.length > 0) {
+            description = jsdocs[0].comment || undefined;
+          }
+        }
+        
+        props[sym.getName()] = {
+          type: propTypeString,
+          description,
+          required: !sym.declarations?.some((d: any) => d.questionToken),
+        };
+      }
+      
+      out[name] = props as any;
+    } else if (typescript.isEnumDeclaration(node)) {
       const name = node.name.text;
       const values: any[] = [];
       node.members.forEach((member) => {
-        if (ts!.isIdentifier(member.name) || ts!.isStringLiteral(member.name)) {
+        if (typescript.isIdentifier(member.name) || typescript.isStringLiteral(member.name)) {
           values.push(member.name.text);
         }
       });
       out[name] = { enum: values, type: 'enum' };
     }
     
-    ts!.forEachChild(node, visit);
+    typescript.forEachChild(node, visit);
   }
 
   visit(sourceFile);
@@ -240,9 +280,9 @@ function transformSchemas(
     const { sourceFile, checker } = parseDefinitions(_types);
     const extractedTypes = extractTypesFromAST(sourceFile, checker);
     
-    // Remove Props types
+    // Remove unwanted types (Props types and HTMLElementTagNameMap)
     Object.entries(extractedTypes).forEach(([typeName]) => {
-      if (typeName.endsWith('Props')) {
+      if (typeName.endsWith('Props') || typeName === 'HTMLElementTagNameMap') {
         delete extractedTypes[typeName];
       }
     });
