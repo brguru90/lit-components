@@ -1,6 +1,7 @@
-import type { TestRunnerConfig } from '@storybook/test-runner';
+import { getStoryContext, type TestRunnerConfig } from '@storybook/test-runner';
 import type { Page } from 'playwright';
 import {runLighthouseAudit, type LighthouseParams} from './utils/test-runner-utils';
+import { extractAndSaveDocumentation } from './utils/documentation-extraction';
 
 const config: TestRunnerConfig = {
   // Optional: Setup before all tests
@@ -54,6 +55,15 @@ const config: TestRunnerConfig = {
     } catch (error) {
       console.error(`\n❌ Error running Lighthouse for ${storyName}:`, error);
       throw error;
+    }
+
+    // Extract and save documentation for this story
+    try {
+      const storyContext = await getStoryContext(page, context)
+      await extractAndSaveDocumentation(page, context,storyContext);
+    } catch (error) {
+      console.error(`\n❌ Error extracting documentation for ${storyName}:`, error);
+      // Don't throw error here - we don't want documentation extraction to fail the test
     }
   },
 };

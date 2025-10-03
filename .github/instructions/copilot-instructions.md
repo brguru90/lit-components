@@ -45,3 +45,19 @@
 - Follow the folder-per-component pattern and keep filenames lowercase-kebab for custom element tags (`vg-button`, `vg-theme-provider`).
 - Favor property-driven APIs (boolean, string, union types) exposed via decorators so the generated manifest stays accurate.
 - Mkcert support in `vite.config.ts` is commented out to avoid sudo; leave it disabled unless HTTPS is explicitly required.
+
+
+# Hints:
+- use `jq` utility command to efficiently lookup JSON files/data
+- leverage `grep` and `awk` for quick text searches and processing
+- use `tree` command to visualize directory structures
+- utilize `find` command to locate files based on patterns
+- use `ag` (the silver searcher) for fast codebase searching
+- leverage `xargs` to build and execute command lines from standard input
+- use `diff` to compare files and directories
+- utilize `head` and `tail` to view the beginning and end of files
+- employ `cut` to extract sections from lines of text
+- use `sort` and `uniq` for organizing and filtering unique lines
+- leverage `wc` for word, line, and byte counts
+- utilize `curl` or `wget` for fetching web resources
+- use node or python runtimes for inline scripting tasks

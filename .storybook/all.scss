@@ -1,0 +1,8 @@
+// Import main styles for documentation extraction
+@import '../src/index.css';
+
+// Add any additional styles needed for documentation
+:root {
+  /* CSS variables will be extracted and included in documentation */
+  --vg-doc-extraction: true;
+}
