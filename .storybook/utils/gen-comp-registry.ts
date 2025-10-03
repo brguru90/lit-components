@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import type * as TypeScript from 'typescript';
 import { StoryEntry, ProcessedType } from './merge-docs';
+import YAML from 'yaml';
 
 // Import TypeScript dynamically
 const ts = await (async (): Promise<typeof TypeScript | null> => {
@@ -49,7 +50,7 @@ export interface ComponentSlot {
 export interface ComponentExample {
   id: string;
   name: string;
-  source: string;
+  sources: Record<string, string>;
   args: Record<string, any>;
 }
 
@@ -377,7 +378,7 @@ function transformComponents(
     currentReg.examples.push({
       id: storyKey,
       name: storyEntry.story_name || storyEntry.context.name,
-      source: storyEntry.source || '',
+      sources: storyEntry.sources || {},
       args: storyEntry.currentArgs || {},
     });
   });
@@ -471,6 +472,10 @@ export function transformToRegistry(): void {
   const registryPath = path.join(STORIES_DIR, 'component-registry.json');
   fs.writeFileSync(registryPath, JSON.stringify(transformed, null, 2));
   console.log(`✅ Component registry generated: ${registryPath}`);
+
+  const doc = new YAML.Document();
+  doc.contents = transformed
+  fs.writeFileSync(`${STORIES_DIR}/component-registry.yml`, doc.toString())
 
   // Generate minimal docs
   const minimalDoc = generateMinimalDocs(stories);

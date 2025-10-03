@@ -46,7 +46,6 @@ const ExampleComponent = (args: any, content?: any) => {
       error=${args.error || ''}
       @vg-change=${onchange}
     >
-      ${content}
     </vg-input><br />
     Input Value: <b>${value}</b>
   `

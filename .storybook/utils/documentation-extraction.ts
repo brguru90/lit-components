@@ -2,6 +2,7 @@ import type { Page } from 'playwright';
 import fs from 'fs';
 import path from 'path';
 import { StoryContextForEnhancers } from 'storybook/internal/types';
+import { transformCodeForFramework, type FrameworkType } from './framework-transformer';
 
 const STORIES_DIR = `./storybook-static/stories_doc`;
 
@@ -57,6 +58,7 @@ export interface StoryEntry {
     component_hierarchy?: string;
     component_type?: string;
     source?: string;
+    sources?: Record<FrameworkType, string>; // Source code for all frameworks
     rendered_source?: string;
     meta?: any;
     props: Record<string, StoryProp>;
@@ -448,6 +450,27 @@ export async function extractStoryDocumentation(
         storyContext.parameters?.docs?.source?.originalSource ||
         '';
 
+    // Get the component tag name for transformation
+    const componentName = typeof (storyContext as any).component === 'string'
+        ? (storyContext as any).component
+        : componentTag;
+
+    // Generate source code for all supported frameworks
+    const supportedFrameworks: FrameworkType[] = ['html', 'react', 'react19', 'vue', 'angular', 'lit'];
+    const sources: Record<FrameworkType, string> = {} as Record<FrameworkType, string>;
+
+    const currentArgs=(storyContext as any).args || (storyContext as any).initialArgs || {}
+
+    // Generate transformed source code for each framework
+    for (const framework of supportedFrameworks) {
+        try {
+            sources[framework] = transformCodeForFramework(framework, {...storyContext,args: currentArgs} as any, renderedSource);
+        } catch (error) {
+            console.warn(`  ⚠️  Failed to generate ${framework} source for ${context.id}:`, error);
+            sources[framework] = source; // Fallback to default source
+        }
+    }
+
     const storyEntry: StoryEntry = {
         context: {
             id: context.id,
@@ -460,6 +483,7 @@ export async function extractStoryDocumentation(
         component_hierarchy: storyContext.parameters?.docs?.component_hierarchies,
         component_type: storyContext.parameters?.docs?.component_type,
         source,
+        sources, // Add framework-specific sources
         rendered_source: renderedSource,
         meta: {
             id: context.id,
