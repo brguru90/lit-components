@@ -20,7 +20,7 @@
     "@angular/router": "^18.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "vg": "file:../../vg-0.0.53.tgz",
+    "vg": "file:../../vg-0.0.55.tgz",
     "zone.js": "~0.14.3"
   },
   "devDependencies": {

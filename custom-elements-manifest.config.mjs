@@ -21,8 +21,8 @@ function myPlugin() {
     packageLinkPhase({ customElementsManifest, context }) {
       fs.writeFileSync("dist/vue/index.js", "import \"../index.js\";\nimport \"../index.css\";\n");
       fs.writeFileSync("dist/jsx/index.js", "import \"../index.js\";\nimport \"../index.css\";\n");
-      fs.copyFileSync('./vg-package.json', './dist/package.json');
-      fs.copyFileSync('./vg-package-lock.json', './dist/package-lock.json');
+      // fs.copyFileSync('./vg-package.json', './dist/package.json');
+      // fs.copyFileSync('./vg-package-lock.json', './dist/package-lock.json');
     }
   }
 }

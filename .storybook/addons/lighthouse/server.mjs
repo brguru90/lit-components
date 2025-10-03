@@ -11,6 +11,11 @@ import express from 'express';
 import * as chromeLauncher from 'chrome-launcher';
 import cors from 'cors';
 import lighthouse from 'lighthouse';
+import { 
+  CHROME_FLAGS, 
+  LIGHTHOUSE_OPTIONS_DESKTOP,
+  LIGHTHOUSE_OPTIONS_MOBILE 
+} from '../../lighthouse/lighthouse-config.cjs';
 
 let server;
 
@@ -41,25 +46,15 @@ export async function startLighthouseServer() {
     let chrome;
     
     try {
-      // Launch Chrome with flags optimized for Lighthouse testing
+      // Launch Chrome with shared configuration
       chrome = await chromeLauncher.launch({
-        chromeFlags: [
-          // Essential flags
-          '--headless',                          // Run without UI
-          '--incognito',                         // Clean slate: no extensions, cache, cookies, or sync
-          '--no-sandbox',                        // Required for Docker/CI environments
-          '--disable-dev-shm-usage',            // Prevent shared memory issues in containers
-          '--disable-gpu',                       // Disable GPU hardware acceleration
-          '--window-size=1920,1080',            // Consistent viewport size
-        ],
+        chromeFlags: CHROME_FLAGS,
       });
 
-      // Configure Lighthouse options
+      // Configure Lighthouse with shared options and port
       const lighthouseOptions = {
-        logLevel: 'error',
-        output: 'json',
+        ...LIGHTHOUSE_OPTIONS,
         port: chrome.port,
-        onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo'],
         ...options,
       };
 
@@ -230,6 +225,162 @@ export async function startLighthouseServer() {
           seo: 0,
         },
       });
+    }
+  });
+
+  /**
+   * POST /api/lighthouse/dual
+   * Run BOTH desktop and mobile Lighthouse audits efficiently
+   * 
+   * NOTE: Lighthouse MUST be called twice - once for desktop, once for mobile.
+   * This is a fundamental limitation of Lighthouse's architecture.
+   * However, we optimize by reusing the same Chrome instance for both runs.
+   * 
+   * Body parameters:
+   * - url: URL to audit (required)
+   * - skipCache: Set to true to bypass cache (optional, default: false)
+   */
+  app.post('/api/lighthouse/dual', async (req, res) => {
+    const { url, skipCache = false } = req.body;
+
+    if (!url) {
+      return res.status(400).json({
+        error: 'URL is required',
+        message: 'Please provide a URL to audit',
+      });
+    }
+
+    // Validate URL
+    try {
+      new URL(url);
+    } catch (error) {
+      return res.status(400).json({
+        error: 'Invalid URL',
+        message: 'Please provide a valid URL',
+      });
+    }
+
+    // Check cache for BOTH desktop and mobile
+    const desktopCacheKey = `${url}_desktop`;
+    const mobileCacheKey = `${url}_mobile`;
+    
+    if (!skipCache && auditCache.has(desktopCacheKey) && auditCache.has(mobileCacheKey)) {
+      const desktopCached = auditCache.get(desktopCacheKey);
+      const mobileCached = auditCache.get(mobileCacheKey);
+      const desktopAge = Date.now() - new Date(desktopCached.timestamp).getTime();
+      const mobileAge = Date.now() - new Date(mobileCached.timestamp).getTime();
+      
+      // Return cached if both are less than 5 minutes old
+      if (desktopAge < 5 * 60 * 1000 && mobileAge < 5 * 60 * 1000) {
+        console.log(`📦 Dual cached results (${Math.round(Math.max(desktopAge, mobileAge) / 1000)}s old)`);
+        return res.json({
+          desktop: { ...desktopCached, cached: true, cacheAge: desktopAge },
+          mobile: { ...mobileCached, cached: true, cacheAge: mobileAge },
+        });
+      }
+    }
+    
+    if (skipCache) {
+      console.log('🔄 Skipping cache - running fresh dual audit');
+    }
+
+    let chrome;
+    
+    try {
+      // Launch Chrome ONCE - we'll reuse it for both audits
+      console.log(`🔦 Running DUAL audit (desktop + mobile) for: ${url}`);
+      console.log('⏱️  This will run TWO audits sequentially using the same Chrome instance...');
+      
+      chrome = await chromeLauncher.launch({
+        chromeFlags: CHROME_FLAGS,
+      });
+
+      // Run Desktop Audit
+      console.log('\n📱 [1/2] Running DESKTOP audit...');
+      const desktopOptions = {
+        ...LIGHTHOUSE_OPTIONS_DESKTOP,
+        port: chrome.port,
+      };
+      const desktopResult = await lighthouse(url, desktopOptions);
+      
+      if (!desktopResult || !desktopResult.lhr) {
+        throw new Error('Desktop audit failed');
+      }
+
+      const desktopData = {
+        formFactor: 'desktop',
+        scores: {
+          performance: Math.round((desktopResult.lhr.categories.performance?.score || 0) * 100),
+          accessibility: Math.round((desktopResult.lhr.categories.accessibility?.score || 0) * 100),
+          'best-practices': Math.round((desktopResult.lhr.categories['best-practices']?.score || 0) * 100),
+          seo: Math.round((desktopResult.lhr.categories.seo?.score || 0) * 100),
+        },
+        metrics: extractMetrics(desktopResult.lhr),
+        audits: extractFailedAudits(desktopResult.lhr),
+        timestamp: new Date().toISOString(),
+        url: url,
+        lighthouseVersion: desktopResult.lhr.lighthouseVersion,
+      };
+
+      console.log(`✅ Desktop audit complete - Performance: ${desktopData.scores.performance}`);
+
+      // Run Mobile Audit (reusing same Chrome instance)
+      console.log('\n📱 [2/2] Running MOBILE audit...');
+      const mobileOptions = {
+        ...LIGHTHOUSE_OPTIONS_MOBILE,
+        port: chrome.port,
+      };
+      const mobileResult = await lighthouse(url, mobileOptions);
+      
+      if (!mobileResult || !mobileResult.lhr) {
+        throw new Error('Mobile audit failed');
+      }
+
+      const mobileData = {
+        formFactor: 'mobile',
+        scores: {
+          performance: Math.round((mobileResult.lhr.categories.performance?.score || 0) * 100),
+          accessibility: Math.round((mobileResult.lhr.categories.accessibility?.score || 0) * 100),
+          'best-practices': Math.round((mobileResult.lhr.categories['best-practices']?.score || 0) * 100),
+          seo: Math.round((mobileResult.lhr.categories.seo?.score || 0) * 100),
+        },
+        metrics: extractMetrics(mobileResult.lhr),
+        audits: extractFailedAudits(mobileResult.lhr),
+        timestamp: new Date().toISOString(),
+        url: url,
+        lighthouseVersion: mobileResult.lhr.lighthouseVersion,
+      };
+
+      console.log(`✅ Mobile audit complete - Performance: ${mobileData.scores.performance}`);
+      console.log('\n✅ DUAL AUDIT COMPLETE\n');
+
+      // Cache both results
+      auditCache.set(desktopCacheKey, desktopData);
+      auditCache.set(mobileCacheKey, mobileData);
+      
+      // Limit cache size
+      if (auditCache.size > MAX_CACHE_SIZE) {
+        const firstKey = auditCache.keys().next().value;
+        auditCache.delete(firstKey);
+      }
+      
+      // Return combined results
+      res.json({
+        desktop: desktopData,
+        mobile: mobileData,
+      });
+      
+    } catch (error) {
+      console.error('❌ Dual audit failed:', error.message);
+      res.status(500).json({
+        error: 'Dual audit failed',
+        message: error.message,
+      });
+    } finally {
+      // Cleanup: Kill Chrome
+      if (chrome) {
+        await chrome.kill();
+      }
     }
   });
 

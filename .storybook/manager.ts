@@ -1,6 +1,6 @@
 import { addons } from 'storybook/manager-api'
-import { themes } from './themes'
-import type { ThemeMode } from './themes'
+import { themes } from './themes/themes'
+import type { ThemeMode } from './themes/themes'
 
 // Function to update both manager and docs themes
 const updateAllThemes = (selectedTheme: ThemeMode) => {
