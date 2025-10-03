@@ -15,7 +15,7 @@ import {
   CHROME_FLAGS, 
   LIGHTHOUSE_OPTIONS_DESKTOP,
   LIGHTHOUSE_OPTIONS_MOBILE 
-} from '../../lighthouse-config.cjs';
+} from '../../lighthouse/lighthouse-config.cjs';
 
 let server;
 

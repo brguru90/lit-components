@@ -6,12 +6,12 @@ import { setCustomElementsManifest } from "@storybook/web-components";
 import customElements from "../dist/custom-elements.json";
 
 // Import theme configuration and decorators
-import { withThemeProvider, globalTypes } from "./decorators";
-import { themes } from "./themes";
+import { withThemeProvider, globalTypes } from "./themes/decorators";
+import { themes } from "./themes/themes";
 import { PropsWithChildren } from "react";
 import { DocsContainer } from "@storybook/addon-docs/blocks";
-import type { ThemeMode } from "./themes";
-import { transformCodeForFramework, type FrameworkType } from "./framework-transformer";
+import type { ThemeMode } from "./themes/themes";
+import { transformCodeForFramework, type FrameworkType } from "./utils/framework-transformer";
 
 
 const ThemedDocsContainer = (props: PropsWithChildren<any>) => {

@@ -8,7 +8,7 @@ import { getArgTypesFromManifest } from '../.storybook/controls'
 
 import { addons } from 'storybook/manager-api'
 import { ThemeChangeDetail } from '../src/components/ThemeProvider/theme-provider'
-import { themes } from '../.storybook/themes'
+import { themes } from '../.storybook/themes/themes'
 
 const { events, args, argTypes, template } = getStorybookHelpers('vg-theme-provider')
 

@@ -4,8 +4,8 @@ import { createHash } from 'crypto';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 
 // Import from CommonJS file for Jest compatibility
-const { DEFAULT_THRESHOLDS } = require('./lighthouse-config.cjs');
-import {LighthouseThresholds} from './lighthouse-config';
+const { DEFAULT_THRESHOLDS } = require('../lighthouse/lighthouse-config.cjs');
+import {LighthouseThresholds} from '../lighthouse/lighthouse-config';
 
 export interface LighthouseParams {
   enabled?: boolean;
@@ -29,7 +29,7 @@ interface CacheData {
   [filePath: string]: CacheEntry;
 }
 
-const CACHE_FILE = resolve(__dirname, '../.lighthouse-cache.json');
+const CACHE_FILE = resolve(__dirname, '../../.lighthouse-cache.json');
 
 // Calculate hash of file content
 function calculateFileHash(filePath: string): string {
@@ -172,7 +172,7 @@ async function runLighthouseAudit(
   
   try {
     // Run Lighthouse in a separate Node.js process to avoid Jest's module resolution
-    const runnerScript = resolve(__dirname, 'lighthouse-runner.mjs');
+    const runnerScript = resolve(__dirname, '../lighthouse/lighthouse-runner.mjs');
     const thresholdsJson = JSON.stringify(thresholds);
     
     console.log(`\n📊 Lighthouse Report for: ${storyName}`);

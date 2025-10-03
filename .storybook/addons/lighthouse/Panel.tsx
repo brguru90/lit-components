@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useStorybookApi, useStorybookState } from 'storybook/manager-api';
 import { AddonPanel } from 'storybook/internal/components';
 import { styled } from 'storybook/theming';
-import { DEFAULT_THRESHOLDS, DEFAULT_THRESHOLDS_MOBILE, type LighthouseThresholds } from '../../lighthouse-config';
+import { DEFAULT_THRESHOLDS, DEFAULT_THRESHOLDS_MOBILE, type LighthouseThresholds } from '../../lighthouse/lighthouse-config';
 
 // Styled components
 const Container = styled.div`
