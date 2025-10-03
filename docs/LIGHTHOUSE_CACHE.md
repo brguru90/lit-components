@@ -2,9 +2,167 @@
 
 ## Overview
 
-The Lighthouse API server implements smart caching to improve performance while allowing users to force fresh audits when needed.
+The Lighthouse system implements two levels of caching:
+1. **Test Runner File-Based Cache** - For test-runner audits (NEW)
+2. **API Server Memory Cache** - For Storybook addon audits
 
-## Default Behavior: Cache Enabled ✅
+---
+
+## Level 1: Test Runner File-Based Cache (NEW) 🆕
+
+### Overview
+
+The test-runner now caches Lighthouse audit results based on story file content hash. Audits only re-run when the story file actually changes.
+
+### Cache Structure
+
+The cache is stored in `.lighthouse-cache.json` at the project root:
+
+```json
+{
+  "/absolute/path/to/story.stories.ts": {
+    "hash": "sha256_hash_of_file_content",
+    "results": {
+      "story-id-1": {
+        "desktop": { "passed": true, "scores": {...}, ... },
+        "mobile": { "passed": true, "scores": {...}, ... }
+      },
+      "story-id-2": {
+        "desktop": { "passed": true, "scores": {...}, ... },
+        "mobile": { "passed": true, "scores": {...}, ... }
+      }
+    },
+    "last_run": "2025-10-03T12:34:56.789Z",
+    "time_to_execute": 45.23
+  }
+}
+```
+
+### Cache Invalidation
+
+The cache is automatically invalidated when:
+- The story file content changes (detected via SHA-256 hash)
+- The story file is deleted or moved
+- The cache file is manually deleted
+
+### Implementation Details
+
+#### 1. File Hash Calculation
+- Uses SHA-256 hashing algorithm
+- Calculates hash of the entire story file content
+- Stored per story file, not per individual story
+
+#### 2. Cache Loading & Saving
+- Cache loaded at the start of each audit
+- Saved after successful audit completion
+- Graceful fallback if cache file is corrupted
+
+#### 3. Story File Path Resolution
+- Fetches story metadata from Storybook's `/index.json` endpoint
+- Converts relative import path to absolute file path
+- Passed to `runLighthouseAudit` function
+
+#### 4. Cache Lookup
+- Checks if cached entry exists for the story file
+- Compares current file hash with cached hash
+- Returns cached result if hash matches
+- Returns null if hash differs or no cache exists
+
+#### 5. Cache Storage
+- Stores both desktop and mobile results (currently using same result)
+- Tracks execution time for performance monitoring
+- Updates last_run timestamp
+
+### Benefits
+
+1. **Performance**: Skips expensive Lighthouse audits for unchanged stories
+2. **Cost Savings**: Reduces computational resources and time
+3. **Developer Experience**: Faster test runs during development
+4. **CI/CD Efficiency**: Only audits changed stories in pull requests
+
+### Usage
+
+#### Automatic Caching
+
+Caching is automatic and transparent. No changes needed to your test commands:
+
+```bash
+npm run test stories/Button.stories.ts
+```
+
+#### Cache Management
+
+**View Cache:**
+```bash
+cat .lighthouse-cache.json | jq
+```
+
+**Clear Cache:**
+```bash
+rm .lighthouse-cache.json
+```
+
+**Force Re-audit:**
+Simply modify the story file (even a whitespace change will invalidate the cache).
+
+#### Cache Output
+
+When a cached result is used, you'll see:
+```
+✨ Using cached result for story components-button--primary (last run: 2025-10-03T12:34:56.789Z)
+📊 Lighthouse Report for: Button/Primary (from cache)
+```
+
+When a fresh audit runs:
+```
+📊 Lighthouse Report for: Button/Primary
+💾 Cached result for components-button--primary (took 12.34s)
+```
+
+### Technical Considerations
+
+**Cache Location:**
+- Stored in project root as `.lighthouse-cache.json`
+- Added to `.gitignore` to avoid version control
+- Persistent across test runs
+
+**Thread Safety:**
+- Cache file is read/written synchronously
+- Safe for sequential test execution
+- May have race conditions with parallel execution (consider locking if needed)
+
+**Storage Size:**
+- Each audit result is ~5-10KB
+- 100 stories ≈ 500KB-1MB cache file
+- Minimal disk space impact
+
+### Troubleshooting
+
+**Cache Not Working:**
+
+1. Check if story file path is being resolved:
+   - Look for console warnings about missing story path
+   - Verify Storybook's `/index.json` is accessible
+
+2. Check cache file permissions:
+   ```bash
+   ls -la .lighthouse-cache.json
+   ```
+
+**Cache Corruption:**
+
+If cache becomes corrupted, simply delete it:
+```bash
+rm .lighthouse-cache.json
+```
+
+The next test run will create a fresh cache.
+
+---
+
+## Level 2: API Server Memory Cache
+
+### Default Behavior: Cache Enabled ✅
 
 By default, the API **uses cache** to provide instant results for repeated audits.
 

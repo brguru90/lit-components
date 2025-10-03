@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useStorybookApi, useStorybookState } from 'storybook/manager-api';
 import { AddonPanel } from 'storybook/internal/components';
 import { styled } from 'storybook/theming';
-import { DEFAULT_THRESHOLDS, type LighthouseThresholds } from '../../lighthouse-config';
+import { DEFAULT_THRESHOLDS, DEFAULT_THRESHOLDS_MOBILE, type LighthouseThresholds } from '../../lighthouse-config';
 
 // Styled components
 const Container = styled.div`
@@ -18,6 +18,53 @@ const Header = styled.div`
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid ${props => props.theme.appBorderColor};
+`;
+
+const FormFactorBadge = styled.span<{ formFactor: 'desktop' | 'mobile' }>`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: ${props => props.formFactor === 'desktop' ? '#e3f2fd' : '#fff3e0'};
+  color: ${props => props.formFactor === 'desktop' ? '#1976d2' : '#f57c00'};
+  margin-left: 0.5rem;
+`;
+
+const DualContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const FormFactorSection = styled.div`
+  border: 1px solid ${props => props.theme.appBorderColor};
+  border-radius: 8px;
+  padding: 1rem;
+  background: ${props => props.theme.background.content};
+`;
+
+const FormFactorHeader = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid ${props => props.theme.appBorderColor};
+`;
+
+const FormFactorTitle = styled.h3`
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 `;
 
 const Title = styled.h2`
@@ -193,6 +240,7 @@ const ErrorContainer = styled.div`
 `;
 
 interface LighthouseResults {
+  formFactor?: 'desktop' | 'mobile';
   scores: {
     performance: number;
     accessibility: number;
@@ -220,8 +268,13 @@ interface LighthouseResults {
   cacheAge?: number;
 }
 
+interface DualLighthouseResults {
+  desktop: LighthouseResults;
+  mobile: LighthouseResults;
+}
+
 export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
-  const [results, setResults] = useState<LighthouseResults | null>(null);
+  const [dualResults, setDualResults] = useState<DualLighthouseResults | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentStoryId, setCurrentStoryId] = useState<string | null>(null);
@@ -237,7 +290,7 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
       console.log(`📖 Story changed (${currentStoryId} → ${storyId})`);
       
       // Clear current results
-      setResults(null);
+      setDualResults(null);
       setError(null);
       
       // Try to restore cached results for new story
@@ -259,17 +312,26 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
       const storyUrl = `${baseUrl}/iframe.html?viewMode=story&id=${storyId}`;
       const encodedUrl = encodeURIComponent(storyUrl);
       
-      const apiUrl = `http://localhost:9002/api/lighthouse/cache/${encodedUrl}`;
+      // Try to fetch cached dual results
+      const desktopCacheUrl = `http://localhost:9002/api/lighthouse/cache/${encodedUrl}_desktop`;
+      const mobileCacheUrl = `http://localhost:9002/api/lighthouse/cache/${encodedUrl}_mobile`;
+      
       console.log('🔍 Checking for cached Lighthouse results...');
       
-      const response = await fetch(apiUrl);
+      const [desktopResponse, mobileResponse] = await Promise.all([
+        fetch(desktopCacheUrl).catch(() => null),
+        fetch(mobileCacheUrl).catch(() => null)
+      ]);
       
-      if (response.ok) {
-        const data = await response.json();
-        console.log(`✅ Restored cached results (${Math.round(data.cacheAge / 1000)}s old)`);
-        setResults(data);
+      if (desktopResponse?.ok && mobileResponse?.ok) {
+        const [desktopData, mobileData] = await Promise.all([
+          desktopResponse.json(),
+          mobileResponse.json()
+        ]);
+        console.log(`✅ Restored cached dual results`);
+        setDualResults({ desktop: desktopData, mobile: mobileData });
       } else {
-        console.log('📭 No cached results found for this story');
+        console.log('📭 No cached dual results found for this story');
       }
     } catch (err) {
       // Silently fail - just means no cache or API not available
@@ -277,22 +339,22 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
     }
   }, []);
 
-  // Direct API call - no channel communication needed!
+  // Direct API call for DUAL audit - runs both desktop and mobile
   const runLighthouse = useCallback(async (skipCache = false) => {
     setLoading(true);
     setError(null);
     
     try {
       const storyId = api.getUrlState().storyId;
-      console.log('🔦 Running Lighthouse audit for story:', storyId, skipCache ? '(forcing fresh audit)' : '');
+      console.log('🔦 Running DUAL Lighthouse audit for story:', storyId, skipCache ? '(forcing fresh audit)' : '');
       
       // Get the story URL - construct from storyId
       const baseUrl = window.location.origin;
       const storyUrl = `${baseUrl}/iframe.html?viewMode=story&id=${storyId}`;
       
-      // Call Lighthouse API directly
-      const apiUrl = 'http://localhost:9002/api/lighthouse';
-      console.log(`🔦 Calling Lighthouse API at ${apiUrl}...`);
+      // Call Lighthouse DUAL API directly
+      const apiUrl = 'http://localhost:9002/api/lighthouse/dual';
+      console.log(`🔦 Calling Lighthouse DUAL API at ${apiUrl}...`);
       
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -309,21 +371,21 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
       }
       
       const data = await response.json();
-      console.log('✅ Real Lighthouse results received:', data);
+      console.log('✅ Real Lighthouse DUAL results received:', data);
       
-      // Log if result was cached
-      if (data.cached) {
-        console.log(`📦 Result from cache (${Math.round(data.cacheAge / 1000)}s old)`);
+      // Log if results were cached
+      if (data.desktop?.cached || data.mobile?.cached) {
+        console.log(`📦 Some results from cache`);
       }
       
-      setResults(data);
+      setDualResults(data);
       setLoading(false);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      console.error('❌ Lighthouse API failed:', errorMessage);
+      console.error('❌ Lighthouse DUAL API failed:', errorMessage);
       
       setError(
-        `Failed to run Lighthouse audit.\n\n` +
+        `Failed to run Lighthouse dual audit.\n\n` +
         `Error: ${errorMessage}\n\n` +
         `Make sure the Lighthouse API server is running:\n` +
         `npm run lighthouse:api`
@@ -341,9 +403,9 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
       <AddonPanel active={active}>
         <LoadingContainer>
           <Spinner />
-          <div>Running Lighthouse audit...</div>
+          <div>Running Lighthouse dual audit (Desktop + Mobile)...</div>
           <div style={{ fontSize: '0.85rem', marginTop: '0.5rem' }}>
-            This may take 10-30 seconds
+            This may take 15-30 seconds
           </div>
         </LoadingContainer>
       </AddonPanel>
@@ -363,48 +425,45 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
     );
   }
 
-  if (!results) {
+  if (!dualResults) {
     return (
       <AddonPanel active={active}>
         <EmptyState>
           <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔦</div>
           <h3>No Lighthouse Results</h3>
           <p style={{ marginBottom: '1.5rem', maxWidth: '400px' }}>
-            Run Lighthouse to audit this story's performance, accessibility, best practices, and SEO.
+            Run Lighthouse to audit this story on both desktop and mobile devices.
           </p>
-          <Button onClick={() => runLighthouse(false)}>Run Lighthouse Audit</Button>
+          <Button onClick={() => runLighthouse(false)}>Run Dual Audit (Desktop + Mobile)</Button>
         </EmptyState>
       </AddonPanel>
     );
   }
 
-  const categories = [
-    { key: 'performance', label: 'Performance' },
-    { key: 'accessibility', label: 'Accessibility' },
-    { key: 'best-practices', label: 'Best Practices' },
-    { key: 'seo', label: 'SEO' },
-  ];
+  // Helper function to render results for one form factor
+  const renderFormFactorResults = (results: LighthouseResults, formFactor: 'desktop' | 'mobile') => {
+    const categories = [
+      { key: 'performance', label: 'Performance' },
+      { key: 'accessibility', label: 'Accessibility' },
+      { key: 'best-practices', label: 'Best Practices' },
+      { key: 'seo', label: 'SEO' },
+    ];
 
-  // Use thresholds from results if available, otherwise use DEFAULT_THRESHOLDS
-  const activeThresholds = results.thresholds || DEFAULT_THRESHOLDS;
+    // Use appropriate thresholds based on form factor
+    const activeThresholds = formFactor === 'desktop' ? DEFAULT_THRESHOLDS : DEFAULT_THRESHOLDS_MOBILE;
 
-  return (
-    <AddonPanel active={active}>
-      <Container>
-        <Header>
-          <div>
-            <Title>Lighthouse Metrics</Title>
-            {results.timestamp && (
-              <div style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.25rem' }}>
-                Last run: {new Date(results.timestamp).toLocaleString()}
-                {results.cached && ` • Cached (${Math.round((results as any).cacheAge / 1000)}s old)`}
-              </div>
+    return (
+      <FormFactorSection>
+        <FormFactorHeader>
+          <FormFactorTitle>
+            {formFactor === 'desktop' ? '🖥️ Desktop' : '📱 Mobile'}
+            {results.cached && (
+              <FormFactorBadge formFactor={formFactor}>
+                Cached ({Math.round((results.cacheAge || 0) / 1000)}s old)
+              </FormFactorBadge>
             )}
-          </div>
-          <Button onClick={() => runLighthouse(true)} disabled={loading}>
-            {loading ? 'Running...' : 'Re-run Audit'}
-          </Button>
-        </Header>
+          </FormFactorTitle>
+        </FormFactorHeader>
 
         <Section>
           <SectionTitle>Core Metrics</SectionTitle>
@@ -437,7 +496,7 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
               {Object.entries(results.metrics).map(([key, value]) => {
                 const threshold = activeThresholds[key as keyof LighthouseThresholds];
                 // Convert value to number if it's a string (from server)
-                const numericValue = typeof value === 'string' ? parseFloat(value) : value;
+                const numericValue = typeof value === 'string' ? parseFloat(value) : (value as number);
                 // For Core Web Vitals, lower is better (opposite of category scores)
                 const passed = threshold !== undefined ? numericValue <= threshold : true;
                 const unit = key === 'cumulative-layout-shift' ? '' : 'ms';
@@ -470,9 +529,9 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
 
         {results.audits && results.audits.length > 0 && (
           <Section>
-            <SectionTitle>Failed Audits</SectionTitle>
+            <SectionTitle>Top Failed Audits</SectionTitle>
             <AuditList>
-              {results.audits.map((audit, index) => (
+              {results.audits.slice(0, 5).map((audit, index) => (
                 <AuditItem key={index} passed={audit.passed}>
                   <AuditIcon passed={audit.passed}>
                     {audit.passed ? '✓' : '✗'}
@@ -488,6 +547,31 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
             </AuditList>
           </Section>
         )}
+      </FormFactorSection>
+    );
+  };
+
+  return (
+    <AddonPanel active={active}>
+      <Container>
+        <Header>
+          <div>
+            <Title>Lighthouse Metrics (Desktop + Mobile)</Title>
+            {dualResults.desktop.timestamp && (
+              <div style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.25rem' }}>
+                Last run: {new Date(dualResults.desktop.timestamp).toLocaleString()}
+              </div>
+            )}
+          </div>
+          <Button onClick={() => runLighthouse(true)} disabled={loading}>
+            {loading ? 'Running...' : 'Re-run Dual Audit'}
+          </Button>
+        </Header>
+
+        <DualContainer>
+          {renderFormFactorResults(dualResults.desktop, 'desktop')}
+          {renderFormFactorResults(dualResults.mobile, 'mobile')}
+        </DualContainer>
       </Container>
     </AddonPanel>
   );
