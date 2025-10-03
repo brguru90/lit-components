@@ -191,12 +191,15 @@ async function runLighthouseAudit(
       throw new Error(result.error);
     }
 
-    const { passed, scores } = result;
+    const { passed, desktop, mobile } = result;
 
-    // Store results
+    // Store results (with both desktop and mobile)
     lighthouseResults.push({
       story: storyName,
-      scores,
+      scores: {
+        desktop: desktop.scores,
+        mobile: mobile.scores,
+      },
       passed,
     });
 
@@ -204,14 +207,14 @@ async function runLighthouseAudit(
     if (storyFilePath && storyId) {
       const executionTime = (Date.now() - startTime) / 1000; // Convert to seconds
       const cacheData = {
-        desktop: result,
-        mobile: result, // For now, using same result for both. Modify if you run separate mobile tests
+        desktop: desktop,
+        mobile: mobile,
       };
       saveCachedResult(storyFilePath, storyId, cacheData, executionTime);
       console.log(`💾 Cached result for ${storyId} (took ${executionTime.toFixed(2)}s)`);
     }
 
-    return { passed, scores };
+    return { passed, scores: { desktop: desktop.scores, mobile: mobile.scores } };
   } catch (error: any) {
     // Try to parse error output as JSON
     if (error.stdout) {
