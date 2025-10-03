@@ -53,7 +53,7 @@ const MetricsGrid = styled.div`
   margin-bottom: 2rem;
 `;
 
-const MetricCard = styled.div<{ score: number }>`
+const MetricCard = styled.div<{ score: number; passed: boolean }>`
   background: ${props => props.theme.background.content};
   border: 1px solid ${props => props.theme.appBorderColor};
   border-radius: 8px;
@@ -69,7 +69,7 @@ const MetricCard = styled.div<{ score: number }>`
     bottom: 0;
     width: 4px;
     background: ${props => 
-      props.score >= 90 ? '#0cce6b' : 
+      props.passed ? '#0cce6b' : 
       props.score >= 50 ? '#ffa400' : 
       '#ff4e42'
     };
@@ -85,11 +85,11 @@ const MetricLabel = styled.div`
   letter-spacing: 0.5px;
 `;
 
-const MetricScore = styled.div<{ score: number }>`
+const MetricScore = styled.div<{ score: number; passed: boolean }>`
   font-size: 2rem;
   font-weight: 700;
   color: ${props => 
-    props.score >= 90 ? '#0cce6b' : 
+    props.passed ? '#0cce6b' : 
     props.score >= 50 ? '#ffa400' : 
     '#ff4e42'
   };
@@ -412,12 +412,13 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
             {categories.map(({ key, label }) => {
               const score = results.scores[key as keyof typeof results.scores];
               const threshold = activeThresholds[key as keyof LighthouseThresholds];
+              // For category scores, higher is better (0-100 scale)
               const passed = threshold !== undefined ? score >= threshold : true;
               
               return (
-                <MetricCard key={key} score={score}>
+                <MetricCard key={key} score={score} passed={passed}>
                   <MetricLabel>{label}</MetricLabel>
-                  <MetricScore score={score}>{score}</MetricScore>
+                  <MetricScore score={score} passed={passed}>{score}</MetricScore>
                   {threshold !== undefined && (
                     <MetricThreshold>
                       Threshold: {threshold} {passed ? '✓' : '✗'}
@@ -437,6 +438,7 @@ export const LighthousePanel: React.FC<{ active: boolean }> = ({ active }) => {
                 const threshold = activeThresholds[key as keyof LighthouseThresholds];
                 // Convert value to number if it's a string (from server)
                 const numericValue = typeof value === 'string' ? parseFloat(value) : value;
+                // For Core Web Vitals, lower is better (opposite of category scores)
                 const passed = threshold !== undefined ? numericValue <= threshold : true;
                 const unit = key === 'cumulative-layout-shift' ? '' : 'ms';
                 const displayValue = key === 'cumulative-layout-shift' 

@@ -21,6 +21,12 @@ const config: StorybookConfig = {
     check: false,
   },
   
+  // Set environment variable to indicate development mode
+  env: (config) => ({
+    ...config,
+    STORYBOOK_LIGHTHOUSE_ENABLED: process.env.NODE_ENV !== 'production' ? 'true' : 'false',
+  }),
+  
   // Auto-start Lighthouse API server when Storybook starts
   async viteFinal(config, { configType }) {
     if (configType === 'DEVELOPMENT') {
