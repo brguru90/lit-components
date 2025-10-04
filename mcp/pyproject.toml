@@ -1,0 +1,27 @@
+[project]
+name = "lit-components-mcp-server"
+version = "0.1.0"
+description = "Model Context Protocol server for Lit Components documentation"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastmcp>=2.10.1",
+    "mcp[cli]>=1.10.1",
+    "requests>=2.32.4",
+    "uvicorn>=0.35.0",
+]
+
+[project.scripts]
+lit-components-mcp-server = "lit_components_mcp.main:run"
+lit-components-mcp-dev = "lit_components_mcp.main:run_dev"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"lit_components_mcp" = ["*.json"]
+"*" = ["*.json"]

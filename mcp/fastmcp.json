@@ -1,0 +1,37 @@
+{
+  "$schema": "https://gofastmcp.com/public/schemas/fastmcp.json/v1.json",
+  "name": "Lit Components Documentation Server",
+  "description": "MCP server providing comprehensive access to Lit component documentation, schemas, props, events, and examples",
+  "version": "1.0.0",
+  "source": {
+    "path": "src/lit_components_mcp/main.py",
+    "entrypoint": "mcp"
+  },
+  "environment": {
+    "type": "uv",
+    "python": "3.11",
+    "dependencies": [
+      "fastmcp>=2.10.1",
+      "mcp[cli]>=1.10.1",
+      "requests"
+    ]
+  },
+  "deployment": {
+    "transport": "stdio",
+    "log_level": "DEBUG",
+    "env": {
+      "DEBUG": "true",
+      "ENV": "development",
+      "DANGEROUSLY_OMIT_AUTH": "true"
+    }
+  },
+  "development": {
+    "hot_reload": true,
+    "inspector": true,
+    "debug_logging": true,
+    "inspector_config": {
+      "auto_install": true,
+      "version": "0.17.0"
+    }
+  }
+}
