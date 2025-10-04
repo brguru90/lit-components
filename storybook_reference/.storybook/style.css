@@ -1,9 +1,0 @@
-#storybook-docs div .docs-story, html .sb-show-main {
-  background-color: var(--es-body-bg) !important;
-  color: var(--es-body-color);
-}
-
-/* added as default as it's widely used  */
-*, html {
-  box-sizing: border-box;
-}
