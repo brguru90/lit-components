@@ -1,0 +1,10 @@
+// Import main styles for documentation extraction
+@import '../src/index.css';
+@import "../src/styles/theme.scss";
+@import "../src/components/ThemeProvider/theme.scss";
+
+// Add any additional styles needed for documentation
+:root {
+  /* CSS variables will be extracted and included in documentation */
+  --vg-doc-extraction: true;
+}

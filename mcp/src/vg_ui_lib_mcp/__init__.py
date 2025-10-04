@@ -1,0 +1,1 @@
+"""Lit Components MCP Server package."""

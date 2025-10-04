@@ -39,3 +39,28 @@ lighthouse-*.report.*
 .lighthouse-cache.json
 coverage
 test-output.log
+.nyc_output
+mcp_reference
+
+# Python (mcp module)
+mcp/.venv/
+mcp/__pycache__/
+mcp/**/__pycache__/
+mcp/*.pyc
+mcp/*.pyo
+mcp/*.pyd
+mcp/.Python
+mcp/build/
+mcp/dist/
+mcp/*.egg-info/
+mcp/.pytest_cache/
+mcp/.coverage
+mcp/.mypy_cache/
+mcp/.env
+
+# uv-specific files
+mcp/uv.lock
+mcp/.uv-cache/
+mcp/.python-version
+mcp/src/lit_components_mcp_server.egg-info
+mcp/src/lit_components_mcp/data/component-registry.json

@@ -1,5 +1,5 @@
 import { ArgTypes } from "@storybook/web-components-vite";
-import { CustomElementsManifest } from "cem-plugin-vs-code-custom-data-generator/types";
+import { CustomElementsManifest, Type } from "cem-plugin-vs-code-custom-data-generator/types";
 import customElements from '../dist/custom-elements.json'
 
 
@@ -20,17 +20,33 @@ export function getArgTypesFromManifest(componentName: string) {
 
     const argTypes: ArgTypes = {};
 
+    console.log(declaration.slots)
+
+    declaration.slots.forEach(slot => {
+         if(slot.name==""){
+            slot.name="default"
+        }
+    });
+
+    declaration.cssParts?.forEach(cssPart => {
+        cssPart.name+="{ /* css */ }"
+    });
+
 
     (declaration.members?.flat()?.filter(memeber=>memeber.kind=="field" && memeber.type) || declaration.attributes).forEach((attr) => {
         if((attr as any).privacy === "public" && (attr as any).kind == "field" && !(attr as any)?.attribute) return; // means its a runtime property not an attribute
-        const options = getOptions(attr.type!.text);
-        const valueType = getControlType(attr.type!.text)
+        const finalType:Type=(attr as any)?.expandedType ?? attr.type
+        const options = getOptions(finalType.text);
+        const valueType = getControlType(finalType.text)
         const argType: any = {
-            control: { type: valueType },
+            control: { type: valueType, },
             description: attr.description,
             defaultValue: attr.default,
             table: {
-                disable: (attr as any).privacy === "private"
+                disable: (attr as any).privacy === "private",
+                defaultValue:{
+                    detail:(attr as any)?.expandedType ?options.join(", "):undefined,
+                }
             }
         };
 

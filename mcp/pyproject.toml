@@ -1,0 +1,27 @@
+[project]
+name = "vg-ui-lib-mcp-server"
+version = "0.1.0"
+description = "Model Context Protocol server for VG UI Library web components documentation"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastmcp>=2.10.1",
+    "mcp[cli]>=1.10.1",
+    "requests>=2.32.4",
+    "uvicorn>=0.35.0",
+]
+
+[project.scripts]
+vg-ui-lib-mcp-server = "vg_ui_lib_mcp.main:run"
+vg-ui-lib-mcp-dev = "vg_ui_lib_mcp.main:run_dev"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"vg_ui_lib_mcp.data" = ["*.json", "component-registry.json"]
+"vg_ui_lib_mcp" = ["data/*.json"]
