@@ -39,3 +39,4 @@ lighthouse-*.report.*
 .lighthouse-cache.json
 coverage
 test-output.log
+.nyc_output

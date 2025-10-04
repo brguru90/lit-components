@@ -88,6 +88,7 @@
     "@vitejs/plugin-vue-jsx": "^5.1.1",
     "@wc-toolkit/jsx-types": "^1.4.2",
     "@wc-toolkit/storybook-helpers": "^9.0.1",
+    "@wc-toolkit/type-parser": "^1.2.0",
     "@web/dev-server-legacy": "^2.1.1",
     "cem-plugin-expanded-types": "^1.4.0",
     "cem-plugin-reactify": "^0.0.2",

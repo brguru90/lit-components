@@ -1,10 +1,12 @@
 import { generateCustomData } from "cem-plugin-vs-code-custom-data-generator";
 import { customElementVsCodePlugin } from "custom-element-vs-code-integration";
 import { customElementReactWrapperPlugin } from "custom-element-react-wrappers";
-import { getTsProgram, expandTypesPlugin } from "cem-plugin-expanded-types";
+// import { getTsProgram, expandTypesPlugin } from "cem-plugin-expanded-types";
 import { customElementVuejsPlugin } from "custom-element-vuejs-integration";
 import { jsDocTagsPlugin } from "@wc-toolkit/jsdoc-tags";
 import { jsxTypesPlugin } from "@wc-toolkit/jsx-types";
+import { getTsProgram, typeParserPlugin } from "@wc-toolkit/type-parser";
+
 
 import reactify from "cem-plugin-reactify";
 import {dynamicRenameEventsPlugin} from './scripts/event_rename.js'
@@ -38,6 +40,7 @@ export default {
   stencil: false,
   catalyst: false,
   plugins: [
+    typeParserPlugin({ propertyName: "expandedType" }),
     jsDocTagsPlugin({
       tags: {
         figma: {
@@ -89,7 +92,6 @@ export default {
       cssFileName: "vg.css-custom-data.json",
       descriptionSrc: "description",
     }),
-    expandTypesPlugin({ propertyName: "type" }),
     dynamicRenameEventsPlugin({ // fix for vue event names
       transform: (name) =>name.includes("-") ? `-${name}` : name
     }),

@@ -22,14 +22,14 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
-    "declaration": true,                            
+    "declaration": true,
     "declarationMap": true,
     "declarationDir": "types",
     "emitDeclarationOnly":true,
     // "allowJs": true,
-    "esModuleInterop": true,    
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,  
+    "forceConsistentCasingInFileNames": true,
     // "noEmit": true,
     "allowJs": true,
     "checkJs": false,
@@ -46,6 +46,6 @@
     "src/**/*", 
   ],
   "exclude": [
-    "node_modules", "dist",  "build", "public", "types","demo"
+    "node_modules", "dist",  "build", "public", "types","demo","stories","storybook-static",".storybook"
   ],
 }

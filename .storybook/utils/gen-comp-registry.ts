@@ -42,6 +42,7 @@ export interface ComponentProp {
 export interface ComponentEvent {
   name: string;
   event: string;
+  parameterType: string;
   description?: string;
 }
 
@@ -388,6 +389,7 @@ function transformComponents(
       currentReg.events[eventKey] = currentReg.events[eventKey] || {
         name: eventEntry.name,
         event: eventEntry.signature || eventEntry.name,
+        parameterType: eventEntry.type,
         description: eventEntry.description,
       };
     });

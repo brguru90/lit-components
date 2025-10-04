@@ -42,9 +42,9 @@ export function dynamicRenameEventsPlugin({ transform }) {
               ev['x-originalName'] = original;
 
               // Optional: Update description to mention rename
-              ev.description = ev.description
-                ? `(renamed from "${original}") ${ev.description}`
-                : `(renamed from "${original}")`;
+              // ev.description = ev.description
+              //   ? `(renamed from "${original}") ${ev.description}`
+              //   : `(renamed from "${original}")`;
             }
           }
         }

@@ -288,7 +288,7 @@ export async function extractStoryDocumentation(
         } else if (category === 'events') {
             events[key] = {
                 name: argType.name || key,
-                type: argType.type,
+                type: argType.control.type=="object"?argType.table?.type?.summary:argType.type,
                 description: argType.description || '',
             };
         } else if (category === 'css shadow parts') {
