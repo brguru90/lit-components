@@ -23,6 +23,96 @@ uv sync --extra dev
 uv run lit-components-mcp-dev
 ```
 
+
+## 📦 Installation & Setup
+
+### Development Commands
+
+#### Development Mode (with MCP Inspector)
+```bash
+# Run development server with inspector
+uv run fastmcp dev src/lit_components_mcp/main.py
+
+# Or use the dev script
+uv run lit-components-mcp-dev
+
+# Run with specific framework support
+uv run lit-components-mcp-dev --use-framework react19
+```
+
+#### Production Mode
+```bash
+# Run production server
+uv run lit-components-mcp-server
+```
+
+### Installing as a Tool
+
+#### Quick Install (may not always work)
+```bash
+uv run fastmcp install src/lit_components_mcp/main.py
+```
+
+#### Reliable Install Method
+```bash
+# Build and install the package
+rm -rf dist
+uv build
+uv tool install dist/*.whl
+uv tool update-shell
+```
+
+**Note**: The component registry is automatically copied from `storybook-static/stories_doc/component-registry.json` during the build process. Make sure you've run `npm run build-storybook && npm run docs:build` to generate the registry before building the MCP package.
+
+### Claude Desktop Integration
+
+After installing the tool, configure it in Claude Desktop:
+
+```bash
+# List configured MCP servers
+claude mcp list
+
+# Remove existing configuration (if updating)
+claude mcp remove lit-components-mcp-server
+
+# Add as stdio transport (recommended)
+claude mcp add -s user lit-components-mcp-server lit-components-mcp-server
+
+# Alternative: Add as HTTP transport
+claude mcp add --transport http lit-components-mcp http://127.0.0.1:8000/lit-components/mcp/
+```
+
+### VS Code MCP Configuration
+
+Add to `.vscode/mcp.json`:
+
+```json
+{
+    "servers": {
+        "lit-components-mcp": {
+            "type": "stdio",      
+            "command": "uvx",
+            "args": [
+                "lit-components-mcp-server",
+				"--use-framework",
+				"react19"
+            ]
+        }
+    }
+}
+```
+
+### Tool Management
+
+```bash
+# List installed UV tools
+uv tool list
+
+# Uninstall the tool
+uv tool uninstall lit-components-mcp-server
+uv tool uninstall lit-components-mcp-dev
+```
+
 **Note**: The MCP Inspector (`@modelcontextprotocol/inspector@0.17.0`) is automatically installed by FastMCP CLI when running development mode.
 
 The development mode provides:

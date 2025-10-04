@@ -10,6 +10,7 @@ from typing import List, Dict, Any, Optional
 from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
 from pathlib import Path
+import importlib.resources as pkg_resources
 
 from fastmcp import FastMCP, Context
 from fastmcp.prompts.prompt import PromptMessage, TextContent
@@ -19,6 +20,8 @@ from pydantic import BaseModel
 
 # Path to the component registry JSON file
 COMPONENT_REGISTRY_PATH = Path(__file__).parent.parent.parent.parent / "storybook-static" / "stories_doc" / "component-registry.json"
+# Embedded file path (relative to the package data directory)
+COMPONENT_REGISTRY_EMBEDDED = "component-registry.json"
 
 # Global variables to store loaded data
 component_registry: Dict[str, Any] = {}
@@ -54,13 +57,22 @@ async def load_component_registry(no_ctx:bool=False) -> str:
     try:
         await ctx.info(f"Loading component registry from {COMPONENT_REGISTRY_PATH}")
         
-        if not COMPONENT_REGISTRY_PATH.exists():
-            error_msg = f"Component registry file not found at {COMPONENT_REGISTRY_PATH}"
-            await ctx.error(f"ERROR: {error_msg}")
-            return error_msg
-        
-        with open(COMPONENT_REGISTRY_PATH, 'r', encoding='utf-8') as f:
-            component_registry = json.load(f)
+        # Try to load from the development path first (for local development)
+        if COMPONENT_REGISTRY_PATH.exists():
+            await ctx.info("Loading from development path (storybook-static)")
+            with open(COMPONENT_REGISTRY_PATH, 'r', encoding='utf-8') as f:
+                component_registry = json.load(f)
+        else:
+            # Fall back to embedded data (for packaged distribution)
+            await ctx.info("Development path not found, loading from embedded data")
+            try:
+                with pkg_resources.files('lit_components_mcp.data').joinpath(COMPONENT_REGISTRY_EMBEDDED).open('r', encoding='utf-8') as f:
+                    component_registry = json.load(f)
+                await ctx.info("Successfully loaded from embedded data")
+            except Exception as embed_error:
+                error_msg = f"Component registry file not found at {COMPONENT_REGISTRY_PATH} and failed to load embedded data: {str(embed_error)}"
+                await ctx.error(f"ERROR: {error_msg}")
+                return error_msg
         
         # Extract different sections
         components_data = component_registry.get('components', {})

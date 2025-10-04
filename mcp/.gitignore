@@ -1,0 +1,14 @@
+# Build artifacts
+dist/
+build/
+*.egg-info/
+__pycache__/
+*.pyc
+
+# Copied data file (generated at build time)
+src/lit_components_mcp/data/component-registry.json
+
+# Development
+.pytest_cache/
+.coverage
+htmlcov/

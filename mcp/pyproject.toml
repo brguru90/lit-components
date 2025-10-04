@@ -23,5 +23,5 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 
 [tool.setuptools.package-data]
-"lit_components_mcp" = ["*.json"]
-"*" = ["*.json"]
+"lit_components_mcp.data" = ["*.json", "component-registry.json"]
+"lit_components_mcp" = ["data/*.json"]

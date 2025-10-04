@@ -63,3 +63,4 @@ mcp/uv.lock
 mcp/.uv-cache/
 mcp/.python-version
 mcp/src/lit_components_mcp_server.egg-info
+mcp/src/lit_components_mcp/data/component-registry.json
