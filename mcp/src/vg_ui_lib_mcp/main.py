@@ -17,6 +17,8 @@ from fastmcp.prompts.prompt import PromptMessage, TextContent
 from fastmcp.server.dependencies import get_context
 from pydantic import BaseModel
 
+from vg_ui_lib_mcp.framework_instructions import get_project_setup_instructions
+
 
 # Path to the component registry JSON file
 COMPONENT_REGISTRY_PATH = Path(__file__).parent.parent.parent.parent / "storybook-static" / "stories_doc" / "component-registry.json"
@@ -118,7 +120,7 @@ async def app_lifespan(server: FastMCP) -> AsyncIterator[str]:
     # The function continues to run here, keeping the server alive
 
 
-instructions = """
+instructions="""
 This MCP server provides access to VG UI Library web components documentation from the Storybook component registry.
 You can use the tools to fetch, categorize, and retrieve information about VG web components, their schemas, CSS styles, and examples.
 
@@ -153,11 +155,6 @@ When fetching component examples, you can use the `--use-framework` command-line
 3. Get detailed component documentation for specific components
 4. Access CSS definitions for styling information
 5. Browse examples to see component usage patterns
-
-## Import Patterns
-```typescript
-{import_statements}
-```
 
 ## Recommended Tool Usage Flow
 
@@ -229,6 +226,18 @@ def StartupInstructions() -> PromptMessage:
         content=TextContent(
             type="text",
             text=instructions
+        )
+    )
+
+@mcp.tool(name="InitialProjectSetup", description="Provides special initial project setup instructions for the VG UI Library web components documentation server.")
+def InitialProjectSetup() -> PromptMessage:
+    """Provides special initial project setup instructions for the VG UI Library web components documentation usage."""
+    global _use_framework
+    return PromptMessage(
+        role="assistant",
+        content=TextContent(
+            type="text",
+            text=get_project_setup_instructions(_use_framework)
         )
     )
 
