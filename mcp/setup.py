@@ -1,5 +1,5 @@
 """
-Setup script for lit-components-mcp-server package.
+Setup script for vg-ui-lib-mcp-server package.
 This copies component-registry.json before building the package.
 """
 from setuptools import setup
@@ -19,7 +19,7 @@ def copy_registry_file():
     # When building from source, setup_dir is the mcp directory
     project_root = setup_dir.parent
     source_file = project_root / "storybook-static" / "stories_doc" / "component-registry.json"
-    dest_dir = setup_dir / "src" / "lit_components_mcp" / "data"
+    dest_dir = setup_dir / "src" / "vg_ui_lib_mcp" / "data"
     dest_file = dest_dir / "component-registry.json"
     
     print(f"\n{'='*60}")

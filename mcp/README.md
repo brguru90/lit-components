@@ -1,6 +1,6 @@
-# Lit Components MCP Server - Development Environment
+# VG UI Library MCP Server - Development Environment
 
-This directory contains a complete Model Context Protocol (MCP) server that provides comprehensive access to Lit component documentation, built with FastMCP 2.0+ and enhanced debugging capabilities.
+This directory contains a complete Model Context Protocol (MCP) server that provides comprehensive access to VG UI Library web components documentation, built with FastMCP 2.0+ and enhanced debugging capabilities.
 
 ## 🚀 Quick Start
 
@@ -11,7 +11,7 @@ This directory contains a complete Model Context Protocol (MCP) server that prov
 ### Production Mode
 ```bash
 # Install and run the server
-uv run lit-components-mcp-server
+uv run vg-ui-lib-mcp-server
 ```
 
 ### Development Mode (Recommended)
@@ -20,7 +20,7 @@ uv run lit-components-mcp-server
 uv sync --extra dev
 
 # Start with MCP Inspector for debugging
-uv run lit-components-mcp-dev
+uv run vg-ui-lib-mcp-dev
 ```
 
 
@@ -31,26 +31,26 @@ uv run lit-components-mcp-dev
 #### Development Mode (with MCP Inspector)
 ```bash
 # Run development server with inspector
-uv run fastmcp dev src/lit_components_mcp/main.py
+uv run fastmcp dev src/vg_ui_lib_mcp/main.py
 
 # Or use the dev script
-uv run lit-components-mcp-dev
+uv run vg-ui-lib-mcp-dev
 
 # Run with specific framework support
-uv run lit-components-mcp-dev --use-framework react19
+uv run vg-ui-lib-mcp-dev --use-framework react19
 ```
 
 #### Production Mode
 ```bash
 # Run production server
-uv run lit-components-mcp-server
+uv run vg-ui-lib-mcp-server
 ```
 
 ### Installing as a Tool
 
 #### Quick Install (may not always work)
 ```bash
-uv run fastmcp install src/lit_components_mcp/main.py
+uv run fastmcp install src/vg_ui_lib_mcp/main.py
 ```
 
 #### Reliable Install Method
@@ -73,13 +73,13 @@ After installing the tool, configure it in Claude Desktop:
 claude mcp list
 
 # Remove existing configuration (if updating)
-claude mcp remove lit-components-mcp-server
+claude mcp remove vg-ui-lib-mcp-server
 
 # Add as stdio transport (recommended)
-claude mcp add -s user lit-components-mcp-server lit-components-mcp-server
+claude mcp add -s user vg-ui-lib-mcp-server vg-ui-lib-mcp-server
 
 # Alternative: Add as HTTP transport
-claude mcp add --transport http lit-components-mcp http://127.0.0.1:8000/lit-components/mcp/
+claude mcp add --transport http vg-ui-lib-mcp http://127.0.0.1:8000/vg-ui-lib/mcp/
 ```
 
 ### VS Code MCP Configuration
@@ -89,11 +89,11 @@ Add to `.vscode/mcp.json`:
 ```json
 {
     "servers": {
-        "lit-components-mcp": {
+        "vg-ui-lib-mcp": {
             "type": "stdio",      
             "command": "uvx",
             "args": [
-                "lit-components-mcp-server",
+                "vg-ui-lib-mcp-server",
 				"--use-framework",
 				"react19"
             ]
@@ -109,8 +109,8 @@ Add to `.vscode/mcp.json`:
 uv tool list
 
 # Uninstall the tool
-uv tool uninstall lit-components-mcp-server
-uv tool uninstall lit-components-mcp-dev
+uv tool uninstall vg-ui-lib-mcp-server
+uv tool uninstall vg-ui-lib-mcp-dev
 ```
 
 **Note**: The MCP Inspector (`@modelcontextprotocol/inspector@0.17.0`) is automatically installed by FastMCP CLI when running development mode.
@@ -219,7 +219,7 @@ These tools provide:
 
 ```
 mcp/
-├── src/lit_components_mcp/
+├── src/vg_ui_lib_mcp/
 │   └── main.py              # Main MCP server implementation
 ├── fastmcp.json             # Development configuration  
 ├── dev_test.py              # Development testing script
@@ -263,7 +263,7 @@ uv run fastmcp --help
 
 ## 🎯 Next Steps
 
-1. **Run the development server**: `uv run lit-components-mcp-dev`
+1. **Run the development server**: `uv run vg-ui-lib-mcp-dev`
 2. **Open the MCP Inspector** in your browser
 3. **Test tools interactively** to see debugging in action
 4. **Monitor logs** to understand server behavior

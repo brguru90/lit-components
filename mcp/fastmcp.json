@@ -1,10 +1,10 @@
 {
   "$schema": "https://gofastmcp.com/public/schemas/fastmcp.json/v1.json",
-  "name": "Lit Components Documentation Server",
-  "description": "MCP server providing comprehensive access to Lit component documentation, schemas, props, events, and examples",
+  "name": "VG UI Library Web Components Documentation Server",
+  "description": "MCP server providing comprehensive access to VG UI Library web components documentation, schemas, props, events, and examples",
   "version": "1.0.0",
   "source": {
-    "path": "src/lit_components_mcp/main.py",
+    "path": "src/vg_ui_lib_mcp/main.py",
     "entrypoint": "mcp"
   },
   "environment": {

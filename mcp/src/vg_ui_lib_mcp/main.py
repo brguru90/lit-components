@@ -66,7 +66,7 @@ async def load_component_registry(no_ctx:bool=False) -> str:
             # Fall back to embedded data (for packaged distribution)
             await ctx.info("Development path not found, loading from embedded data")
             try:
-                with pkg_resources.files('lit_components_mcp.data').joinpath(COMPONENT_REGISTRY_EMBEDDED).open('r', encoding='utf-8') as f:
+                with pkg_resources.files('vg_ui_lib_mcp.data').joinpath(COMPONENT_REGISTRY_EMBEDDED).open('r', encoding='utf-8') as f:
                     component_registry = json.load(f)
                 await ctx.info("Successfully loaded from embedded data")
             except Exception as embed_error:
@@ -95,7 +95,7 @@ async def load_component_registry(no_ctx:bool=False) -> str:
 def parse_args():
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(
-        description="Lit Components Documentation MCP Server",
+        description="VG UI Library Web Components Documentation MCP Server",
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.add_argument(
@@ -119,13 +119,13 @@ async def app_lifespan(server: FastMCP) -> AsyncIterator[str]:
 
 
 instructions = """
-This MCP server provides access to Lit Components documentation from the Storybook component registry.
-You can use the tools to fetch, categorize, and retrieve information about Lit components, their schemas, CSS styles, and examples.
+This MCP server provides access to VG UI Library web components documentation from the Storybook component registry.
+You can use the tools to fetch, categorize, and retrieve information about VG web components, their schemas, CSS styles, and examples.
 
-# Lit Components Documentation Server
+# VG UI Library Web Components Documentation Server
 
 ## Overview
-This server provides access to comprehensive Lit component documentation including:
+This server provides access to comprehensive VG UI Library web component documentation including:
 - Component definitions with props, events, and slots
 - TypeScript type schemas and definitions
 - CSS variables and styling information (with categorization support)
@@ -140,12 +140,12 @@ When fetching component examples, you can use the `--use-framework` command-line
 - If no argument is provided or framework not found, all framework sources are returned
 
 ## Instructions
-- List all Lit components initially before starting implementation to understand available options
-- For any slot in Lit components, if documentation shows a `default` value, it can be used directly in the template
-- Use Lit components extensively and minimize custom HTML elements
-- Minimize custom CSS/styling and custom classes; prefer using Lit component CSS properties and variables
-- In CSS: avoid absolute pixels, avoid custom colors (use Lit CSS variables instead), prefer flexbox over grid
-- All Lit components are prefixed with `vg-` (e.g., `vg-button`, `vg-card`, `vg-flex`)
+- List all VG UI Library components initially before starting implementation to understand available options
+- For any slot in web components, if documentation shows a `default` value, it can be used directly in the template
+- Use VG UI Library web components extensively and minimize custom HTML elements
+- Minimize custom CSS/styling and custom classes; prefer using VG component CSS properties and variables
+- In CSS: avoid absolute pixels, avoid custom colors (use VG CSS variables instead), prefer flexbox over grid
+- All VG UI Library components are prefixed with `vg-` (e.g., `vg-button`, `vg-card`, `vg-flex`)
 
 ## Usage Guidelines
 1. Start by listing available components to understand what's available
@@ -186,13 +186,13 @@ When fetching component examples, you can use the `--use-framework` command-line
 - Always start with `list_components` or `search_components` to discover available components
 - Use `get_component_by_tag` to understand component APIs (props, events, slots) before implementation
 - Reference `get_component_example` for real usage patterns and framework-specific code samples
-- Use Lit CSS variables for consistent theming and styling instead of hardcoded values
+- Use VG CSS variables for consistent theming and styling instead of hardcoded values
 - Leverage TypeScript schemas for type-safe component integration
 """
 
 # Initialize FastMCP server
 mcp = FastMCP(
-    name="Lit Components Documentation Server",
+    name="VG UI Library Web Components Documentation Server",
     lifespan=app_lifespan,
     instructions=instructions,
     version="0.1.0"
@@ -201,7 +201,7 @@ mcp = FastMCP(
 
 @mcp.tool(name="ClearCache")
 def ClearCache() -> PromptMessage:
-    """Clear all cached Lit Components data and reset to default state."""
+    """Clear all cached VG UI Library web components data and reset to default state."""
     global component_registry, components_data, schemas_data, categories_data, css_definitions, css_categorized, css_category_list
     
     # Reset all global variables to their default empty state
@@ -217,13 +217,13 @@ def ClearCache() -> PromptMessage:
         role="assistant",
         content=TextContent(
             type="text",
-            text="Cache cleared successfully. All Lit Components data has been reset to default state."
+            text="Cache cleared successfully. All VG UI Library web components data has been reset to default state."
         )
     )
 
-@mcp.tool(name="StartupInstructions", description="Provides special startup instructions for the Lit Components documentation server. It should be called for every user prompt.")
+@mcp.tool(name="StartupInstructions", description="Provides special startup instructions for the VG UI Library web components documentation server. It should be called for every user prompt.")
 def StartupInstructions() -> PromptMessage:
-    """Provides special startup instructions for the Lit Components documentation usage. It should be called for every user prompt."""
+    """Provides special startup instructions for the VG UI Library web components documentation usage. It should be called for every user prompt."""
     return PromptMessage(
         role="assistant",
         content=TextContent(
@@ -232,10 +232,10 @@ def StartupInstructions() -> PromptMessage:
         )
     )
 
-@mcp.tool(name="list_components", description="List all available Lit components with basic information including props, events, slots and examples_ids.")
+@mcp.tool(name="list_components", description="List all available VG UI Library web components with basic information including props, events, slots and examples_ids.")
 async def list_components(ctx: Context) -> List[str]:
-    """List all available Lit components with basic information including props, events, slots and examples_ids."""
-    await ctx.info("🔍 Listing all available Lit components")
+    """List all available VG UI Library web components with basic information including props, events, slots and examples_ids."""
+    await ctx.info("🔍 Listing all available VG UI Library web components")
     await ctx.debug("Checking if component registry is loaded")
     
     if not components_data:
@@ -251,9 +251,9 @@ async def list_components(ctx: Context) -> List[str]:
     return components_list
 
 
-@mcp.tool(name="get_component_by_tag", description="Get detailed documentation for a specific Lit component by its tag name including props, events, slots, and usage examples.")
+@mcp.tool(name="get_component_by_tag", description="Get detailed documentation for a specific VG UI Library web component by its tag name including props, events, slots, and usage examples.")
 async def get_component_by_tag(component_tag: str, ctx: Context) -> Dict[str, Any] | str:
-    """Get detailed documentation for a specific Lit component by its tag name including props, events, slots, and usage examples."""
+    """Get detailed documentation for a specific VG UI Library web component by its tag name including props, events, slots, and usage examples."""
     await ctx.info(f"🔍 Looking up component: {component_tag}")
     await ctx.debug("Checking if component registry is loaded")
     
@@ -291,9 +291,9 @@ async def get_component_by_tag(component_tag: str, ctx: Context) -> Dict[str, An
     return result
 
 
-@mcp.tool(name="search_components", description="Search for Lit components by nacomponent_tagme or category.")
+@mcp.tool(name="search_components", description="Search for VG UI Library web components by nacomponent_tagme or category.")
 async def search_components(search_term: str, ctx: Context) -> List[Dict]:
-    """Search for Lit components by component_tag, or category."""
+    """Search for VG UI Library web components by component_tag, or category."""
     await ctx.debug(f"Searching for components with term: {search_term}")
     if not components_data:
         await ctx.debug("Registry not loaded, loading now...")
@@ -319,9 +319,9 @@ async def search_components(search_term: str, ctx: Context) -> List[Dict]:
     return matching_components
 
 
-@mcp.tool(name="list_schemas", description="List all available TypeScript schemas and type definitions used by Lit components.")
+@mcp.tool(name="list_schemas", description="List all available TypeScript schemas and type definitions used by VG UI Library web components.")
 async def list_schemas(ctx: Context) -> List[str]:
-    """List all available TypeScript schemas and type definitions used by Lit components."""
+    """List all available TypeScript schemas and type definitions used by VG UI Library web components."""
     await ctx.debug("Fetching TypeScript schemas and type definitions")
     if not schemas_data:
         await ctx.debug("Registry not loaded, loading now...")
@@ -372,9 +372,9 @@ async def list_categories(ctx: Context) -> List[Dict]:
     return categories_list
 
 
-@mcp.tool(name="get_component_example", description="Get a specific example for a Lit component by example ID, including code samples for different frameworks. Use --use-framework CLI argument to filter by framework.")
+@mcp.tool(name="get_component_example", description="Get a specific example for a VG UI Library web component by example ID, including code samples for different frameworks. Use --use-framework CLI argument to filter by framework.")
 async def get_component_example(component_tag: str, example_id: str, ctx: Context) -> Dict[str, Any] | str:
-    """Get a specific example for a Lit component by example ID, including code samples for different frameworks."""
+    """Get a specific example for a VG UI Library web component by example ID, including code samples for different frameworks."""
     await ctx.debug(f"Retrieving example '{example_id}' for component: {component_tag}")
     
     # Get framework preference from command-line argument
@@ -436,9 +436,9 @@ async def get_component_example(component_tag: str, example_id: str, ctx: Contex
     }
 
 
-@mcp.tool(name="categorize_css", description="Categorize the Lit Components CSS (Cascading Style Sheets) and index it for later reference. Returns categorized CSS to be reviewed by user (Avoid calling categorize_css unless necessary).")
+@mcp.tool(name="categorize_css", description="Categorize the VG UI Library CSS (Cascading Style Sheets) and index it for later reference. Returns categorized CSS to be reviewed by user (Avoid calling categorize_css unless necessary).")
 async def categorize_css(ctx: Context) -> str:
-    """Categorize the Lit Components CSS (Cascading Style Sheets) and index it for later reference. Returns categorized CSS to be reviewed by user (Avoid calling categorize_css unless necessary)."""
+    """Categorize the VG UI Library CSS (Cascading Style Sheets) and index it for later reference. Returns categorized CSS to be reviewed by user (Avoid calling categorize_css unless necessary)."""
     global css_definitions, css_categorized, css_category_list
     
     if not css_definitions:
@@ -486,9 +486,9 @@ async def categorize_css(ctx: Context) -> str:
     return f"CSS categorized successfully into the following categories:\n\n{css_category_list}"
 
 
-@mcp.tool(name="list_css_categories", description="Get the list of CSS (Cascading Style Sheets) categories from Lit Components.")
+@mcp.tool(name="list_css_categories", description="Get the list of CSS (Cascading Style Sheets) categories from VG UI Library.")
 async def list_css_categories(ctx: Context) -> str:
-    """Get the list of CSS (Cascading Style Sheets) categories from Lit Components."""
+    """Get the list of CSS (Cascading Style Sheets) categories from VG UI Library."""
     global css_category_list
     
     await ctx.debug("Fetching CSS categories")
@@ -498,12 +498,12 @@ async def list_css_categories(ctx: Context) -> str:
         return "No CSS categories found. Please run `categorize_css` to categorize the CSS styles."
     
     await ctx.info(f"✅ Listed {len(css_category_list.split(chr(10)))} CSS categories")
-    return f"Here are the CSS (Cascading Style Sheets) categories from Lit Components:\n\n{css_category_list}"
+    return f"Here are the CSS (Cascading Style Sheets) categories from VG UI Library:\n\n{css_category_list}"
 
 
-@mcp.tool(name="get_css_for_category", description="Get the CSS (Cascading Style Sheets) styles by category from Lit Components.")
+@mcp.tool(name="get_css_for_category", description="Get the CSS (Cascading Style Sheets) styles by category from VG UI Library.")
 async def get_css_for_category(category_name: str, ctx: Context) -> str | Dict:
-    """Get the CSS (Cascading Style Sheets) styles by category from Lit Components."""
+    """Get the CSS (Cascading Style Sheets) styles by category from VG UI Library."""
     global css_categorized
     
     await ctx.debug(f"Fetching CSS for category: {category_name}")
@@ -585,7 +585,7 @@ def run_dev():
         print("=" * 60)
         
         # Fallback to standard FastMCP server
-        print("Starting Lit Components Documentation MCP Server (Development Mode)...")
+        print("Starting VG UI Library Web Components Documentation MCP Server (Development Mode)...")
         mcp.run(transport="stdio")
         
     except Exception as e:
@@ -594,7 +594,7 @@ def run_dev():
         print("=" * 60)
         
         # Fallback to standard FastMCP server
-        print("Starting Lit Components Documentation MCP Server (Development Mode)...")
+        print("Starting VG UI Library Web Components Documentation MCP Server (Development Mode)...")
         mcp.run(transport="stdio")
     finally:
         pass
