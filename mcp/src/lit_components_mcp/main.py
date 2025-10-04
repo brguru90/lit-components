@@ -108,6 +108,17 @@ mcp = FastMCP(
 
 
 @mcp.prompt
+def FetchInstructions() -> PromptMessage:
+    """Startup instructions for the Lit Components documentation server."""
+    return PromptMessage(
+        role="assistant",
+        content=TextContent(
+            type="text",
+            text=instructions
+        )
+    )
+
+@mcp.prompt
 def get_instructions() -> PromptMessage:
     """Get startup instructions for the Lit Components documentation server."""
     return PromptMessage(
@@ -119,15 +130,52 @@ def get_instructions() -> PromptMessage:
     )
 
 
+@mcp.tool(name="ClearCache")
+def ClearCache() -> PromptMessage:
+    """Clear all cached Lit Components data and reset to default state."""
+    global component_registry, components_data, schemas_data, categories_data, css_definitions
+    
+    # Reset all global variables to their default empty state
+    component_registry = {}
+    components_data = {}
+    schemas_data = {}
+    categories_data = {}
+    css_definitions = ""
+    
+    return PromptMessage(
+        role="assistant",
+        content=TextContent(
+            type="text",
+            text="Cache cleared successfully. All Lit Components data has been reset to default state."
+        )
+    )
+
+@mcp.tool(name="StartupInstructions", description="Provides special startup instructions for the Lit Components documentation server. It should be called for every user prompt.")
+def StartupInstructions() -> PromptMessage:
+    """Provides special startup instructions for the Lit Components documentation usage. It should be called for every user prompt."""
+    return PromptMessage(
+        role="assistant",
+        content=TextContent(
+            type="text",
+            text=instructions
+        )
+    )
+
 @mcp.tool(name="reload_registry")
 async def reload_registry() -> str:
     """Reload the component registry from the file system."""
     return await load_component_registry()
 
+@mcp.tool()
+async def RefetchDocs() -> str:
+    """Refetch the Lit Components documentation from the file system."""
+    return await load_component_registry()
 
-@mcp.tool(name="get_server_info")
-async def get_server_info() -> Dict[str, Any]:
-    """Get information about the server and loaded data."""
+
+@mcp.tool(name="get_server_info", description="Get information about the Lit Components documentation server and loaded data statistics.")
+async def get_server_info(ctx: Context) -> Dict[str, Any]:
+    """Get information about the Lit Components documentation server and loaded data statistics."""
+    await ctx.debug("Retrieving server information and statistics")
     return {
         "version": component_registry.get('version', 'unknown'),
         "framework": component_registry.get('framework', 'unknown'),
@@ -140,9 +188,9 @@ async def get_server_info() -> Dict[str, Any]:
     }
 
 
-@mcp.tool(name="list_components")
+@mcp.tool(name="list_components", description="List all available Lit components with basic information including props, events, slots and examples count.")
 async def list_components(ctx: Context) -> Dict[str, Any]:
-    """List all available Lit components with basic information."""
+    """List all available Lit components with basic information including props, events, slots and examples count."""
     await ctx.info("🔍 Listing all available Lit components")
     await ctx.debug("Checking if component registry is loaded")
     
@@ -173,9 +221,9 @@ async def list_components(ctx: Context) -> Dict[str, Any]:
     return result
 
 
-@mcp.tool(name="get_component_by_tag")
+@mcp.tool(name="get_component_by_tag", description="Get detailed documentation for a specific Lit component by its tag name including props, events, slots, and usage examples.")
 async def get_component_by_tag(component_tag: str, ctx: Context) -> Dict[str, Any] | str:
-    """Get detailed documentation for a specific component by its tag name."""
+    """Get detailed documentation for a specific Lit component by its tag name including props, events, slots, and usage examples."""
     await ctx.info(f"🔍 Looking up component: {component_tag}")
     await ctx.debug("Checking if component registry is loaded")
     
@@ -189,9 +237,12 @@ async def get_component_by_tag(component_tag: str, ctx: Context) -> Dict[str, An
         available_components = list(components_data.keys())
         await ctx.warning(f"❌ Component '{component_tag}' not found")
         await ctx.debug(f"Available components: {available_components}")
-        return f"Component '{component_tag}' not found. Available components: {available_components}"
+        return f"Component '{component_tag}' not found, so check for other variants or other similar components. Available components: {available_components}"
     
     await ctx.debug(f"Found component data with {len(component.get('props', {}))} props, {len(component.get('events', {}))} events")
+    
+    examples = component.get('examples', [])
+    example_ids = [example.get('id', '') for example in examples if example.get('id')]
     
     result = {
         "tag": component_tag,
@@ -203,18 +254,21 @@ async def get_component_by_tag(component_tag: str, ctx: Context) -> Dict[str, An
         "events": component.get('events', {}),
         "slots": component.get('slots', {}),
         "exposed": component.get('exposed', {}),
-        "examples": component.get('examples', [])
+        "example_ids": example_ids
     }
     
     await ctx.info(f"✅ Successfully retrieved component '{component_tag}' with complete documentation")
     return result
 
 
-@mcp.tool(name="search_components")
-async def search_components(search_term: str) -> Dict[str, Any]:
-    """Search for components by name, description, or category."""
+@mcp.tool(name="search_components", description="Search for Lit components by name, description, or category with fuzzy matching support.")
+async def search_components(search_term: str, ctx: Context) -> Dict[str, Any]:
+    """Search for Lit components by name, description, or category with fuzzy matching support."""
+    await ctx.debug(f"Searching for components with term: {search_term}")
     if not components_data:
+        await ctx.debug("Registry not loaded, loading now...")
         load_component_registry_sync()
+        await ctx.debug(f"Registry loaded with {len(components_data)} components")
     
     search_term_lower = search_term.lower()
     matching_components = []
@@ -241,11 +295,14 @@ async def search_components(search_term: str) -> Dict[str, Any]:
     }
 
 
-@mcp.tool(name="list_schemas")
-async def list_schemas() -> Dict[str, Any]:
-    """List all available TypeScript schemas and type definitions."""
+@mcp.tool(name="list_schemas", description="List all available TypeScript schemas and type definitions used by Lit components.")
+async def list_schemas(ctx: Context) -> Dict[str, Any]:
+    """List all available TypeScript schemas and type definitions used by Lit components."""
+    await ctx.debug("Fetching TypeScript schemas and type definitions")
     if not schemas_data:
+        await ctx.debug("Registry not loaded, loading now...")
         load_component_registry_sync()
+        await ctx.debug(f"Registry loaded with {len(schemas_data)} schemas")
     
     schemas_list = []
     for schema_name, schema_def in schemas_data.items():
@@ -267,15 +324,21 @@ async def list_schemas() -> Dict[str, Any]:
     }
 
 
-@mcp.tool(name="get_schema_definition")
-async def get_schema_definition(schema_name: str) -> Dict[str, Any] | str:
-    """Get the full definition of a specific TypeScript schema."""
+@mcp.tool(name="get_schema_definition", description="Get the full definition of a specific TypeScript schema including interfaces, enums, and type aliases.")
+async def get_schema_definition(schema_name: str, ctx: Context) -> Dict[str, Any] | str:
+    """Get the full definition of a specific TypeScript schema including interfaces, enums, and type aliases."""
+    await ctx.debug(f"Retrieving schema definition for: {schema_name}")
     if not schemas_data:
+        await ctx.debug("Registry not loaded, loading now...")
         load_component_registry_sync()
+        await ctx.debug(f"Registry loaded with {len(schemas_data)} schemas")
     
     schema = schemas_data.get(schema_name)
     if not schema:
-        return f"Schema '{schema_name}' not found. Available schemas: {list(schemas_data.keys())}"
+        await ctx.warning(f"❌ Schema '{schema_name}' not found")
+        available_schemas = list(schemas_data.keys())
+        await ctx.debug(f"Available schemas: {available_schemas}")
+        return f"Schema '{schema_name}' not found, so check for other schema names. Available schemas: {available_schemas}"
     
     return {
         "name": schema_name,
@@ -283,11 +346,14 @@ async def get_schema_definition(schema_name: str) -> Dict[str, Any] | str:
     }
 
 
-@mcp.tool(name="list_categories")
-async def list_categories() -> Dict[str, Any]:
-    """List all component categories and their components."""
+@mcp.tool(name="list_categories", description="List all component categories and their associated components for better organization and discovery.")
+async def list_categories(ctx: Context) -> Dict[str, Any]:
+    """List all component categories and their associated components for better organization and discovery."""
+    await ctx.debug("Fetching component categories and organization")
     if not categories_data:
+        await ctx.debug("Registry not loaded, loading now...")
         load_component_registry_sync()
+        await ctx.debug(f"Registry loaded with {len(categories_data)} categories")
     
     categories_list = []
     for category_name, category_info in categories_data.items():
@@ -304,15 +370,21 @@ async def list_categories() -> Dict[str, Any]:
     }
 
 
-@mcp.tool(name="get_components_by_category")
-async def get_components_by_category(category_name: str) -> Dict[str, Any] | str:
-    """Get all components in a specific category with their basic information."""
+@mcp.tool(name="get_components_by_category", description="Get all components in a specific category with their basic information and usage statistics.")
+async def get_components_by_category(category_name: str, ctx: Context) -> Dict[str, Any] | str:
+    """Get all components in a specific category with their basic information and usage statistics."""
+    await ctx.debug(f"Retrieving components for category: {category_name}")
     if not categories_data:
+        await ctx.debug("Registry not loaded, loading now...")
         load_component_registry_sync()
+        await ctx.debug(f"Registry loaded with {len(categories_data)} categories")
     
     category = categories_data.get(category_name)
     if not category:
-        return f"Category '{category_name}' not found. Available categories: {list(categories_data.keys())}"
+        await ctx.warning(f"❌ Category '{category_name}' not found")
+        available_categories = list(categories_data.keys())
+        await ctx.debug(f"Available categories: {available_categories}")
+        return f"Category '{category_name}' not found, so check for other category names. Available categories: {available_categories}"
     
     category_components = []
     for component_tag in category.get('components', []):
@@ -333,45 +405,96 @@ async def get_components_by_category(category_name: str) -> Dict[str, Any] | str
     }
 
 
-@mcp.tool(name="get_css_definitions")
-async def get_css_definitions() -> str:
-    """Get the predefined CSS definitions and variables."""
+@mcp.tool(name="get_css_definitions", description="Get the predefined CSS definitions, variables, and styling guidelines for Lit components.")
+async def get_css_definitions(ctx: Context) -> str:
+    """Get the predefined CSS definitions, variables, and styling guidelines for Lit components."""
+    await ctx.debug("Retrieving CSS definitions and variables")
     if not css_definitions:
+        await ctx.debug("Registry not loaded, loading now...")
         load_component_registry_sync()
+        await ctx.debug(f"Registry loaded, CSS definitions available: {bool(css_definitions)}")
     
     if not css_definitions:
+        await ctx.warning("❌ No CSS definitions found in the component registry")
         return "No CSS definitions found in the component registry."
     
     return css_definitions
 
 
-@mcp.tool(name="get_component_examples")
-async def get_component_examples(component_tag: str) -> Dict[str, Any] | str:
-    """Get all examples for a specific component."""
+@mcp.tool(name="get_component_examples", description="Get all example IDs for a specific Lit component. Use get_component_example to fetch specific example details.")
+async def get_component_examples(component_tag: str, ctx: Context) -> Dict[str, Any] | str:
+    """Get all example IDs for a specific Lit component. Use get_component_example to fetch specific example details."""
+    await ctx.debug(f"Retrieving example IDs for component: {component_tag}")
     if not components_data:
+        await ctx.debug("Registry not loaded, loading now...")
         load_component_registry_sync()
+        await ctx.debug(f"Registry loaded with {len(components_data)} components")
     
     component = components_data.get(component_tag)
     if not component:
         return f"Component '{component_tag}' not found."
     
     examples = component.get('examples', [])
+    example_ids = [example.get('id', '') for example in examples if example.get('id')]
+    
     return {
         "component_tag": component_tag,
         "examples_count": len(examples),
-        "examples": examples
+        "example_ids": example_ids
     }
 
 
-@mcp.tool(name="get_component_props")
-async def get_component_props(component_tag: str) -> Dict[str, Any] | str:
-    """Get detailed information about a component's properties."""
+@mcp.tool(name="get_component_example", description="Get a specific example for a Lit component by example ID, including code samples for different frameworks.")
+async def get_component_example(component_tag: str, example_id: str, ctx: Context) -> Dict[str, Any] | str:
+    """Get a specific example for a Lit component by example ID, including code samples for different frameworks."""
+    await ctx.debug(f"Retrieving example '{example_id}' for component: {component_tag}")
     if not components_data:
+        await ctx.debug("Registry not loaded, loading now...")
         load_component_registry_sync()
+        await ctx.debug(f"Registry loaded with {len(components_data)} components")
     
     component = components_data.get(component_tag)
     if not component:
+        await ctx.warning(f"❌ Component '{component_tag}' not found")
         return f"Component '{component_tag}' not found."
+    
+    examples = component.get('examples', [])
+    
+    # Find the example with matching ID
+    target_example = None
+    for example in examples:
+        if example.get('id') == example_id:
+            target_example = example
+            break
+    
+    if not target_example:
+        available_example_ids = [ex.get('id', '') for ex in examples if ex.get('id')]
+        await ctx.warning(f"❌ Example '{example_id}' not found for component '{component_tag}'")
+        await ctx.debug(f"Available example IDs: {available_example_ids}")
+        return f"Example '{example_id}' not found for component '{component_tag}'. Available example IDs: {available_example_ids}"
+    
+    await ctx.info(f"✅ Successfully retrieved example '{example_id}' for component '{component_tag}'")
+    
+    return {
+        "component_tag": component_tag,
+        "example_id": example_id,
+        "example": target_example
+    }
+
+
+@mcp.tool(name="get_component_props", description="Get detailed information about a Lit component's properties including types, default values, and descriptions.")
+async def get_component_props(component_tag: str, ctx: Context) -> Dict[str, Any] | str:
+    """Get detailed information about a Lit component's properties including types, default values, and descriptions."""
+    await ctx.debug(f"Retrieving properties for component: {component_tag}")
+    if not components_data:
+        await ctx.debug("Registry not loaded, loading now...")
+        load_component_registry_sync()
+        await ctx.debug(f"Registry loaded with {len(components_data)} components")
+    
+    component = components_data.get(component_tag)
+    if not component:
+        await ctx.warning(f"❌ Component '{component_tag}' not found")
+        return f"Component '{component_tag}' not found, so check for other components or component names."
     
     props = component.get('props', {})
     return {
@@ -381,15 +504,19 @@ async def get_component_props(component_tag: str) -> Dict[str, Any] | str:
     }
 
 
-@mcp.tool(name="get_component_events")
-async def get_component_events(component_tag: str) -> Dict[str, Any] | str:
-    """Get detailed information about a component's events."""
+@mcp.tool(name="get_component_events", description="Get detailed information about a Lit component's events including event types, payloads, and usage patterns.")
+async def get_component_events(component_tag: str, ctx: Context) -> Dict[str, Any] | str:
+    """Get detailed information about a Lit component's events including event types, payloads, and usage patterns."""
+    await ctx.debug(f"Retrieving events for component: {component_tag}")
     if not components_data:
+        await ctx.debug("Registry not loaded, loading now...")
         load_component_registry_sync()
+        await ctx.debug(f"Registry loaded with {len(components_data)} components")
     
     component = components_data.get(component_tag)
     if not component:
-        return f"Component '{component_tag}' not found."
+        await ctx.warning(f"❌ Component '{component_tag}' not found")
+        return f"Component '{component_tag}' not found, so check for other components or component names."
     
     events = component.get('events', {})
     return {
@@ -399,15 +526,19 @@ async def get_component_events(component_tag: str) -> Dict[str, Any] | str:
     }
 
 
-@mcp.tool(name="get_component_slots")
-async def get_component_slots(component_tag: str) -> Dict[str, Any] | str:
-    """Get detailed information about a component's slots."""
+@mcp.tool(name="get_component_slots", description="Get detailed information about a Lit component's slots for content projection and template composition.")
+async def get_component_slots(component_tag: str, ctx: Context) -> Dict[str, Any] | str:
+    """Get detailed information about a Lit component's slots for content projection and template composition."""
+    await ctx.debug(f"Retrieving slots for component: {component_tag}")
     if not components_data:
+        await ctx.debug("Registry not loaded, loading now...")
         load_component_registry_sync()
+        await ctx.debug(f"Registry loaded with {len(components_data)} components")
     
     component = components_data.get(component_tag)
     if not component:
-        return f"Component '{component_tag}' not found."
+        await ctx.warning(f"❌ Component '{component_tag}' not found")
+        return f"Component '{component_tag}' not found, so check for other components or component names."
     
     slots = component.get('slots', {})
     return {
