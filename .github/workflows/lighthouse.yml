@@ -9,14 +9,14 @@ on:
 
 jobs:
   lighthouse:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, X64, linux_desktop]
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
@@ -33,16 +33,17 @@ jobs:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
         
       - name: Upload Lighthouse Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: lighthouse-results
           path: .lighthouseci/
+          include-hidden-files: true
           retention-days: 30
           
       - name: Comment PR with Lighthouse Results
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');

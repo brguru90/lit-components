@@ -19,13 +19,16 @@ concurrency:
 jobs:
   deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, X64, linux_desktop]
+    strategy:
+      matrix:
+        environment_name: [github-pages]
     environment:
-      name: github-pages
+      name: ${{ matrix.environment_name }}
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - name: Download storybook artifact
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v3
         with:
           run_id: ${{ github.event.workflow_run.id }}
           name: storybook-static
@@ -33,7 +36,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download release reports artifact
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v3
         with:
           run_id: ${{ github.event.workflow_run.id }}
           name: release-reports
