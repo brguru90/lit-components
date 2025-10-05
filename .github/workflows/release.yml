@@ -19,7 +19,7 @@ jobs:
   build-and-release:
     runs-on: [self-hosted, linux, X64, linux_desktop]
     env:
-      NODE_ENV: production
+      NODE_ENV: development
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
