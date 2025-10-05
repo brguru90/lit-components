@@ -117,11 +117,29 @@ jobs:
       # - name: Install demos dependencies(just to check will it work with framework specific dependencies)
       #   run: npm run install-demos
 
+      - name: Start Storybook in background
+        run: npm run storybook &
+        
+      - name: Wait for Storybook to be ready
+        run: |
+          set -euo pipefail
+          echo "Waiting for Storybook to start..."
+          for i in {1..60}; do
+            if curl -f -s http://127.0.0.1:6006 > /dev/null; then
+              echo "Storybook is ready!"
+              exit 0
+            fi
+            echo "Attempt $i: Storybook not ready yet..."
+            sleep 2
+          done
+          echo "Storybook failed to start within timeout"
+          exit 1
+
       - name: Build documentation and registry
         run: npm run docs:build
 
-      - name: Build Storybook static site
-        run: npm run build-storybook
+      - name: Stop Storybook
+        run: pkill -f "storybook dev" || true
 
       - name: Run Lighthouse audits
         run: npm run lighthouse
