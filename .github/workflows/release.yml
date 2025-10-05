@@ -169,7 +169,7 @@ jobs:
           uv python pin 3.12
           uv sync
           uv build
-          WHEEL=$(python -c 'import pathlib, sys; files = sorted(pathlib.Path("dist").glob("*.whl")); sys.exit("No wheel produced in dist/") if not files else print(files[0].name)')
+          WHEEL=$(uv run python -c 'import pathlib, sys; files = sorted(pathlib.Path("dist").glob("*.whl")); sys.exit("No wheel produced in dist/") if not files else print(files[0].name)')
           echo "wheel=$WHEEL" >> "$GITHUB_OUTPUT"
 
       - name: Package quality reports
