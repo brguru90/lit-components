@@ -52,6 +52,14 @@ jobs:
       - name: Install Python 3.12 for uv
         run: uv python install 3.12
 
+      - name: Checkout repository for scripts
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            scripts/prepare-report-site.py
+          sparse-checkout-cone-mode: false
+          path: repo
+
       - name: Prepare report site
         run: |
           set -euo pipefail
@@ -64,35 +72,8 @@ jobs:
           fi
           mkdir -p site/coverage site/lighthouse
           cp -a reports/coverage/lcov-report/. site/coverage/
-          cp -a .lighthouseci/. site/lighthouse/
-          uv run python - <<'PY'
-            import html
-            import pathlib
-
-            root = pathlib.Path("site")
-            coverage_index = root / "coverage" / "index.html"
-            if not coverage_index.exists():
-                raise SystemExit("Coverage index.html not found")
-
-            lighthouse_dir = root / "lighthouse"
-            html_files = sorted(p.relative_to(lighthouse_dir) for p in lighthouse_dir.rglob("*.html"))
-
-            lighthouse_index = lighthouse_dir / "index.html"
-            with lighthouse_index.open("w", encoding="utf-8") as f:
-                f.write("<html><head><title>Lighthouse Reports</title></head><body><h1>Lighthouse Reports</h1>\n")
-                if html_files:
-                    f.write("<ul>\n")
-                    for rel in html_files:
-                        href = html.escape(str(rel))
-                        f.write(f"  <li><a href='{href}'>{href}</a></li>\n")
-                    f.write("</ul>\n")
-                else:
-                    f.write("<p>No Lighthouse HTML reports were found.</p>\n")
-                f.write("</body></html>\n")
-
-            index = root / "index.html"
-            index.write_text("""<html><head><title>VG Reports</title></head><body><h1>VG Report Portal</h1><ul><li><a href='storybook-static/index.html'>Storybook</a></li><li><a href='coverage/index.html'>Storybook Coverage</a></li><li><a href='lighthouse/index.html'>Lighthouse Reports</a></li></ul></body></html>""", encoding="utf-8")
-          PY
+          cp -a reports/lighthouse/.lighthouseci/. site/lighthouse/
+          uv run python repo/scripts/prepare-report-site.py
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v4
