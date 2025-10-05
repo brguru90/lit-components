@@ -6,7 +6,7 @@ import { extractAndSaveDocumentation } from './utils/documentation-extraction';
 const config: TestRunnerConfig = {
   // Optional: Setup before all tests
   setup() {
-    console.log('\n🚀 Starting Lighthouse audits for Storybook stories...\n');
+    console.log('\n🚀 Starting Test...\n');
   },
 
   // Run after each story is rendered

@@ -370,15 +370,12 @@ export async function extractStoryDocumentation(
     // Get additional info from custom-elements.json
     const customElementsInfo = getCustomElementsInfo(componentTag)
 
-    console.log({ componentTag, customElementsInfo })
 
     // Merge custom-elements.json data with story data
     if (customElementsInfo) {
         // Add missing props from custom-elements.json
         // But skip if the property is already categorized elsewhere (slots, events, cssParts, cssProperties)
         Object.entries(customElementsInfo.props).forEach(([key, value]) => {
-
-            console.log(key,value)
             
             if ((value as any).privacy === "private" && props[key]) {
                 delete props[key]
@@ -416,7 +413,6 @@ export async function extractStoryDocumentation(
                 }
             }
             if(props[key]){
-                console.log("run_time_property",key,value)
                 props[key].run_time_property=(value as any).privacy === "public" && (value as any).kind == "field" && !(value as any)?.attribute
             }
         });
