@@ -3,7 +3,7 @@ name = "vg-ui-lib-mcp-server"
 version = "0.1.0"
 description = "Model Context Protocol server for VG UI Library web components documentation"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = [
     "fastmcp>=2.10.1",
     "mcp[cli]>=1.10.1",
