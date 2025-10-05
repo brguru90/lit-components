@@ -33,17 +33,86 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --include=dev
 
-      - name: Build vg library bundle
-        run: npm run build-module
-
-      - name: Create npm package tarball
-        id: pack
+      - name: Determine release version
+        id: release_info
+        env:
+          TAG_OVERRIDE: ${{ github.event.inputs.tag_override }}
+          EVENT_NAME: ${{ github.event_name }}
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+          GITHUB_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
-          TARBALL=$(npm pack --json | jq -r '.[0].filename')
-          echo "tarball=$TARBALL" >> "$GITHUB_OUTPUT"
+          override="${TAG_OVERRIDE:-}"
+          if [ "$override" = "null" ]; then
+            override=""
+          fi
+
+          if [ -n "$override" ]; then
+            tag="$override"
+          elif [ "$REF_TYPE" = "tag" ] && [ -n "$REF_NAME" ]; then
+            tag="$REF_NAME"
+          else
+            git fetch --tags --force >/dev/null 2>&1 || true
+            last_tag=$(git tag --list '*.*.*' | sort -V | tail -n1 || true)
+            prefix=""
+            if [ -z "$last_tag" ]; then
+              last_tag="0.0.0"
+              prefix="v"
+            elif [[ "$last_tag" == v* ]]; then
+              prefix="v"
+            fi
+
+            last_version="${last_tag#v}"
+            IFS='.' read -r major minor patch <<< "$last_version"
+            major=${major:-0}
+            minor=${minor:-0}
+            patch=${patch:-0}
+            version="$major.$minor.$((patch + 1))"
+            tag="${prefix}${version}"
+
+            while git rev-parse -q --verify "refs/tags/$tag" >/dev/null; do
+              patch=$((patch + 1))
+              version="$major.$minor.$patch"
+              tag="${prefix}${version}"
+            done
+          fi
+
+          version="${tag#v}"
+          if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Computed version '$version' is not a valid semantic version (x.y.z)" >&2
+            exit 1
+          fi
+
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Run release build scripts
+        run: |
+          set -euo pipefail
+          npm run build-module
+          npm run lsp-support
+          npm run fix_stuff
+
+      - name: Create npm package tarball
+        id: package_tar
+        env:
+          RELEASE_VERSION: ${{ steps.release_info.outputs.version }}
+        run: |
+          set -euo pipefail
+          rm -f vg-*.tgz
+          ORIGINAL=$(npm pack --json | jq -r '.[0].filename')
+          DEST="vg-${RELEASE_VERSION}.tgz"
+          mv "$ORIGINAL" "$DEST"
+          echo "tarball=$DEST" >> "$GITHUB_OUTPUT"
+
+      - name: Update demos with latest tarball
+        run: npm run update-demos
+
+      - name: Install demos dependencies(just to check will it work with framework specific dependencies)
+        run: npm run install-demos
 
       - name: Build documentation and registry
         run: npm run docs:build
@@ -112,43 +181,19 @@ jobs:
           path: storybook-static.tar.gz
           if-no-files-found: error
 
-      - name: Determine release tag
-        id: release_tag
-        env:
-          EVENT_NAME: ${{ github.event_name }}
-          REF_TYPE: ${{ github.ref_type }}
-          REF_NAME: ${{ github.ref_name }}
-          TAG_OVERRIDE: ${{ github.event.inputs.tag_override }}
-        run: |
-          set -euo pipefail
-          PACKAGE_VERSION=$(node -p 'require("./package.json").version')
-          TAG="$PACKAGE_VERSION"
-          if [ "$EVENT_NAME" = "workflow_dispatch" ] && [ -n "${TAG_OVERRIDE}" ] && [ "${TAG_OVERRIDE}" != "null" ]; then
-            TAG="$TAG_OVERRIDE"
-          elif [ "$REF_TYPE" = "tag" ] && [ -n "$REF_NAME" ]; then
-            TAG="$REF_NAME"
-          fi
-
-          if [ "$TAG" != "$PACKAGE_VERSION" ]; then
-            echo "Release tag ($TAG) does not match package.json version ($PACKAGE_VERSION)" >&2
-            exit 1
-          fi
-
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-
       - name: Upload release artifacts
         uses: actions/upload-artifact@v4
         with:
           name: release-artifacts
           path: |
-            ${{ steps.pack.outputs.tarball }}
+            ${{ steps.package_tar.outputs.tarball }}
             mcp/dist/${{ steps.mcp_build.outputs.wheel }}
 
       - name: Publish GitHub release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ steps.release_tag.outputs.tag }}
-          name: Release ${{ steps.release_tag.outputs.tag }}
-          artifacts: ${{ steps.pack.outputs.tarball }},mcp/dist/${{ steps.mcp_build.outputs.wheel }}
+          tag: ${{ steps.release_info.outputs.tag }}
+          name: Release ${{ steps.release_info.outputs.tag }}
+          artifacts: ${{ steps.package_tar.outputs.tarball }},mcp/dist/${{ steps.mcp_build.outputs.wheel }}
           allowUpdates: true
           replacesArtifacts: true
