@@ -42,7 +42,8 @@ const config: StorybookConfig = {
           include: ['src/**/*'],
           exclude: ['node_modules', 'stories', 'test'],
           extension: ['.js', '.jsx', '.ts', '.tsx'],
-          // requireEnv: true  // optional: only instrument when a specific env var is set
+          requireEnv: false,  // Force instrumentation even in production
+          forceBuildInstrument: true,  // Ensure instrumentation in all builds
         }),
       ];
     return config;
