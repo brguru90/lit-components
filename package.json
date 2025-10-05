@@ -30,7 +30,8 @@
     "docs:generate": "tsx .storybook/utils/gen-comp-registry.ts",
     "docs:build": "npm-run-all --serial docs:extract docs:merge docs:generate",
     "lighthouse": "npm run build-storybook && lhci autorun",
-    "lighthouse:server": "lhci server"
+    "lighthouse:server": "lhci server",
+    "prepare":"npm run release"
   },
   "types": "dist/index.d.ts",
   "module": "dist/index.js",
