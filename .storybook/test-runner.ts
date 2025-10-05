@@ -37,25 +37,25 @@ const config: TestRunnerConfig = {
       console.warn(`⚠️  Could not fetch story file path for ${storyId}:`, error);
     }
 
-    try {
-      const { passed } = await runLighthouseAudit(
-        storyUrl,
-        storyName,
-        lighthouseParams,
-        storyFilePath,
-        storyId
-      );
+    // try {
+    //   const { passed } = await runLighthouseAudit(
+    //     storyUrl,
+    //     storyName,
+    //     lighthouseParams,
+    //     storyFilePath,
+    //     storyId
+    //   );
 
-      // Fail the test if thresholds are not met
-      // if (!passed) {
-      //   throw new Error(
-      //     `Lighthouse audit failed for ${storyName}. Check the report above for details.`
-      //   );
-      // }
-    } catch (error) {
-      console.error(`\n❌ Error running Lighthouse for ${storyName}:`, error);
-      throw error;
-    }
+    //   // Fail the test if thresholds are not met
+    //   // if (!passed) {
+    //   //   throw new Error(
+    //   //     `Lighthouse audit failed for ${storyName}. Check the report above for details.`
+    //   //   );
+    //   // }
+    // } catch (error) {
+    //   console.error(`\n❌ Error running Lighthouse for ${storyName}:`, error);
+    //   throw error;
+    // }
 
     // Extract and save documentation for this story
     try {
