@@ -138,8 +138,14 @@ jobs:
           echo "Storybook failed to start within timeout"
           exit 1
 
-      - name: Build documentation and registry
-        run: npm run docs:build
+      - name: docs:extract
+        run: npm run docs:extract
+
+      - name: docs:merge
+        run: npm run docs:merge
+
+      - name: docs:generate
+        run: npm run docs:generate
 
       - name: Stop Storybook
         run: pkill -f "storybook dev" || true
