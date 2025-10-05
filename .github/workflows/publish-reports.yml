@@ -54,6 +54,8 @@ jobs:
             exit 1
           fi
           mkdir -p site/coverage site/lighthouse
+          pwd
+          ls -lha
           cp -a reports/coverage/lcov-report/. site/coverage/
           cp -a reports/lighthouse/.lighthouseci/. site/lighthouse/
           python - <<'PY'
