@@ -11,7 +11,7 @@
   "description": "",
   "dependencies": {
     "serve": "^14.2.3",
-    "vg": "file:../../vg-0.0.55.tgz"
+    "vg": "file:../../vg-0.0.60.tgz"
   },
   "devDependencies": {
     "concurrently": "^9.2.1",

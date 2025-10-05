@@ -1,7 +1,7 @@
 {
   "name": "vg",
   "private": true,
-  "version": "0.0.55",
+  "version": "0.0.62",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -19,7 +19,9 @@
     "update-demos": "node scripts/update-demos.js",
     "install-demos": "npm install --prefix demo",
     "release_test": "npm-run-all --serial build-module lsp-support",
-    "release": "npm-run-all --serial build-module lsp-support fix_stuff update_version pack update-demos install-demos",
+    "prepare": "npm-run-all --serial build-module lsp-support fix_stuff update_version",
+    "release_demo": "npm-run-all --serial pack update-demos install-demos",
+    "release": "npm-run-all --serial pack",
     "demo": "npm start --prefix demo",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
@@ -30,8 +32,7 @@
     "docs:generate": "tsx .storybook/utils/gen-comp-registry.ts",
     "docs:build": "npm-run-all --serial docs:extract docs:merge docs:generate",
     "lighthouse": "npm run build-storybook && lhci autorun",
-    "lighthouse:server": "lhci server",
-    "prepare":"npm-run-all --serial build-module lsp-support fix_stuff update_version"
+    "lighthouse:server": "lhci server"
   },
   "types": "dist/index.d.ts",
   "module": "dist/index.js",

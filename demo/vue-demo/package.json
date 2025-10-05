@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vg": "file:../../vg-0.0.55.tgz",
+    "vg": "file:../../vg-0.0.60.tgz",
     "vue": "^3.4.21"
   },
   "devDependencies": {
