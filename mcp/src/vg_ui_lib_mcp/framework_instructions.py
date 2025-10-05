@@ -33,7 +33,14 @@ def get_project_setup_instructions(framework: Optional[str] = None) -> str:
 
 **Installation:**
 ```bash
-npm install vg
+# From GitHub repository
+npm install https://github.com/brguru90/lit-components.git
+
+# Or add to package.json dependencies:
+# "dependencies": {
+#   "vg": "github:brguru90/lit-components"
+# }
+# Then run: npm install
 ```
 
 **Project Structure:**
@@ -115,7 +122,14 @@ Create `.vscode/settings.json` for component autocomplete:
 
 **Installation:**
 ```bash
-npm install vg
+# From GitHub repository
+npm install https://github.com/brguru90/lit-components.git
+
+# Or add to package.json dependencies:
+# "dependencies": {
+#   "vg": "github:brguru90/lit-components"
+# }
+# Then run: npm install
 ```
 
 **Required Imports:**
@@ -210,7 +224,14 @@ const handleChange = (e: CustomEvent<DropdownChangeDetail>) => {
 
 **Installation:**
 ```bash
-npm install vg
+# From GitHub repository
+npm install https://github.com/brguru90/lit-components.git
+
+# Or add to package.json dependencies:
+# "dependencies": {
+#   "vg": "github:brguru90/lit-components"
+# }
+# Then run: npm install
 ```
 
 **Required Imports:**
@@ -310,7 +331,14 @@ Key tsconfig settings for VG components:
 
 **Installation:**
 ```bash
-npm install vg
+# From GitHub repository
+npm install https://github.com/brguru90/lit-components.git
+
+# Or add to package.json dependencies:
+# "dependencies": {
+#   "vg": "github:brguru90/lit-components"
+# }
+# Then run: npm install
 ```
 
 **Required Imports:**
@@ -393,7 +421,14 @@ Create `.vscode/extensions.json` for Volar support:
 
 **Installation:**
 ```bash
-npm install vg
+# From GitHub repository
+npm install https://github.com/brguru90/lit-components.git
+
+# Or add to package.json dependencies:
+# "dependencies": {
+#   "vg": "github:brguru90/lit-components"
+# }
+# Then run: npm install
 ```
 
 **Required Configuration:**
@@ -533,7 +568,15 @@ Create `.vscode/extensions.json`:
 
 **Installation:**
 ```bash
-npm install vg lit
+# From GitHub repository
+npm install https://github.com/brguru90/lit-components.git lit
+
+# Or add to package.json dependencies:
+# "dependencies": {
+#   "vg": "github:brguru90/lit-components",
+#   "lit": "^3.0.0"
+# }
+# Then run: npm install
 ```
 
 **Required Imports:**
@@ -642,7 +685,14 @@ export class MyApp extends LitElement {
 ## Installation
 
 ```bash
-npm install vg
+# From GitHub repository
+npm install https://github.com/brguru90/lit-components.git
+
+# Or add to package.json dependencies:
+# "dependencies": {
+#   "vg": "github:brguru90/lit-components"
+# }
+# Then run: npm install
 ```
 
 ---
