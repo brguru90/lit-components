@@ -31,7 +31,7 @@
     "docs:build": "npm-run-all --serial docs:extract docs:merge docs:generate",
     "lighthouse": "npm run build-storybook && lhci autorun",
     "lighthouse:server": "lhci server",
-    "prepare":"npm run release"
+    "prepare":"npm-run-all --serial build-module lsp-support fix_stuff update_version"
   },
   "types": "dist/index.d.ts",
   "module": "dist/index.js",
