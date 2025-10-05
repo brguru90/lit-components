@@ -154,7 +154,10 @@ jobs:
         run: npm run lighthouse || true
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@v1
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "latest"
+          enable-cache: true
 
       - name: Install Python 3.12 for uv
         run: uv python install 3.12
@@ -162,9 +165,8 @@ jobs:
       - name: Build MCP package
         id: mcp_build
         working-directory: mcp
-        env:
-          UV_PYTHON: '3.12'
         run: |
+          uv python pin 3.12
           uv sync
           uv build
           WHEEL=$(python -c 'import pathlib, sys; files = sorted(pathlib.Path("dist").glob("*.whl")); sys.exit("No wheel produced in dist/") if not files else print(files[0].name)')
