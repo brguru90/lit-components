@@ -43,6 +43,15 @@ jobs:
           path: reports
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "latest"
+          enable-cache: true
+
+      - name: Install Python 3.12 for uv
+        run: uv python install 3.12
+
       - name: Prepare report site
         run: |
           set -euo pipefail
@@ -56,7 +65,7 @@ jobs:
           mkdir -p site/coverage site/lighthouse
           cp -a reports/coverage/lcov-report/. site/coverage/
           cp -a .lighthouseci/. site/lighthouse/
-          python - <<'PY'
+          uv run python - <<'PY'
             import html
             import pathlib
 
