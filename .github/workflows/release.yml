@@ -106,7 +106,7 @@ jobs:
         run: |
           set -euo pipefail
           rm -f vg-*.tgz
-          ORIGINAL=$(npm pack --json | jq -r '.[0].filename')
+          ORIGINAL=$(npm pack --ignore-scripts --json | jq -r '.[0].filename')
           DEST="vg-${RELEASE_VERSION}.tgz"
           mv "$ORIGINAL" "$DEST"
           echo "tarball=$DEST" >> "$GITHUB_OUTPUT"
