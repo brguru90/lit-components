@@ -30,7 +30,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-          cache: 'npm'
+          package-manager-cache: false
           
       - name: npm config
         run: npm config set loglevel verbose
