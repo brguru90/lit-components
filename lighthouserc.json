@@ -9,14 +9,9 @@
       ],
       "numberOfRuns": 3,
       "chromePath": "/usr/bin/google-chrome",
-      "chromeFlags": [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--disable-gpu"
-      ],
       "settings": {
         "preset": "desktop",
+        "chromeFlags": "--no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-gpu",
         "onlyCategories": [
           "performance",
           "accessibility",
