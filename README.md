@@ -56,8 +56,27 @@ This project is a **proof of concept** demonstrating how to build a truly univer
 
 ## 📦 Installation
 
+### From GitHub Repository
+
 ```bash
-npm install vg
+# Direct installation
+npm install https://github.com/brguru90/lit-components.git
+```
+
+### Via package.json
+
+Add to your `package.json` dependencies:
+
+```json
+"dependencies": {
+  "vg": "github:brguru90/lit-components"
+}
+```
+
+Then run:
+
+```bash
+npm install
 ```
 
 ## 🚀 Quick Start for Users
