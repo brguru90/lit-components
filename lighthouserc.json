@@ -8,6 +8,13 @@
         "http://localhost:6006/iframe.html?id=components-card--elevated"
       ],
       "numberOfRuns": 3,
+      "chromePath": "/usr/bin/google-chrome",
+      "chromeFlags": [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu"
+      ],
       "settings": {
         "preset": "desktop",
         "onlyCategories": [
