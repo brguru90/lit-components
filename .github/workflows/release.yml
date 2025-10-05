@@ -117,6 +117,9 @@ jobs:
       # - name: Install demos dependencies(just to check will it work with framework specific dependencies)
       #   run: npm run install-demos
 
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
       - name: Start Storybook in background
         run: npm run storybook &
         
