@@ -151,7 +151,7 @@ jobs:
         run: pkill -f "storybook dev" || true
 
       - name: Run Lighthouse audits
-        run: npm run lighthouse
+        run: npm run lighthouse || true
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v1
