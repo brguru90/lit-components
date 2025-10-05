@@ -34,18 +34,22 @@ const config: StorybookConfig = {
       const { startLighthouseServer } = await import('./addons/lighthouse/server.mjs');
       await startLighthouseServer();
     }
-      const mod = await import('vite-plugin-istanbul');
-      const istanbul = (mod && (mod as any).default) || mod;
-      config.plugins = [
-        ...(config.plugins || []),
-        istanbul({
-          include: ['src/**/*'],
-          exclude: ['node_modules', 'stories', 'test'],
-          extension: ['.js', '.jsx', '.ts', '.tsx'],
-          requireEnv: false,  // Force instrumentation even in production
-          forceBuildInstrument: true,  // Ensure instrumentation in all builds
-        }),
-      ];
+    
+    // Add istanbul plugin for code coverage instrumentation
+    const mod = await import('vite-plugin-istanbul');
+    const istanbul = (mod && (mod as any).default) || mod;
+    
+    config.plugins = [
+      ...(config.plugins || []),
+      istanbul({
+        include: ['src/**/*'],
+        exclude: ['node_modules', 'stories', 'test'],
+        extension: ['.js', '.jsx', '.ts', '.tsx'],
+        requireEnv: false,  // Don't require NYC_INSTRUMENT env variable
+        cypress: false,
+      }),
+    ];
+    
     return config;
   },
 };
