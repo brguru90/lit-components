@@ -156,14 +156,14 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@v1
 
-      - name: Install Python 3.13 for uv
-        run: uv python install 3.13
+      - name: Install Python 3.12 for uv
+        run: uv python install 3.12
 
       - name: Build MCP package
         id: mcp_build
         working-directory: mcp
         env:
-          UV_PYTHON: '3.13'
+          UV_PYTHON: '3.12'
         run: |
           uv sync
           uv build
