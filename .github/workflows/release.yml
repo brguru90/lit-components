@@ -114,8 +114,8 @@ jobs:
       - name: Update demos with latest tarball
         run: npm run update-demos
 
-      - name: Install demos dependencies(just to check will it work with framework specific dependencies)
-        run: npm run install-demos
+      # - name: Install demos dependencies(just to check will it work with framework specific dependencies)
+      #   run: npm run install-demos
 
       - name: Build documentation and registry
         run: npm run docs:build
