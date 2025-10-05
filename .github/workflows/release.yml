@@ -111,8 +111,8 @@ jobs:
           mv "$ORIGINAL" "$DEST"
           echo "tarball=$DEST" >> "$GITHUB_OUTPUT"
 
-      - name: Update demos with latest tarball
-        run: npm run update-demos
+      # - name: Update demos with latest tarball
+      #   run: npm run update-demos
 
       # - name: Install demos dependencies(just to check will it work with framework specific dependencies)
       #   run: npm run install-demos
