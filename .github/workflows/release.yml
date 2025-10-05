@@ -31,7 +31,10 @@ jobs:
         with:
           node-version: '24'
           cache: 'npm'
-
+          
+      - name: npm config
+        run: npm config set loglevel verbose
+        
       - name: Install dependencies
         run: npm ci --include=dev --loglevel=verbose
 
