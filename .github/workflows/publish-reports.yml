@@ -79,7 +79,6 @@ jobs:
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          name: github-pages 
           path: site
 
       - name: Deploy to GitHub Pages
@@ -87,5 +86,4 @@ jobs:
         uses: actions/deploy-pages@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          run_id: ${{ github.event.workflow_run.id }}
           artifact_name: github-pages
